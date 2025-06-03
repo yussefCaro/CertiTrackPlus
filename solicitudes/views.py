@@ -1,3 +1,5 @@
+import os
+
 from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse
 from .models import Cliente
@@ -12,6 +14,10 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import Table, TableStyle
+from django.conf import settings
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+
 
 
 # Vista para manejar el formulario de solicitud
@@ -102,7 +108,26 @@ def generar_solicitud_pdf(request, cliente_id):
     width, height = letter
     margen_x = 50
 
+    # --- LOGO Y NIT ---
+    # Ruta absoluta al logo (ajusta según tu estructura de carpetas)
+    logo_path = os.path.join(settings.BASE_DIR, 'myapp', 'static', 'myapp', 'AQ_color.png')
+    if os.path.exists(logo_path):
+        img = ImageReader(logo_path)
+        # Tamaño del logo (ajusta según prefieras)
+        img_width = 100
+        img_height = 40
+        # Posición del logo (superior izquierda)
+        x_logo = margen_x
+        y_logo = height - 65
+        pdf.drawImage(img, x_logo, y_logo, width=img_width, height=img_height, mask='auto')
+        # NIT debajo del logo
+        pdf.setFont("Helvetica", 10)
+        pdf.drawString(x_logo, y_logo - 8, "Nit. 900509054-9")
+    else:
+        print("No se encontró el logo en:", logo_path)
+
     # TÍTULO
+
     pdf.setFont("Helvetica-Bold", 14)
     pdf.drawString(200, height - 80, "Solicitud de Auditoría")  # Subir el título
     pdf.line(margen_x, height - 90, width - margen_x, height - 90)  # Subir línea
