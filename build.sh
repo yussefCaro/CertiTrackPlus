@@ -10,6 +10,13 @@ python manage.py migrate
 if [[ -n "$CREATE_SUPERUSER" ]]; then
   python manage.py createsuperuser --noinput \
     --username "$DJANGO_SUPERUSER_USERNAME" \
-    --email "$DJANGO_SUPERUSER_EMAIL"
-  echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').update(password='$DJANGO_SUPERUSER_PASSWORD')" | python manage.py shell
+    --email "$DJANGO_SUPERUSER_EMAIL" || true
+  echo "
+from django.contrib.auth import get_user_model
+User = get_user_model()
+user = User.objects.get(username='$DJANGO_SUPERUSER_USERNAME')
+user.set_password('$DJANGO_SUPERUSER_PASSWORD')
+user.save()
+" | python manage.py shell
 fi
+
