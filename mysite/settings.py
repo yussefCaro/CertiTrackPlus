@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'mathfilters',
 
+
 ]
 
 MIDDLEWARE = [

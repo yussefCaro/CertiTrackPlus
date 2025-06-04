@@ -1,61 +1,67 @@
 {% extends 'layouts/base.html' %}
+{% load widget_tweaks %}
 {% load humanize %}
 
 {% block title %}Editar Cotización{% endblock %}
 
 {% block content %}
-<h2>Editar Cotización</h2>
+<div class="container mt-4">
+    <h2>Editar Cotización</h2>
 
-<form method="POST">
-    {% csrf_token %}
+    <form method="POST" class="mb-4">
+        {% csrf_token %}
 
-    {{ form.non_field_errors }}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
 
-    <div>
-        <label for="{{ form.numero_servicio.id_for_label }}">Número de Servicio:</label>
-        {{ form.numero_servicio }}
-    </div>
+        <div class="mb-3">
+            <label for="{{ form.numero_servicio.id_for_label }}" class="form-label">Número de Servicio:</label>
+            {{ form.numero_servicio|add_class:"form-control" }}
+        </div>
 
-    <div>
-        <label for="{{ form.fecha_cotizacion.id_for_label }}">Fecha de Cotización:</label>
-        {{ form.fecha_cotizacion }}
-    </div>
+        <div class="mb-3">
+            <label for="{{ form.fecha_cotizacion.id_for_label }}" class="form-label">Fecha de Cotización:</label>
+            {{ form.fecha_cotizacion|add_class:"form-control" }}
+        </div>
 
-    <div>
-        <label for="{{ form.tipo_servicio.id_for_label }}">Tipo de Servicio:</label>
-        {{ form.tipo_servicio }}
-    </div>
+        <div class="mb-3">
+            <label for="{{ form.tipo_servicio.id_for_label }}" class="form-label">Tipo de Servicio:</label>
+            {{ form.tipo_servicio|add_class:"form-control" }}
+        </div>
 
-    <div>
-        <label for="id_precio_neto">Precio Neto:</label>
-        <input type="number" id="id_precio_neto" name="precio_neto" value="{{ form.precio_neto.value|default:0 }}" step="0.01" required>
-        <span class="text-muted ms-2">
-            ({{ form.precio_neto.value|floatformat:2|intcomma }})
-        </span>
-        <span class="ms-2">Valor sin IVA</span>
-    </div>
+        <div class="mb-3">
+            <label for="id_precio_neto" class="form-label">Precio Neto:</label>
+            <input type="number" id="id_precio_neto" name="precio_neto" value="{{ form.precio_neto.value|default:0 }}" step="0.01" required class="form-control">
+            <span class="text-muted ms-2">
+                ({{ form.precio_neto.value|floatformat:2|intcomma }})
+            </span>
+            <span class="ms-2">Valor sin IVA</span>
+        </div>
 
-    <div>
-        <label for="id_precio_iva">IVA (19%):</label>
-        <input type="hidden" id="id_precio_iva" name="precio_iva">
-        <input type="text" id="id_precio_iva_visible" value="{{ form.precio_iva.value|default:0|floatformat:2|intcomma }}" readonly>
-    </div>
+        <div class="mb-3">
+            <label for="id_precio_iva" class="form-label">IVA (19%):</label>
+            <input type="hidden" id="id_precio_iva" name="precio_iva">
+            <input type="text" id="id_precio_iva_visible" value="{{ form.precio_iva.value|default:0|floatformat:2|intcomma }}" readonly class="form-control">
+        </div>
 
-    <div>
-        <label for="id_precio_total"><strong>Total:</strong></label>
-        <input type="hidden" id="id_precio_total" name="precio_total">
-        <input type="text" id="id_precio_total_visible" value="{{ form.precio_total.value|default:0|floatformat:2|intcomma }}" readonly>
-    </div>
+        <div class="mb-3">
+            <label for="id_precio_total" class="form-label"><strong>Total:</strong></label>
+            <input type="hidden" id="id_precio_total" name="precio_total">
+            <input type="text" id="id_precio_total_visible" value="{{ form.precio_total.value|default:0|floatformat:2|intcomma }}" readonly class="form-control">
+        </div>
 
-    <div>
-        <label for="{{ form.estado.id_for_label }}">Estado:</label>
-        {{ form.estado }}
-    </div>
+        <div class="mb-3">
+            <label for="{{ form.estado.id_for_label }}" class="form-label">Estado:</label>
+            {{ form.estado|add_class:"form-control" }}
+        </div>
 
-    <button type="submit">Guardar Cambios</button>
-</form>
-
-<a href="{% url 'listado_cotizaciones' %}">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <a href="{% url 'listado_cotizaciones' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {

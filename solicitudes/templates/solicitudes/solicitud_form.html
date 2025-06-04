@@ -1,11 +1,5 @@
-<!doctype html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Consulta de Cliente por NIT</title>
-</head>
 {% extends 'layouts/base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
 <main class="container">
@@ -34,7 +28,7 @@
 
                 <!-- Campo de fecha -->
                 <label for="id_fecha_solicitud">Fecha de Solicitud:</label>
-                {{ form.fecha_solicitud }}
+                {{ form.fecha_solicitud|add_class:"form-control" }}
 
                 <button class="btn btn-dark mt-3" type="submit">
                     Consultar Cliente
@@ -44,4 +38,3 @@
     </div>
 </main>
 {% endblock %}
-
