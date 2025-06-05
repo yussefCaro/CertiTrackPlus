@@ -12,3 +12,4 @@ class ProgramacionAuditoriaAdmin(admin.ModelAdmin):
 
 admin.site.register(NivelAuditoriaCEA)
 admin.site.register(Auditor)
+
