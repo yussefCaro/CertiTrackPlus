@@ -1,5 +1,4 @@
 {% extends 'layouts/base.html' %}
-{% load widget_tweaks %}
 {% load static %}
 
 {% block content %}
@@ -16,11 +15,11 @@
                     <legend>Información de la cotización</legend>
                     <div class="mb-3">
                         {{ form.cotizacion.label_tag }}
-                        {{ form.cotizacion|add_class:"form-control" }}
+                        {{ form.cotizacion.as_widget }}
                     </div>
                     <div class="mb-3">
                         {{ form.nivel_auditoria.label_tag }}
-                        {{ form.nivel_auditoria|add_class:"form-control" }}
+                        {{ form.nivel_auditoria.as_widget }}
                     </div>
                 </fieldset>
 
@@ -28,15 +27,15 @@
                     <legend>Etapa 1</legend>
                     <div class="mb-3">
                         {{ form.fecha_programacion_etapa1.label_tag }}
-                        {{ form.fecha_programacion_etapa1|add_class:"form-control" }}
+                        {{ form.fecha_programacion_etapa1.as_widget }}
                     </div>
                     <div class="mb-3">
                         {{ form.hora_etapa1.label_tag }}
-                        {{ form.hora_etapa1|add_class:"form-control" }}
+                        {{ form.hora_etapa1.as_widget }}
                     </div>
                     <div class="mb-3">
                         {{ form.auditores.label_tag }}
-                        {{ form.auditores|add_class:"form-control" }}
+                        {{ form.auditores.as_widget }}
                     </div>
                 </fieldset>
 
@@ -48,22 +47,12 @@
                     <div id="fecha_form_container">
                         {% for fecha_form in fecha_formset %}
                             <div class="fecha_etapa2 mb-3">
-                                {% for field in fecha_form %}
-                                    <div class="mb-2">
-                                        {{ field.label_tag }}
-                                        {{ field|add_class:"form-control" }}
-                                    </div>
-                                {% endfor %}
+                                {{ fecha_form.as_p }}
                                 <button type="button" class="eliminar_fecha btn btn-danger btn-sm">❌</button>
                             </div>
                         {% empty %}
                             <div class="fecha_etapa2 mb-3">
-                                {% for field in fecha_formset.empty_form %}
-                                    <div class="mb-2">
-                                        {{ field.label_tag }}
-                                        {{ field|add_class:"form-control" }}
-                                    </div>
-                                {% endfor %}
+                                {{ fecha_formset.empty_form.as_p }}
                                 <button type="button" class="eliminar_fecha btn btn-danger btn-sm">❌</button>
                             </div>
                         {% endfor %}
@@ -75,16 +64,12 @@
                 <fieldset class="mb-3">
                     <legend>Información adicional</legend>
                     <div class="mb-3">
-                        <div class="form-check">
-                            {{ form.iaf_md4_confirmado|add_class:"form-check-input" }}
-                            <label for="{{ form.iaf_md4_confirmado.id_for_label }}" class="form-check-label">
-                                {{ form.iaf_md4_confirmado.label }}
-                            </label>
-                        </div>
+                        {{ form.iaf_md4_confirmado.label_tag }}
+                        {{ form.iaf_md4_confirmado.as_widget }}
                     </div>
                     <div class="mb-3">
                         {{ form.estado.label_tag }}
-                        {{ form.estado|add_class:"form-control" }}
+                        {{ form.estado.as_widget }}
                     </div>
                 </fieldset>
 
@@ -93,10 +78,11 @@
                 </button>
             </form>
 
-            <a href="{% url 'listado_programaciones' %}" class="btn btn-secondary mt-3">Volver al listado</a>
+            <a href="{% url 'listado_programaciones' %}">Volver al listado</a>
         </div>
     </div>
 </div>
 
 <script src="{% static 'js/script_formulario.js' %}"></script>
+
 {% endblock %}
