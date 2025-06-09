@@ -7,12 +7,35 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>about</title>
 </head>
-{% extends 'layouts/base.html' %}
+{% extends 'layouts\base.html' %}
 {% block content %}
 <body>
 
-    <h1>About Page</h1>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum. Ut fringilla, orci ac euismod semper, magna diam volutpat mauris, quis feugiat libero purus sit amet arcu. Sed aliquam, urna ut sollicitudin fringilla, orci lacus egestas lorem, vitae fermentum dui felis ac libero. Integer ac odio lorem. Fusce pretium augue ac neque volutpat, ac lacinia dui malesuada. Donec bibendum leo sit amet erat varius, vitae volutpat velit fringilla. Aliquam erat volutpat. Suspendisse feugiat mauris ac augue sodales, vel suscipit purus pharetra. Sed a suscipit leo, ut dictum odio. Nullam condimentum est eu justo ultricies, ut tincidunt velit consequat.</p>
+    <div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h2 class="mb-4 text-center">Sobre CertiTrack+</h2>
+      <p class="mb-3">
+        <strong>CertiTrack+</strong> nace como respuesta a la necesidad de las organizaciones de contar con una herramienta digital eficiente para el control y la trazabilidad de auditorías y certificaciones.
+      </p>
+      <p>
+        Nuestra plataforma permite:
+      </p>
+      <ul>
+        <li>Automatizar procesos de auditoría y certificación</li>
+        <li>Centralizar documentación y evidencias</li>
+        <li>Facilitar la colaboración entre equipos, auditores y clientes</li>
+        <li>Garantizar el cumplimiento normativo mediante alertas y reportes en tiempo real</li>
+      </ul>
+      <p>
+        Desarrollado por profesionales con experiencia en gestión de calidad y tecnología, CertiTrackPlus es la solución ideal para empresas que buscan eficiencia, seguridad y transparencia en sus procesos de auditoría y certificación.
+      </p>
+      <div class="text-center mt-4">
+        <a href="{% url 'index' %}" class="btn btn-outline-primary">Volver al inicio</a>
+      </div>
+    </div>
+  </div>
+</div>
 
     <p>Websaite created by {{username}}</p>
 

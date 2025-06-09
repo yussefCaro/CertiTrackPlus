@@ -8,28 +8,29 @@
     <title>Index</title>
 </head>
 
-{%extends 'layouts/base.html'%}
+{%extends 'layouts\base.html'%}
 {%load static%}
 
 {%block content%}
 <body>
-<main class="container py-5">
-    <section class="card card-body">
-        <h1>Django</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
-
-        <div class="text-center">
-            <a class="btn btn-secondary" href="{% url 'signin' %}">
-                Sign in
-            </a>
-
-            <a class="btn btn-dark" href="{% url 'signup' %}">
-                Sign up
-            </a>
-        </div>
-
-    </section>
-</main>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+      <h1 class="display-4 mb-3">Bienvenido a CertiTrack+</h1>
+      <p class="lead mb-4">
+        CertiTrack+ es una plataforma integral para la gestión, control y documentación de auditorías y procesos de certificación.<br>
+        Optimiza el seguimiento de auditorías, centraliza la información crítica y automatiza recordatorios para asegurar el cumplimiento normativo y la renovación oportuna de certificaciones.
+      </p>
+      <ul class="list-group list-group-flush mb-4">
+        <li class="list-group-item">✔️ Gestión centralizada de auditorías y certificaciones</li>
+        <li class="list-group-item">✔️ Alertas automáticas de vencimientos y tareas</li>
+        <li class="list-group-item">✔️ Reportes audit-ready y paneles intuitivos</li>
+        <li class="list-group-item">✔️ Colaboración eficiente entre equipos y clientes</li>
+      </ul>
+      <a href="{% url 'about' %}" class="btn btn-primary btn-lg">Conoce más sobre CertiTrackPlus</a>
+    </div>
+  </div>
+</div>
 
 
 
