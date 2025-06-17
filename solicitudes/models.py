@@ -2,10 +2,23 @@ from django.db import models
 from datetime import date
 
 # Definimos las categorías de certificación como choices
-CATEGORIAS_CHOICES = [
-    ("A1", "A1"), ("A2", "A2"), ("B1", "B1"), ("B2", "B2"), ("B3", "B3"),
-    ("C1", "C1"), ("C2", "C2"), ("C3", "C3")
-]
+class CategoriaChoices(models.TextChoices):
+    A1 = "A1", "A1"
+    A2 = "A2", "A2"
+    B1 = "B1", "B1"
+    B2 = "B2", "B2"
+    B3 = "B3", "B3"
+    C1 = "C1", "C1"
+    C2 = "C2", "C2"
+    C3 = "C3", "C3"
+    FORMACION_A1 = "FORMACION DE INSTRUCTORES A1", "FORMACION DE INSTRUCTORES A1"
+    FORMACION_A2 = "FORMACION DE INSTRUCTORES A2", "FORMACION DE INSTRUCTORES A2"
+    FORMACION_B1 = "FORMACION DE INSTRUCTORES B1", "FORMACION DE INSTRUCTORES B1"
+    FORMACION_B2 = "FORMACION DE INSTRUCTORES B2", "FORMACION DE INSTRUCTORES B2"
+    FORMACION_B3 = "FORMACION DE INSTRUCTORES B3", "FORMACION DE INSTRUCTORES B3"
+    FORMACION_C1 = "FORMACION DE INSTRUCTORES C1", "FORMACION DE INSTRUCTORES C1"
+    FORMACION_C2 = "FORMACION DE INSTRUCTORES C2", "FORMACION DE INSTRUCTORES C2"
+    FORMACION_C3 = "FORMACION DE INSTRUCTORES C3", "FORMACION DE INSTRUCTORES C3"
 
 NIVELES_CEA = [
     ("Nivel 1", "Nivel 1"),
@@ -20,7 +33,7 @@ CERTIFICADO_CONFORMIDAD_CHOICES = [
 ]
 
 class Categoria(models.Model):
-    nombre = models.CharField(max_length=10, unique=True, choices=CATEGORIAS_CHOICES)
+    nombre = models.CharField(max_length=40, unique=True, choices=CategoriaChoices.choices)
 
     def __str__(self):
         return self.get_nombre_display()  # ✅ Ahora sí funcionará correctamente

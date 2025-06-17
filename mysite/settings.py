@@ -3,6 +3,7 @@
 from pathlib import Path
 import os
 import dj_database_url
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,16 +82,28 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://postgres:postgres@localhost/postgres',
-        conn_max_age=600
 
-    )
-       # 'ENGINE': 'django.db.backends.sqlite3',
-       # 'NAME': BASE_DIR / 'db.sqlite3',
 
-}
+# Detectamos si estamos en Render o en local
+IS_RENDER = os.environ.get('RENDER_EXTERNAL_HOSTNAME') is not None
+
+if IS_RENDER:
+    # Configuración para Render (usa PostgreSQL)
+    DATABASES = {
+        'default': dj_database_url.config(
+            default='postgresql://postgres:postgres@localhost/postgres',
+            conn_max_age=600
+        )
+    }
+else:
+    # Configuración para desarrollo local (usa SQLite)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
 
 
 # Password validation
