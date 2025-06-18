@@ -18,6 +18,8 @@ from django.conf import settings
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Paragraph
 
 
 # Vista para manejar el formulario de solicitud
@@ -158,14 +160,24 @@ def generar_solicitud_pdf(request, cliente_id):
         ["Observaciones:", cliente.observaciones if cliente.observaciones else "Ninguna"]
     ]
 
-    table = Table(data, colWidths=[200, 300])  # Ajuste de ancho
+    # Convierte los textos largos a Paragraph para que hagan wrap
+    styles = getSampleStyleSheet()
+    for i, row in enumerate(data):
+        # Solo convierte la segunda columna (los valores)
+        if isinstance(row[1], str) and len(row[1]) > 40:
+            data[i][1] = Paragraph(row[1], styles['Normal'])
+
+
+    table = Table(data, colWidths=[210, 300])  # Ajuste de ancho
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
         ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('WORDWRAP', (0, 0), (-1, -1), 'CJK'),
     ]))
 
     table.wrapOn(pdf, width, height)
