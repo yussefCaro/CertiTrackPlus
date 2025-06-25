@@ -1,0 +1,21 @@
+.custom-popover .popover-body {
+    background-color: #181824 !important;
+    color: #38ce3c !important;
+    font-size: 1rem;
+    max-width: 400px !important;
+    min-width: 250px;
+    max-height: 250px !important;
+    overflow-y: auto !important;
+    text-align: left;
+    white-space: pre-line;
+    word-break: break-word;
+    border-radius: 8px;
+    box-shadow: 0 0 6px #000;
+}
+.custom-popover .popover-arrow::before {
+    background: #181824 !important;
+    border-color: #181824 !important;
+}
+
+.navbar { background: none !important; }
+.nav-link { color: inherit !important; }
