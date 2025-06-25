@@ -10,4 +10,6 @@ urlpatterns = [
     path('clientes/solicitud/pdf/<int:cliente_id>/', views.generar_solicitud_pdf, name='generar_solicitud_pdf'),
     path('enviar_solicitud/<int:cliente_id>/', views.enviar_solicitud, name='enviar_solicitud'),
     path("pendientes/", solicitudes_pendientes, name="solicitudes_pendientes"),
+    path('solicitud/<int:cliente_id>/pdf/', views.generar_solicitud_pdf, name='generar_solicitud_pdf'),
+
 ]

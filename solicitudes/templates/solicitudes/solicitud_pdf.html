@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Solicitud PDF</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 3.2cm 2cm 3.2cm 2cm;
+      @top-center { content: element(header); }
+      @bottom-center {
+        content:
+          "Este documento contiene información confidencial y no puede ser distribuido o reproducido sin autorización escrita de AQ CERTIFICATION S.A.S.\A"
+          "Calle 50 No. 73-25 Barrio Normandía – Bogotá TEL: 7022433 www.aqcertification.net.co\A"
+          "Página " counter(page) " de " counter(pages);
+        font-size: 10px;
+        color: #555;
+        text-align: center;
+      }
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      position: running(header);
+      height: 2.5cm;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 0.5cm;
+    }
+    .header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+    }
+    .logo-nit {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .logo-nit img {
+      height: 50px;
+      margin-bottom: 2px;
+    }
+    .logo-nit .nit {
+      font-size: 12px;
+      font-weight: bold;
+      margin-top: 2px;
+    }
+    .titulo-centro {
+      flex: 1;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+    }
+    .doc-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .doc-caja {
+      border: 1.5px solid #222;
+      border-radius: 7px;
+      padding: 3px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      text-align: center;
+      min-width: 90px;
+      background: #fff;
+      letter-spacing: 0.5px;
+    }
+    .contenido {
+      margin-top: 0.7cm;
+      margin-bottom: 0.3cm;
+    }
+    /* ... el resto de tu CSS para tablas y contenido ... */
+    .tabla-datos {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 13px;
+      page-break-inside: avoid;
+    }
+    .tabla-datos th, .tabla-datos td {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      vertical-align: top;
+      word-break: break-word;
+    }
+    .tabla-datos th {
+      background: #f2f2f2;
+      text-align: left;
+      width: 35%;
+    }
+    .criterio {
+      margin-top: 30px;
+      font-size: 12px;
+      border: 1px solid #0d6efd;
+      border-radius: 6px;
+      padding: 12px;
+      background: #f8f9fa;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-flex">
+      <div class="logo-nit">
+        <img src="{% static 'myapp/AQ_color.png' %}" alt="Logo AQ Certification">
+        <span class="nit">NIT. 900509054-9</span>
+      </div>
+      <div class="titulo-centro">
+        SOLICITUD DE COTIZACIÓN CENTROS DE ENSEÑANZA<br>AUTOMOVILÍSTICA.
+      </div>
+      <div class="doc-info">
+        <div class="doc-caja">GCOM-FR-02</div>
+        <div class="doc-caja">{{ fecha }}</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="contenido">
+    <h2 style="display:none;">Solicitud de Cotización</h2>
+    <table class="tabla-datos">
+      <tr><th>Campo</th><th>Valor</th></tr>
+      <tr><td>NIT</td><td>{{ cliente.nit }}</td></tr>
+      <tr><td>Nombre del Propietario</td><td>{{ cliente.nombre_propietario }}</td></tr>
+      <tr><td>Establecimiento Comercial</td><td>{{ cliente.nombre_establecimiento }}</td></tr>
+      <tr><td>Representante Legal</td><td>{{ cliente.representante_legal }}</td></tr>
+      <tr><td>Cédula de Ciudadanía</td><td>{{ cliente.cedula_ciudadania }}</td></tr>
+      <tr><td>Ciudad</td><td>{{ cliente.ciudad }}</td></tr>
+      <tr><td>Departamento</td><td>{{ cliente.departamento }}</td></tr>
+      <tr><td>Dirección</td><td>{{ cliente.direccion }}</td></tr>
+      <tr><td>Representante del Organismo</td><td>{{ cliente.representante_organismo }}</td></tr>
+      <tr><td>Cargo</td><td>{{ cliente.cargo }}</td></tr>
+      <tr><td>Correo Electrónico</td><td>{{ cliente.correo_electronico }}</td></tr>
+      <tr><td>Teléfono Celular</td><td>{{ cliente.telefono_celular }}</td></tr>
+      <tr><td>Nivel del CEA</td><td>{{ cliente.nivel_cea }}</td></tr>
+      <tr><td>Categorías a Certificar</td><td>{{ categorias_str }}</td></tr>
+      <tr><td>Cantidad de Vehículos</td><td>{{ cliente.cantidad_vehiculos }}</td></tr>
+      <tr><td>Cantidad de Instructores</td><td>{{ cliente.cantidad_instructores }}</td></tr>
+      <tr><td>Certificación de otro ente</td><td>{{ certificacion_ente }}</td></tr>
+      <tr><td>Fecha de Solicitud</td><td>{{ fecha_solicitud_str }}</td></tr>
+      <tr>
+        <td>Observaciones</td>
+        <td>
+          {% if cliente.observaciones %}
+            {{ cliente.observaciones }}
+          {% else %}
+            Ninguna
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+    <div class="criterio">
+      <strong>CRITERIO DE LA CERTIFICACIÓN SOLICITADA</strong><br>
+      Resolución 3245 de 2009, Decreto Único Reglamentario 1079 de 2015 Título I Capítulo III, Resolución 20203040011355 de 2020 Título II Capítulo I y Resolución 20223040009425 de 2022 del Ministerio de Transporte de Colombia.
+    </div>
+  </div>
+</body>
+</html>
