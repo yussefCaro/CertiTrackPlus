@@ -12,6 +12,19 @@ from .forms import ClienteForm, SolicitudForm
 
 from weasyprint import HTML
 
+
+from django.template.loader import render_to_string
+from weasyprint import HTML
+from django.http import HttpResponse
+
+def diagnostico_logo_pdf(request):
+    html_string = render_to_string('solicitudes/diagnostico_logo.html')
+    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf()
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="diagnostico_logo.pdf"'
+    return response
+
+
 # --- Formulario de solicitud por NIT ---
 def solicitud(request):
     if request.method == "POST":
