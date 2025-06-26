@@ -34,7 +34,9 @@
 <body>
   <div class="logo">
     <h2>Prueba de Logo en PDF</h2>
-    <img src="{% static 'myapp/AQ_color.png' %}" alt="Logo AQ Certification" style="height:80px; border:1px solid #ccc;">
+    <img src="{{ logo_url }}" alt="Logo por URL estática" style="height:60px;">
+    <img src="{{ logo_path }}" alt="Logo por ruta absoluta" style="height:60px;">
+
   </div>
   <div class="info">
     Si ves el logo arriba, la configuración es correcta.<br>
