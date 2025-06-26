@@ -91,9 +91,10 @@ def editar_cliente(request, cliente_id):
 # --- Generar PDF profesional usando HTML y WeasyPrint ---
 @login_required
 def generar_solicitud_pdf(request, cliente_id):
+    # 1. Buscar el cliente
     cliente = get_object_or_404(Cliente, id=cliente_id)
 
-    # Procesa los datos para el template (toda la lógica aquí, no en el template)
+    # 2. Preparar los datos para el template
     fecha_solicitud_str = cliente.fecha_solicitud.strftime('%d/%m/%Y') if cliente.fecha_solicitud else "No registrada"
     categorias = cliente.categorias_certificar.all()
     categorias_str = ", ".join([c.nombre for c in categorias]) if categorias.exists() else "No especificado"
@@ -104,17 +105,27 @@ def generar_solicitud_pdf(request, cliente_id):
     else:
         certificacion_ente = "No aplica"
 
+    # 3. Ruta absoluta del logo para WeasyPrint
+    logo_path = os.path.join(settings.STATIC_ROOT, 'myapp', 'AQ_color.png')
+
+    # 4. Renderizar el template HTML
     html_string = render_to_string('solicitudes/solicitud_pdf.html', {
         'cliente': cliente,
         'fecha': date.today().strftime('%Y-%m-%d'),
         'fecha_solicitud_str': fecha_solicitud_str,
         'categorias_str': categorias_str,
         'certificacion_ente': certificacion_ente,
+        'logo_path': logo_path,  # Pásalo al template
     })
+
+    # 5. Generar el PDF
     pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf()
+
+    # 6. Devolver la respuesta HTTP
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="solicitud.pdf"'
     return response
+
 
 # --- Listado y gestión de solicitudes ---
 @login_required
