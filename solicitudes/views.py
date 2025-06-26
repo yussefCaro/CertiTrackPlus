@@ -13,25 +13,6 @@ from .forms import ClienteForm, SolicitudForm
 from weasyprint import HTML
 
 
-
-
-from django.templatetags.static import static
-import os
-
-def diagnostico_logo_pdf(request):
-    # Ruta absoluta en el sistema de archivos
-    logo_url = static('myapp/AQ_color.png')
-    logo_path = os.path.join(settings.STATIC_ROOT, 'myapp', 'AQ_color.png')
-    html_string = render_to_string('solicitudes/diagnostico_logo.html', {
-        'logo_url': logo_url,           # URL estática
-        'logo_path': logo_path,         # Ruta absoluta en disco
-    })
-    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf()
-    response = HttpResponse(pdf_file, content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="diagnostico_logo.pdf"'
-    return response
-
-
 # --- Formulario de solicitud por NIT ---
 def solicitud(request):
     if request.method == "POST":

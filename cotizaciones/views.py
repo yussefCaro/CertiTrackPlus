@@ -45,7 +45,15 @@ def crear_cotizacion(request, solicitud_id):
 def listado_cotizaciones(request):
     """ Muestra la lista de cotizaciones creadas """
     cotizaciones = Cotizacion.objects.all()
-    return render(request, "cotizaciones/listado_cotizaciones.html", {"cotizaciones": cotizaciones})
+    es_comercial = request.user.groups.filter(name='Comercial').exists()
+    return render(
+        request,
+        "cotizaciones/listado_cotizaciones.html",
+        {
+            "cotizaciones": cotizaciones,
+            "es_comercial": es_comercial,
+        }
+    )
 
 @login_required
 def detalle_cotizacion(request, cotizacion_id):

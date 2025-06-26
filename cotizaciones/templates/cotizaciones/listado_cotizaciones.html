@@ -33,7 +33,9 @@
                                 <td>
                                     <a href="{% url 'detalle_cotizacion' cotizacion.id %}" class="btn btn-sm btn-primary">Ver</a>
                                     <a href="{% url 'editar_cotizacion' cotizacion.id %}" class="btn btn-sm btn-warning">Modificar</a>
-                                    <a href="{% url 'programar_auditoria' cotizacion.id %}" class="btn btn-sm btn-success">Programar</a>
+                                    {% if not es_comercial %}
+                                        <a href="{% url 'programar_auditoria' cotizacion.id %}" class="btn btn-sm btn-success">Programar</a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
