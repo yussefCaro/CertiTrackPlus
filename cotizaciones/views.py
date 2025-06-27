@@ -9,6 +9,8 @@ from django.utils.formats import localize
 from django.template.loader import render_to_string
 from weasyprint import HTML
 
+
+
 @login_required
 def listado_solicitudes(request):
     """ Muestra las solicitudes pendientes para cotización """
@@ -87,12 +89,19 @@ def detalle_cotizacion(request, cotizacion_id):
 def cotizacion_pdf(request, cotizacion_id):
     cotizacion = get_object_or_404(Cotizacion, id=cotizacion_id)
     cliente = cotizacion.solicitud.cliente
-    context = {'cotizacion': cotizacion, 'cliente': cliente}
-    html_string = render_to_string('cotizaciones/cotizacion_pdf.html', context)
-    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf()
+
+    html_string = render_to_string('cotizaciones/cotizacion_pdf.html', {
+        'cotizacion': cotizacion,
+        'cliente': cliente,
+    })
+    pdf_file = HTML(
+        string=html_string,
+        base_url=request.build_absolute_uri('/')  # Esto es clave
+    ).write_pdf()
     response = HttpResponse(pdf_file, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="cotizacion.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="cotizacion_{cotizacion.numero_servicio}.pdf"'
     return response
+
 
 @login_required
 def solicitudes_pendientes(request):
