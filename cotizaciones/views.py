@@ -85,20 +85,27 @@ def detalle_cotizacion(request, cotizacion_id):
     return render(request, "cotizaciones/detalle_cotizacion.html", context)
 
 
+import os
+from django.conf import settings
+
 @login_required
 def cotizacion_pdf(request, cotizacion_id):
     cotizacion = get_object_or_404(Cotizacion, id=cotizacion_id)
     cliente = cotizacion.solicitud.cliente
 
+    # Ruta absoluta al archivo del logo
+    logo_path = os.path.join(settings.STATIC_ROOT, 'myapp', 'AQ_color.png')
+
     html_string = render_to_string('cotizaciones/cotizacion_pdf.html', {
         'cotizacion': cotizacion,
         'cliente': cliente,
+        'logo_path': logo_path,  # Pásalo al contexto
     })
     pdf_file = HTML(string=html_string, base_url=".").write_pdf()
-
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="cotizacion_{cotizacion.numero_servicio}.pdf"'
     return response
+
 
 
 @login_required
