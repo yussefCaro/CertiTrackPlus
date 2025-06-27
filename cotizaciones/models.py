@@ -1,5 +1,5 @@
 from django.db import models
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from solicitudes.models import Solicitud, Cliente
 
 # Días de auditoría por nivel del CEA
@@ -32,9 +32,12 @@ class Cotizacion(models.Model):
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Pendiente')
 
     def save(self, *args, **kwargs):
-        """ Calcula automáticamente el precio con IVA antes de guardar """
-        self.precio_iva = self.precio_neto * Decimal("0.19")
-        self.precio_total = self.precio_neto * Decimal("1.19")  # Multiplicación directa
+        # Calcula el IVA y lo redondea a dos decimales
+        self.precio_iva = (self.precio_neto * Decimal("0.19")).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        total = self.precio_neto * Decimal("1.19")
+        # Redondea el total al múltiplo de 1.000 más cercano
+        total_redondeado = (total / Decimal('1000')).quantize(Decimal('1'), rounding=ROUND_HALF_UP) * Decimal('1000')
+        self.precio_total = total_redondeado
         super().save(*args, **kwargs)
 
     def __str__(self):

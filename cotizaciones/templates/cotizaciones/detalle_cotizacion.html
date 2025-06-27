@@ -30,7 +30,7 @@
                         <strong>IVA (19%):</strong>
                         ${{ cotizacion.precio_neto|mul:"0.19"|floatformat:2|intcomma }}<br>
                         <strong class="text-success">Precio Total (con IVA):</strong>
-                        ${{ cotizacion.precio_neto|mul:"1.19"|floatformat:2|intcomma }}
+                        ${{ cotizacion.precio_total|floatformat:2|intcomma }}
                         <br>
                         <span class="text-muted"><em>Precio con IVA incluido</em></span>
                     </p>
