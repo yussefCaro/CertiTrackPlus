@@ -4,19 +4,55 @@
 {% block title %}Detalles de la Cotización{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'myapp/styles/custom.css' %}">
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
-<div class="container mt-4">
-    <!-- Bloque del logo y NIT -->
-    <div class="text-center mb-4">
-        <img src="{% static 'myapp/AQ_color.png' %}" alt="Logo AQ Certification" style="height: 80px; margin-bottom: 10px;">
-        <div style="font-size: 0.9em; color: #555;">
-            Nit. 900509054-9
-        </div>
-    </div>
 
-    <div class="card shadow p-4">
+
+<header>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+
+
+
+            <div style="flex: 1; min-width: 180px; text-align: left;">
+                <img src="{% static 'myapp/AQ_color.png' %}" alt="Logo AQ Certification" style="height: 70px;">
+                <div style="font-size: 0.95em; color: #222; font-weight: bold; margin-top: 4px;">
+                    NIT. 900509054-9<br>
+                </div>
+
+            </div>
+            <!-- Título centrado -->
+            <div style="flex: 2; text-align: center;">
+                <span style="font-size: 1.2em; font-weight: bold;">
+                    COTIZACIÓN DE SERVICIOS CENTROS DE ENSEÑANZA AUTOMOVILÍSTICA. <br>
+                </span>
+
+            </div>
+            <!-- Datos a la derecha -->
+            <div style="flex: 1; min-width: 140px; text-align: right;">
+                <div style="border: 1.2px solid #222; border-radius: 7px; padding: 6px 18px; margin-bottom: 10px; display: inline-block;">
+                    GCOM-FR-02
+                </div>
+                <br>
+                <div style="border: 1.2px solid #222; border-radius: 7px; padding: 6px 18px; display: inline-block;">
+                    2024-03-14
+                </div>
+            </div>
+    </div>
+</header>
+
+
+
+
+
+
+
         <h2 class="text-center text-primary">Detalles de la Cotización</h2>
+<a href="{% url 'cotizacion_pdf' cotizacion.id %}" class="btn btn-success" target="_blank">
+    <i class="bi bi-printer"></i> Descargar PDF
+</a>
+
 
 
         {% if cotizacion %}
@@ -86,20 +122,88 @@
                 </tbody>
             </table>
 
-            <div class="mt-5">
-                <strong>Firma de aprobación del cliente:</strong>
-                <br><br>
-                ___________________________
-                <br>
-                Nombre y Firma del Cliente
-                <br>
-                Fecha: ____________________
-            </div>
+        <div style="border: 1.5px solid #222; border-radius: 7px; padding: 18px 22px; font-size: 0.98em; margin-top: 2rem; background: #f8f9fa;">
+    <ol style="margin-bottom: 0; padding-left: 1.2em;">
+        <li><strong>FORMA UNICA DE PAGO:</strong> ANTICIPO DEL 100% al BANCO DE BOGOTÁ, Cuenta corriente No. 092635713 a nombre de AQ CERTIFICATION S.A.S.</li>
+        <li>En el formato de consignación por favor indicar en el espacio de nombre del depositante, el nombre del Centro de Enseñanza Automovilística con el NIT. Correspondiente.</li>
+        <li>Si se realiza el pago por PSE por favor diligenciar en el espacio “Concepto del pago” El nombre del Centro de Enseñanza Automovilística por el que se está realizando el pago.</li>
+        <li>Al firmar la cotización se da por entendido que está siendo aceptada por parte del cliente y se continuará con el proceso.</li>
+        <li>En caso de que el cliente desee la devolución del dinero posterior a la aceptación comercial y envío del soporte de pago, este deberá solicitarlo formalmente por correo electrónico, detallando las causas sobre las cuales está solicitando la devolución del dinero y la cancelación del servicio en un plazo no mayor a 5 días posteriores a la recepción del pago.<br>
+            <strong>NOTA 1:</strong> Si el cliente envía la solicitud dentro de los 5 días posteriores a la recepción del pago, el área comercial revisará la solicitud de devolución del dinero y cancelación del servicio y realizará el reembolso del 80% del valor cancelado, teniendo en cuenta los gastos administrativos que se generaron por la cancelación del servicio.<br>
+            <strong>NOTA 2:</strong> Si el cliente envía la solicitud después de los 5 días referenciados anteriormente, el área comercial revisará la solicitud de devolución del dinero y la cancelación del servicio y realizará el reembolso del 40% del valor cancelado, teniendo en cuenta los gastos administrativos que se generaron por la cancelación del servicio y la facturación electrónica realizada.<br>
+            <strong>NOTA 3:</strong> Una vez ejecutado el servicio de programación, etapa 1 o etapa 2 de auditoría, no se realiza por ningún motivo la devolución del dinero.
+        </li>
+        <li>Para realizar la etapa 1 del proceso de auditoría, se deben contar con el total de los anexos que se encuentran definidos en el GCOM-IT-01 INSTRUCTIVO SOLICITUD DE DOCUMENTOS ESQUEMA TIPO 6 (CEA)</li>
+        <li>La programación del servicio, se realizará en el orden de llegada de las solicitudes, confirmación de pago y disponibilidad de agenda.</li>
+        <li>Al momento de la programación del servicio se determinará si esta se realizará in situ o de forma remota.</li>
+        <li>Estos valores referenciados en la presente cotización NO incluyen gastos de traslado y alojamiento de nuestros funcionarios.</li>
+        <li>Los gastos de traslado y condiciones logísticas de los funcionarios de AQ CERTIFICATION S.A.S., deben ser asumidos por el cliente.</li>
+        <li><strong>AQ CERTIFICATION S.A.S.</strong>, NO utiliza procedimientos diferentes que impidan o inhiban el acceso a los solicitantes.</li>
+        <li>Los servicios prestados por parte de <strong>AQ CERTIFICATION S.A.S.</strong>, son accesibles a todos los solicitantes siempre y cuando el servicio que soliciten se encuentre bajo el alcance acreditado del organismo.</li>
+        <li><strong>AQ CERTIFICATION S.A.S.</strong>, no tiene distinciones o preferencias referentes al tamaño del cliente, ni de la membresía de cualquier asociación para realizar las actividades de certificación.</li>
+    </ol>
+
+
         {% else %}
             <div class="alert alert-danger text-center">
                 No se encontró la cotización.
             </div>
         {% endif %}
     </div>
-</div>
+
+
+
+
+<style>
+
+
+
+.footer-pdf {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    font-size: 0.95em;
+    color: #222;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+@page {
+    @bottom-center {
+        content:
+            "Este documento contiene información confidencial y no puede ser distribuido o reproducido sin autorización escrita de AQ CERTIFICATION S.A.S. "
+            "Calle 50 No. 73-25 Barrio Normandía – Bogotá TEL: 7022433 www.aqcertification.net.co "
+            "Página " counter(page) " de " counter(pages);
+        font-size: 10px;
+        color: #222;
+    }
+}
+
+.header {
+        position: running(header);
+        width: 100%;
+        height: 100px; /* Ajusta según el alto real de tu encabezado */
+        margin-bottom: 20px;
+    }
+
+
+    @page {
+    size: A4;
+    margin-top: 3cm;
+    margin-left: 3mm;
+    margin-right: 3mm;
+    margin-bottom: 2.5cm; /* o el valor que necesites para tu footer */
+}
+body {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+
+</style>
+
 {% endblock %}

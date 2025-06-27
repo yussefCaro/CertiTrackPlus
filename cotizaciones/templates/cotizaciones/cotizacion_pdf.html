@@ -1,0 +1,284 @@
+{% load static humanize mathfilters %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cotización PDF</title>
+  <style>
+    @page {
+      size: A4;
+      margin-top: 3.5cm;
+      margin-bottom: 2.5cm;
+      margin-left: 2cm;
+      margin-right: 2cm;
+      @top-center {
+        content: element(header-pdf);
+      }
+      @bottom-center {
+        content: "Este documento contiene información confidencial y no puede ser distribuido o reproducido sin autorización escrita de AQ CERTIFICATION S.A.S. "
+                 "Calle 50 No. 73-25 Barrio Normandía – Bogotá TEL: 7022433 www.aqcertification.net.co "
+                 "Página " counter(page) " de " counter(pages);
+        font-size: 10px;
+        color: #222;
+      }
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      font-size: 12pt;
+      color: #181824;
+    }
+    header.header-pdf {
+      position: running(header-pdf);
+      width: 100%;
+      margin-bottom: 2em;
+      border-bottom: 2px solid #38ce3c;
+      padding-bottom: 0.5em;
+    }
+    .header-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-logo {
+      min-width: 180px;
+      text-align: left;
+    }
+    .header-title {
+      flex: 2;
+      text-align: center;
+      font-size: 1.25em;
+      font-weight: bold;
+      color: #1a237e;
+      letter-spacing: 0.5px;
+    }
+    .header-data {
+      min-width: 140px;
+      text-align: right;
+      font-size: 0.98em;
+    }
+    .header-box {
+      border: 1.2px solid #222;
+      border-radius: 7px;
+      padding: 6px 18px;
+      display: inline-block;
+      margin-bottom: 8px;
+      margin-left: 2px;
+    }
+    h2 {
+      text-align: center;
+      color: #1a237e;
+      margin-bottom: 1.3em;
+      font-size: 1.15em;
+      letter-spacing: 0.5px;
+    }
+    .section-title {
+      color: #388e3c;
+      font-size: 1.05em;
+      margin-top: 2em;
+      margin-bottom: 0.7em;
+      border-left: 4px solid #38ce3c;
+      padding-left: 0.5em;
+      font-weight: bold;
+      background: #eafaf1;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5em;
+      font-size: 0.97em;
+    }
+    .info-table th, .info-table td {
+      border: 1px solid #b0bec5;
+      padding: 7px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .info-table th {
+      background: #f1f8e9;
+      color: #181824;
+      width: 30%;
+      font-weight: bold;
+    }
+    .info-table td {
+      background: #fff;
+    }
+    .condiciones-pago {
+      border: 1.5px solid #222;
+      border-radius: 7px;
+      padding: 18px 22px;
+      font-size: 0.98em;
+      margin-top: 2rem;
+      background: #f8f9fa;
+      color: #222;
+    }
+    .firma {
+      margin-top: 3em;
+      font-size: 1em;
+    }
+    .firma-linea {
+      margin: 1.2em 0 0.5em 0;
+      border-bottom: 1px solid #222;
+      width: 260px;
+    }
+    .badge-estado {
+      background: #e3f2fd;
+      color: #1a237e;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.96em;
+    }
+    .precio-total {
+      color: #388e3c;
+      font-weight: bold;
+    }
+    .observacion {
+      color: #888;
+      font-size: 0.97em;
+    }
+  </style>
+</head>
+<body>
+  <header class="header-pdf">
+  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+    <!-- Logo y NIT a la izquierda -->
+    <div style="min-width: 200px; text-align: left;">
+      <img src="{% static 'myapp/AQ_color.png' %}" alt="Logo AQ Certification" style="height: 55px; margin-bottom: 2px;">
+      <div style="font-size: 0.95em; color: #181824; font-weight: bold; margin-top: 4px;">
+        NIT. 900509054-9
+      </div>
+    </div>
+    <!-- Título centrado -->
+    <div style="flex: 2; text-align: center;">
+      <span style="font-size: 1.15em; font-weight: bold; color: #181824; letter-spacing: 0.5px;">
+        COTIZACIÓN DE SERVICIOS CENTROS DE ENSEÑANZA<br>
+        AUTOMOVILÍSTICA.
+      </span>
+    </div>
+    <!-- Datos a la derecha -->
+    <div style="min-width: 120px; text-align: right; display: flex; flex-direction: column; gap: 8px;">
+      <div style="border: 1.2px solid #222; border-radius: 7px; padding: 3px 16px; display: inline-block; font-size: 12px;">
+        GCOM-FR-02
+      </div>
+      <div style="border: 1.2px solid #222; border-radius: 7px; padding: 3px 16px; display: inline-block; font-size: 12px;">
+        2024-03-14
+      </div>
+    </div>
+  </div>
+</header>
+
+  <h2>Detalles de la Cotización</h2>
+
+  <table class="info-table">
+    <tr>
+      <th>ID</th>
+      <td>{{ cotizacion.id }}</td>
+      <th>Número de Servicio</th>
+      <td>{{ cotizacion.numero_servicio }}</td>
+    </tr>
+    <tr>
+      <th>Cliente</th>
+      <td>{{ cliente.nombre_propietario }}</td>
+      <th>Nombre del Establecimiento</th>
+      <td>{{ cliente.nombre_establecimiento }}</td>
+    </tr>
+    <tr>
+      <th>Estado</th>
+      <td><span class="badge-estado">{{ cotizacion.solicitud.estado }}</span></td>
+      <th>NIT</th>
+      <td>{{ cliente.nit }}</td>
+    </tr>
+    <tr>
+      <th>Nombre del Representante</th>
+      <td>{{ cliente.representante_legal }}</td>
+      <th>Fecha Cotización</th>
+      <td>{{ cotizacion.fecha_cotizacion|date:"Y-m-d" }}</td>
+    </tr>
+    <tr>
+      <th>Precio Neto</th>
+      <td>${{ cotizacion.precio_neto|floatformat:2|intcomma }}</td>
+      <th>IVA (19%)</th>
+      <td>${{ cotizacion.precio_iva|floatformat:2|intcomma }}</td>
+    </tr>
+    <tr>
+      <th class="precio-total">Precio Total (con IVA)</th>
+      <td class="precio-total">${{ cotizacion.precio_total|floatformat:2|intcomma }}</td>
+      <th colspan="2" class="observacion">Precio con IVA incluido</th>
+    </tr>
+  </table>
+
+  <div class="section-title">Información de Contacto</div>
+  <table class="info-table">
+    <tr>
+      <th>Teléfono</th>
+      <td>{{ cliente.telefono_celular }}</td>
+      <th>Correo</th>
+      <td>{{ cliente.correo_electronico }}</td>
+    </tr>
+    <tr>
+      <th>Dirección</th>
+      <td>{{ cliente.direccion }}</td>
+      <th>Ciudad</th>
+      <td>{{ cliente.ciudad }}, {{ cliente.departamento }}</td>
+    </tr>
+  </table>
+
+  <div class="section-title">Detalles del Servicio</div>
+  <table class="info-table">
+    <tr>
+      <th>Tipo de Servicio</th>
+      <td>
+        {% for servicio in cotizacion.tipo_servicio.all %}
+          {{ servicio.nombre }}{% if not forloop.last %}, {% endif %}
+        {% empty %}
+          No especificado
+        {% endfor %}
+      </td>
+      <th>Nivel del CEA</th>
+      <td>{{ cliente.nivel_cea }}</td>
+    </tr>
+    <tr>
+      <th>Categorías</th>
+      <td colspan="3">
+        {% for categoria in cliente.categorias_certificar.all %}
+          {{ categoria.nombre }}{% if not forloop.last %}, {% endif %}
+        {% empty %}
+          No especificado
+        {% endfor %}
+      </td>
+    </tr>
+  </table>
+
+  <div class="condiciones-pago">
+    <ol style="margin-bottom: 0; padding-left: 1.2em;">
+      <li><strong>FORMA ÚNICA DE PAGO:</strong> ANTICIPO DEL 100% al BANCO DE BOGOTÁ, Cuenta corriente No. 092635713 a nombre de AQ CERTIFICATION S.A.S.</li>
+      <li>En el formato de consignación por favor indicar en el espacio de nombre del depositante, el nombre del Centro de Enseñanza Automovilística con el NIT correspondiente.</li>
+      <li>Si se realiza el pago por PSE por favor diligenciar en el espacio “Concepto del pago” el nombre del Centro de Enseñanza Automovilística por el que se está realizando el pago.</li>
+      <li>Al firmar la cotización se da por entendido que está siendo aceptada por parte del cliente y se continuará con el proceso.</li>
+      <li>En caso de que el cliente desee la devolución del dinero posterior a la aceptación comercial y envío del soporte de pago, este deberá solicitarlo formalmente por correo electrónico, detallando las causas sobre las cuales está solicitando la devolución del dinero y la cancelación del servicio en un plazo no mayor a 5 días posteriores a la recepción del pago.<br>
+        <strong>NOTA 1:</strong> Si el cliente envía la solicitud dentro de los 5 días posteriores a la recepción del pago, el área comercial revisará la solicitud de devolución del dinero y cancelación del servicio y realizará el reembolso del 80% del valor cancelado, teniendo en cuenta los gastos administrativos que se generaron por la cancelación del servicio.<br>
+        <strong>NOTA 2:</strong> Si el cliente envía la solicitud después de los 5 días referenciados anteriormente, el área comercial revisará la solicitud de devolución del dinero y la cancelación del servicio y realizará el reembolso del 40% del valor cancelado, teniendo en cuenta los gastos administrativos que se generaron por la cancelación del servicio y la facturación electrónica realizada.<br>
+        <strong>NOTA 3:</strong> Una vez ejecutado el servicio de programación, etapa 1 o etapa 2 de auditoría, no se realiza por ningún motivo la devolución del dinero.
+      </li>
+      <li>Para realizar la etapa 1 del proceso de auditoría, se deben contar con el total de los anexos que se encuentran definidos en el GCOM-IT-01 INSTRUCTIVO SOLICITUD DE DOCUMENTOS ESQUEMA TIPO 6 (CEA)</li>
+      <li>La programación del servicio se realizará en el orden de llegada de las solicitudes, confirmación de pago y disponibilidad de agenda.</li>
+      <li>Al momento de la programación del servicio se determinará si esta se realizará in situ o de forma remota.</li>
+      <li>Estos valores referenciados en la presente cotización NO incluyen gastos de traslado y alojamiento de nuestros funcionarios.</li>
+      <li>Los gastos de traslado y condiciones logísticas de los funcionarios de AQ CERTIFICATION S.A.S. deben ser asumidos por el cliente.</li>
+      <li><strong>AQ CERTIFICATION S.A.S.</strong> NO utiliza procedimientos diferentes que impidan o inhiban el acceso a los solicitantes.</li>
+      <li>Los servicios prestados por parte de <strong>AQ CERTIFICATION S.A.S.</strong> son accesibles a todos los solicitantes siempre y cuando el servicio que soliciten se encuentre bajo el alcance acreditado del organismo.</li>
+      <li><strong>AQ CERTIFICATION S.A.S.</strong> no tiene distinciones o preferencias referentes al tamaño del cliente, ni de la membresía de cualquier asociación para realizar las actividades de certificación.</li>
+    </ol>
+  </div>
+
+  <div class="firma">
+    <strong>Firma de aprobación del cliente:</strong>
+    <div class="firma-linea"></div>
+    Nombre y Firma del Cliente
+    <br>
+    Fecha: ____________________
+  </div>
+</body>
+</html>

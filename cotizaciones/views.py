@@ -6,7 +6,8 @@ from .models import Cotizacion, TipoServicio
 from .forms import CotizacionForm
 from decimal import Decimal
 from django.utils.formats import localize
-
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
 @login_required
 def listado_solicitudes(request):
@@ -80,6 +81,20 @@ def detalle_cotizacion(request, cotizacion_id):
     }
 
     return render(request, "cotizaciones/detalle_cotizacion.html", context)
+
+
+@login_required
+def cotizacion_pdf(request, cotizacion_id):
+    cotizacion = get_object_or_404(Cotizacion, id=cotizacion_id)
+    cliente = cotizacion.solicitud.cliente
+    html_string = render_to_string('cotizaciones/cotizacion_pdf.html', {
+        'cotizacion': cotizacion,
+        'cliente': cliente,
+    })
+    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf()
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="cotizacion_{cotizacion.numero_servicio}.pdf"'
+    return response
 
 @login_required
 def solicitudes_pendientes(request):
