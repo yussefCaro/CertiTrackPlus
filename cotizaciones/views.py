@@ -94,10 +94,8 @@ def cotizacion_pdf(request, cotizacion_id):
         'cotizacion': cotizacion,
         'cliente': cliente,
     })
-    pdf_file = HTML(
-        string=html_string,
-        base_url=request.build_absolute_uri('/')  # Esto es clave
-    ).write_pdf()
+    pdf_file = HTML(string=html_string, base_url=".").write_pdf()
+
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="cotizacion_{cotizacion.numero_servicio}.pdf"'
     return response
