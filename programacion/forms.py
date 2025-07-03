@@ -18,10 +18,7 @@ class ProgramacionAuditoriaForm(forms.ModelForm):
 
     class Meta:
         model = ProgramacionAuditoria
-        fields = [
-            'cotizacion', 'nivel_auditoria', 'fecha_programacion_etapa1',
-            'hora_etapa1', 'auditores', 'iaf_md4_confirmado', 'estado'
-        ]
+        exclude = ['cotizacion']
 
 class FechaEtapa2Form(forms.ModelForm):
     fecha = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
