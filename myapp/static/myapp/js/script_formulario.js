@@ -1,14 +1,31 @@
-console.log("JS cargado");
+console.log("JS cargado correctamente");
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Detecta automáticamente el prefijo del formset
+    // Detecta automáticamente el prefijo del formset y los elementos clave
     const totalFormsInput = document.querySelector('input[type="hidden"][name$="TOTAL_FORMS"]');
-    const formsetPrefix = totalFormsInput ? totalFormsInput.name.replace('-TOTAL_FORMS', '') : '';
+    if (!totalFormsInput) {
+        console.error("No se encontró el campo TOTAL_FORMS en el DOM.");
+        return;
+    }
+    const formsetPrefix = totalFormsInput.name.replace('-TOTAL_FORMS', '');
     const maxForms = 3;
 
     const container = document.getElementById("fecha_form_container");
     const emptyFormDiv = document.getElementById("empty_form");
     const addBtn = document.getElementById("agregar_fecha_etapa2");
+
+    if (!container) {
+        console.error("No se encontró el contenedor de formularios (#fecha_form_container).");
+        return;
+    }
+    if (!emptyFormDiv) {
+        console.error("No se encontró el bloque empty_form (#empty_form).");
+        return;
+    }
+    if (!addBtn) {
+        console.error("No se encontró el botón para agregar fechas (#agregar_fecha_etapa2).");
+        return;
+    }
 
     function updateFormIndexes() {
         const forms = container.querySelectorAll(".fecha_etapa2");
