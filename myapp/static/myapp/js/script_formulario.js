@@ -1,3 +1,5 @@
+console.log("JS cargado");
+
 document.addEventListener("DOMContentLoaded", function () {
     // Detecta automáticamente el prefijo del formset
     const totalFormsInput = document.querySelector('input[type="hidden"][name$="TOTAL_FORMS"]');

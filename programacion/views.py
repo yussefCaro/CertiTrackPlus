@@ -135,9 +135,7 @@ def programar_auditoria(request, cotizacion_id):
         form = ProgramacionAuditoriaForm(request.POST, instance=programacion)
         fecha_formset = FechaEtapa2FormSet(request.POST, instance=programacion)
 
-        print("POST:", request.POST)
-        print("Formset errors:", fecha_formset.errors)
-        print("Form errors:", form.errors)
+
 
         if form.is_valid() and fecha_formset.is_valid():
             programacion = form.save(commit=False)
