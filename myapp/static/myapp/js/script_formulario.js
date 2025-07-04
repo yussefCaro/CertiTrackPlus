@@ -1,7 +1,6 @@
 console.log("JS cargado correctamente");
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Detecta automáticamente el prefijo del formset y los elementos clave
     const totalFormsInput = document.querySelector('input[type="hidden"][name$="TOTAL_FORMS"]');
     if (!totalFormsInput) {
         console.error("No se encontró el campo TOTAL_FORMS en el DOM.");
