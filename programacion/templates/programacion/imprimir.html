@@ -73,14 +73,20 @@
                 {% endfor %}
             </td>
 
-        </tr>
         <tr>
-            <th>Observaciones</th>
-            <td>{{ programacion.cotizacion.observaciones }}</td>
+          <th>Observaciones</th>
+          <td>
+            {% if programacion.cotizacion.solicitud.cliente.observaciones %}
+              {{ programacion.cotizacion.solicitud.cliente.observaciones }}
+            {% else %}
+              Ninguna
+            {% endif %}
+          </td>
         </tr>
+
         <tr>
             <th>Auditor</th>
-            <td>{{ programacion.auditores.nombre }}</td>
+            <td>{{ programacion.auditores.user.get_full_name|default:programacion.auditores.user.username }}</td>
 
         </tr>
 
