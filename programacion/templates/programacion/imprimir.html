@@ -1,112 +1,228 @@
-<!doctype html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Programación</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid black; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-    </style>
+  <meta charset="UTF-8">
+  <title>CARTA DE PROGRAMACIÓN DE SERVICIOS (CEAS)</title>
+  <link rel="stylesheet" href="{% static 'myapp/styles/custom.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    @page {
+      @top-center { content: element(header-pdf); }
+      @bottom-center {
+        content:
+          "Este documento contiene información confidencial y no puede ser distribuido o reproducido sin autorización escrita de AQ CERTIFICATION S.A.S. "
+          "Calle 50 No. 73-25 Barrio Normandía – Bogotá TEL: 7022433 www.aqcertification.net.co "
+          "Página " counter(page) " de " counter(pages);
+        font-size: 10px;
+        color: #222;
+      }
+      margin-top: 125px;
+      margin-bottom: 2.5cm;
+      margin-left: 2cm;
+      margin-right: 2cm;
+    }
+    #header-pdf {
+      position: running(header-pdf);
+      width: 100%;
+      height: 110px;
+      margin-bottom: 18px;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .section-title {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: #198754;
+      font-weight: bold;
+      font-size: 1.15em;
+      letter-spacing: 0.5px;
+      border-left: 6px solid #198754;
+      padding-left: 10px;
+      background: #e9fbe7;
+      border-radius: 4px;
+    }
+    .notas {
+      border: 1.5px solid #198754;
+      border-radius: 7px;
+      padding: 18px 22px;
+      font-size: 0.98em;
+      background: #f8f9fa;
+      margin-top: 22px;
+    }
+    .firmas-table {
+      width: 100%;
+      margin-top: 40px;
+      border: none;
+    }
+    .firmas-table td {
+      width: 50%;
+      text-align: center;
+      border: none;
+      vertical-align: bottom;
+    }
+    .firmas-table hr {
+      border: 1px solid #198754;
+      margin: 0 20px;
+    }
+    .table th {
+      background-color: #198754 !important;
+      color: #fff !important;
+      width: 34%;
+      font-weight: 600;
+      font-size: 1em;
+      letter-spacing: 0.5px;
+      border-top: 2px solid #198754;
+    }
+    .table td, .table th {
+      vertical-align: middle;
+    }
+    .table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th {
+      border-color: #198754;
+    }
+    .intro {
+      font-size: 1.08em;
+      margin-bottom: 22px;
+    }
+  </style>
 </head>
 <body>
-    <h2>Programación de Auditoría</h2>
-    <table>
-        <tr>
-            <th>Número de Servicio</th>
-            <td>{{ programacion.cotizacion.numero_servicio }}</td>
-        </tr>
-        <tr>
-            <th>Nombre del Establecimiento</th>
-            <td>{{ programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</td>
-        </tr>
-        <tr>
-            <th>NIT</th>
-            <td>{{ programacion.cotizacion.solicitud.cliente.nit }}</td>
-        </tr>
-        <tr>
-            <th>Representante</th>
-            <td>{{ programacion.cotizacion.solicitud.cliente.representante_legal }}</td>
-        </tr>
-        <tr>
-            <th>Teléfono</th>
-            <td>{{ programacion.cotizacion.solicitud.cliente.telefono_celular }}</td>
-        </tr>
-        <tr>
-            <th>Correo</th>
-            <td>{{ programacion.cotizacion.solicitud.cliente.correo_electronico }}</td>
-        </tr>
-        <tr>
-            <th>Dirección</th>
-            <td>{{ programacion.cotizacion.solicitud.cliente.direccion }}</td>
-        </tr>
-        <tr>
-            <th>Ciudad</th>
-            <td>{{ programacion.cotizacion.solicitud.cliente.ciudad }}</td>
-        </tr>
-        <tr>
-            <th>Departamento</th>
-            <td>{{ programacion.cotizacion.solicitud.cliente.departamento }}</td>
-        <tr>
-            <th>Tipo de Servicio</th>
-            <td>
-                {% for servicio in programacion.cotizacion.tipo_servicio.all %}
-                    {{ servicio.nombre }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    No especificado
-                {% endfor %}
-            </td>
-        </tr>
-        <tr>
-            <th>Nivel del CEA</th>
-            <td>{{ programacion.cotizacion.solicitud.cliente.nivel_cea }}</td>
-        </tr>
-        <tr>
-            <th>Categorías</th>
-            <td>
-                {% for categoria in programacion.cotizacion.solicitud.cliente.categorias_certificar.all %}
-                    {{ categoria.nombre }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    No especificado
-                {% endfor %}
-            </td>
+  <header id="header-pdf">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <div style="flex: 1; min-width: 180px; text-align: left;">
+        <img src="{% static 'myapp/AQ_color.png' %}" alt="Logo AQ Certification" style="height: 70px;">
+        <div style="font-size: 0.95em; color: #222; font-weight: bold; margin-top: 4px;">
+          NIT. 900509054-9<br>
+        </div>
+      </div>
+      <div style="flex: 2; text-align: center;">
+        <span style="font-size: 1.2em; font-weight: bold;">
+          CARTA DE PROGRAMACIÓN DE SERVICIOS (CEAS)
+        </span>
+      </div>
+      <div style="flex: 1; min-width: 140px; text-align: right;">
+        <div style="border: 1.2px solid #198754; border-radius: 7px; padding: 6px 18px; margin-bottom: 10px; display: inline-block;">
+          GCOM-FR-02
+        </div>
+        <br>
+        <div style="border: 1.2px solid #198754; border-radius: 7px; padding: 6px 18px; display: inline-block;">
+          {{ fecha_hoy }}
+        </div>
+      </div>
+    </div>
+  </header>
 
-        <tr>
-          <th>Observaciones</th>
-          <td>
-            {% if programacion.cotizacion.solicitud.cliente.observaciones %}
-              {{ programacion.cotizacion.solicitud.cliente.observaciones }}
-            {% else %}
-              Ninguna
-            {% endif %}
-          </td>
-        </tr>
 
-        <tr>
-            <th>Auditor</th>
-            <td>{{ programacion.auditores.user.get_full_name|default:programacion.auditores.user.username }}</td>
 
-        </tr>
+  <div class="intro mb-4">
+    Bogotá D. C., {{ fecha_hoy }}<br>
+    Señores<br>
+    CENTRO DE ENSEÑANZA AUTOMOVILISTICA {{ programacion.cotizacion.solicitud.cliente.nombre_establecimiento|upper }}<br><br>
+    Por medio de la presente notificamos la asistencia del personal asignado por parte de <b>AQ CERTIFICATION S.A.S.</b> para realizar el servicio descrito a continuación.
+  </div>
 
-        <tr>
-            <th>Fecha Etapa 1</th>
-            <td>{{ programacion.fecha_programacion_etapa1 }} - {{ programacion.hora_etapa1 }}</td>
-        </tr>
-        <tr>
-            <th>Fechas Etapa 2</th>
-            <td>
-                <ul>
-                    {% for fecha_etapa2 in programacion.fechas_etapa2.all %}
-                        <li>{{ fecha_etapa2.fecha }} - {{ fecha_etapa2.hora }} - {{fecha_etapa2.dias_auditoria}} días</li>
-                    {% empty %}
-                        <li>No asignadas</li>
-                    {% endfor %}
-                </ul>
-            </td>
-        </tr>
-    </table>
+  <!-- Detalles de la Programación -->
+  <div class="section-title">Detalles de la Programación</div>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <p><strong>Número de Servicio:</strong> {{ programacion.cotizacion.numero_servicio }}</p>
+      <p><strong>Nombre del Establecimiento:</strong> {{ programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</p>
+      <p><strong>NIT:</strong> {{ programacion.cotizacion.solicitud.cliente.nit }}</p>
+      <p><strong>Representante:</strong> {{ programacion.cotizacion.solicitud.cliente.representante_legal }}</p>
+    </div>
+    <div class="col-md-6">
+      <p><strong>Auditor:</strong> {{ programacion.auditores.user.get_full_name|default:programacion.auditores.user.username }}</p>
+      <p><strong>Fecha Etapa 1:</strong> {{ programacion.fecha_programacion_etapa1 }} - {{ programacion.hora_etapa1 }}</p>
+      <p><strong>Fechas Etapa 2:</strong>
+        <ul style="padding-left: 18px; margin:0;">
+          {% for fecha_etapa2 in programacion.fechas_etapa2.all %}
+            <li>{{ fecha_etapa2.fecha }} - {{ fecha_etapa2.hora }} - {{ fecha_etapa2.dias_auditoria }} días</li>
+          {% empty %}
+            <li>No asignadas</li>
+          {% endfor %}
+        </ul>
+      </p>
+    </div>
+  </div>
 
+  <!-- Información de Contacto -->
+  <div class="section-title">Información de Contacto</div>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <p><strong>Teléfono:</strong> {{ programacion.cotizacion.solicitud.cliente.telefono_celular }}</p>
+      <p><strong>Correo:</strong> {{ programacion.cotizacion.solicitud.cliente.correo_electronico }}</p>
+    </div>
+    <div class="col-md-6">
+      <p><strong>Dirección:</strong> {{ programacion.cotizacion.solicitud.cliente.direccion }}</p>
+      <p><strong>Ciudad:</strong> {{ programacion.cotizacion.solicitud.cliente.ciudad }}, {{ programacion.cotizacion.solicitud.cliente.departamento }}</p>
+    </div>
+  </div>
+
+  <!-- Detalles del Servicio -->
+  <div class="section-title">Detalles del Servicio</div>
+  <table class="table table-bordered table-striped mb-4">
+    <tbody>
+      <tr>
+        <th>Tipo de Servicio</th>
+        <td>
+          {% for servicio in programacion.cotizacion.tipo_servicio.all %}
+            {{ servicio.nombre }}{% if not forloop.last %}, {% endif %}
+          {% empty %}
+            No especificado
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <th>Nivel del CEA</th>
+        <td>{{ programacion.cotizacion.solicitud.cliente.nivel_cea }}</td>
+      </tr>
+      <tr>
+        <th>Categorías</th>
+        <td>
+          {% for categoria in programacion.cotizacion.solicitud.cliente.categorias_certificar.all %}
+            {{ categoria.nombre }}{% if not forloop.last %}, {% endif %}
+          {% empty %}
+            No especificado
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <th>Observaciones</th>
+        <td>
+          {% if programacion.cotizacion.solicitud.cliente.observaciones %}
+            {{ programacion.cotizacion.solicitud.cliente.observaciones }}
+          {% else %}
+            Ninguna
+          {% endif %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="notas">
+    <b>NOTA 1:</b> Para el proceso de AUDITORÍA, por favor comunicarse con el personal asignado por <b>AQ CERTIFICATION S.A.S.</b> y así coordinar lo relacionado con temas logísticos y de transporte para la prestación del servicio.<br>
+    <b>NOTA 2:</b> Los gastos de traslado y condiciones logísticas de los funcionarios de <b>AQ CERTIFICATION S.A.S.</b> deben ser asumidos por el cliente.
+  </div>
+
+  <br>
+  <p>Cordialmente,</p>
+  <table class="firmas-table">
+    <tr>
+      <td>
+        <span style="display:block; margin-bottom:40px;">&nbsp;</span>
+        <hr>
+        <strong>{{ programador_nombre }}</strong><br>
+        PROGRAMADOR DE SERVICIOS
+      </td>
+      <td>
+        <span style="display:block; margin-bottom:40px;">&nbsp;</span>
+        <hr>
+        <strong>FIRMA RECIBIDO</strong>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
