@@ -87,6 +87,31 @@
       font-size: 1.08em;
       margin-bottom: 22px;
     }
+    .datos-personal {
+      margin-top: 2.5em;
+      margin-bottom: 2em;
+    }
+    .datos-personal-title {
+      color: #198754;
+      font-weight: bold;
+      font-size: 1.1em;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.7em;
+      border-left: 6px solid #198754;
+      padding-left: 10px;
+      background: #e9fbe7;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .datos-personal-table th {
+      width: 36%;
+      background: #e9fbe7;
+      color: #198754;
+      font-weight: 600;
+    }
+    .datos-personal-table td {
+      background: #fff;
+    }
   </style>
 </head>
 <body>
@@ -114,8 +139,6 @@
       </div>
     </div>
   </header>
-
-
 
   <div class="intro mb-4">
     Bogotá D. C., {{ fecha_hoy }}<br>
@@ -201,6 +224,35 @@
       </tr>
     </tbody>
   </table>
+
+  <!-- DATOS DEL PERSONAL AQ CERTIFICATION S.A.S. -->
+  <div class="datos-personal">
+    <div class="datos-personal-title">DATOS DEL PERSONAL AQ CERTIFICATION S.A.S.</div>
+    <table class="table table-bordered datos-personal-table" style="margin-top: 10px;">
+      <tbody>
+        <tr>
+          <th>NOMBRE DEL AUDITOR</th>
+          <td>{{ programacion.auditores.user.get_full_name|default:programacion.auditores.user.username }}</td>
+        </tr>
+        <tr>
+          <th>N° CÉDULA</th>
+          <td>{{ programacion.auditores.cedula }}</td>
+        </tr>
+        <tr>
+          <th>CARGO</th>
+          <td>{{ programacion.auditores.cargo  }}</td>
+        </tr>
+        <tr>
+          <th>TELÉFONO DE CONTACTO</th>
+          <td>{{ programacion.auditores.telefono }}</td>
+        </tr>
+        <tr>
+          <th>CORREO ELECTRÓNICO</th>
+          <td>{{ programacion.auditores.user.email }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <div class="notas">
     <b>NOTA 1:</b> Para el proceso de AUDITORÍA, por favor comunicarse con el personal asignado por <b>AQ CERTIFICATION S.A.S.</b> y así coordinar lo relacionado con temas logísticos y de transporte para la prestación del servicio.<br>
