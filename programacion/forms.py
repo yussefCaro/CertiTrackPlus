@@ -35,6 +35,6 @@ FechaEtapa2FormSet = inlineformset_factory(
     ProgramacionAuditoria,
     FechaEtapa2,
     form=FechaEtapa2Form,
-    extra=1,
+    extra=0,
     max_num=3
 )
