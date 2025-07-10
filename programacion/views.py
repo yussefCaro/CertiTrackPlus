@@ -157,3 +157,9 @@ def programar_auditoria(request, cotizacion_id):
         'titulo': 'Programar Auditoría',
         'boton_texto': 'Guardar Programación'
     })
+
+@login_required
+def eliminar_programacion(request, programacion_id):
+    programacion = get_object_or_404(ProgramacionAuditoria, id=programacion_id)
+    programacion.delete()
+    return redirect('listado_programaciones')
