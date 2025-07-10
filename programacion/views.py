@@ -14,6 +14,12 @@ from django.contrib import messages
 from weasyprint import HTML
 from datetime import datetime
 
+import os
+from django.conf import settings
+
+
+
+
 
 
 # Definimos los días de auditoría por nivel
@@ -101,12 +107,14 @@ def imprimir_programacion(request, programacion_id):
     programacion = get_object_or_404(ProgramacionAuditoria, id=programacion_id)
     fechas_etapa2 = FechaEtapa2.objects.filter(programacion=programacion)
     usuario = request.user
+    logo_path = os.path.join(settings.BASE_DIR, 'myapp', 'static', 'myapp', 'AQ_color.png')
 
     # Puedes pasar más variables al contexto si lo necesitas
     context = {
         "programacion": programacion,
         "fechas_etapa2": fechas_etapa2,
         "fecha_hoy": datetime.now().strftime("%d/%m/%Y"),  # Si quieres mostrar la fecha actual
+        'logo_path': logo_path,
         "programador_nombre": usuario.get_full_name() or usuario.username,
     }
 
