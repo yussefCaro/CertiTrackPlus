@@ -3,15 +3,20 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.template.loader import render_to_string
+
 from cotizaciones.models import Cotizacion
 from .forms import ProgramacionAuditoriaForm, FechaEtapa2Form, FechaEtapa2FormSet
 from .models import ProgramacionAuditoria, Auditor, FechaEtapa2
 from django.forms import inlineformset_factory
 from django.contrib import messages
+
+
 from weasyprint import HTML
 from datetime import datetime
 
-# Días de auditoría por nivel
+
+
+# Definimos los días de auditoría por nivel
 DIAS_AUDITORIA = {
     "Nivel 1": {"etapa_1": 0.5, "etapa_2": 1},
     "Nivel 2": {"etapa_1": 0.5, "etapa_2": 1.5},
@@ -45,6 +50,8 @@ def listado_cotizaciones(request):
 
     return render(request, "programacion/listado.html", {"cotizaciones": cotizaciones, "usuarios": usuarios})
 
+
+
 @login_required
 def cambiar_estado(request, cotizacion_id):
     cotizacion = get_object_or_404(Cotizacion, id=cotizacion_id)
@@ -55,15 +62,17 @@ def cambiar_estado(request, cotizacion_id):
             cotizacion.save()
     return redirect("listado_cotizaciones")
 
+
+
+
+from programacion.models import ProgramacionAuditoria, Auditor
+
 @login_required
 def listado_programaciones(request):
-    """
-    Muestra la lista de programaciones de auditoría según el rol del usuario.
-    - Auditores: solo ven sus programaciones asignadas.
-    - Otros roles: ven todas las programaciones.
-    """
+    """ Muestra la lista de programaciones de auditoría según el rol del usuario. """
     grupos_usuario = request.user.groups.values_list("name", flat=True)
 
+    # Si es auditor, solo ve sus programaciones
     if "Auditores" in grupos_usuario:
         try:
             auditor = Auditor.objects.get(user=request.user)
@@ -73,6 +82,7 @@ def listado_programaciones(request):
             programaciones = ProgramacionAuditoria.objects.none()
             es_auditor = True
     else:
+        # Programador, comercial, admin, etc. ven todas
         programaciones = ProgramacionAuditoria.objects.select_related("cotizacion__solicitud__cliente").all()
         es_auditor = False
 
@@ -82,7 +92,9 @@ def listado_programaciones(request):
         "pertenece_programacion": "Programación" in grupos_usuario,
         "es_auditor": es_auditor,
     }
+
     return render(request, "programacion/listado_programaciones.html", contexto)
+
 
 @login_required
 def imprimir_programacion(request, programacion_id):
@@ -90,10 +102,11 @@ def imprimir_programacion(request, programacion_id):
     fechas_etapa2 = FechaEtapa2.objects.filter(programacion=programacion)
     usuario = request.user
 
+    # Puedes pasar más variables al contexto si lo necesitas
     context = {
         "programacion": programacion,
         "fechas_etapa2": fechas_etapa2,
-        "fecha_hoy": datetime.now().strftime("%d/%m/%Y"),
+        "fecha_hoy": datetime.now().strftime("%d/%m/%Y"),  # Si quieres mostrar la fecha actual
         "programador_nombre": usuario.get_full_name() or usuario.username,
     }
 
@@ -103,6 +116,9 @@ def imprimir_programacion(request, programacion_id):
     response = HttpResponse(pdf, content_type="application/pdf")
     response["Content-Disposition"] = 'inline; filename="programacion.pdf"'
     return response
+
+
+
 
 @login_required
 def programar_auditoria(request, cotizacion_id):
@@ -129,6 +145,7 @@ def programar_auditoria(request, cotizacion_id):
             fecha_formset.save()
             messages.success(request, 'Programación guardada correctamente.')
             return redirect('listado_programaciones')
+
     else:
         form = ProgramacionAuditoriaForm(instance=programacion)
         fecha_formset = FechaEtapa2FormSet(instance=programacion)
