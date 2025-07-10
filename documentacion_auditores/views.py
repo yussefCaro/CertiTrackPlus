@@ -15,6 +15,21 @@ from django.contrib import messages
 
 
 
+
+@login_required
+def listado_programaciones_auditor(request):
+    try:
+        auditor = Auditor.objects.get(user=request.user)
+        programaciones = ProgramacionAuditoria.objects.filter(auditores=auditor)
+    except Auditor.DoesNotExist:
+        programaciones = ProgramacionAuditoria.objects.none()
+
+    return render(request, "programacion/listado_programaciones.html", {
+        "programaciones": programaciones,
+        "es_auditor": True,  # Para mostrar u ocultar acciones según el rol
+    })
+
+
 def auditor_check(user):
     return user.groups.filter(name='Auditores').exists()
 
@@ -24,7 +39,9 @@ def dashboard_auditor(request):
     # Obtener el objeto Auditor asociado al usuario logueado
     auditor = Auditor.objects.get(user=request.user)
     # Filtrar programaciones de ese auditor
-    programaciones = ProgramacionAuditoria.objects.exclude(planauditoria__aprobado_por_cliente=True)
+    programaciones = ProgramacionAuditoria.objects.filter(
+        auditores=auditor
+    ).exclude(planauditoria__aprobado_por_cliente=True)
 
     # Filtrar planes de auditoría de ese usuario
     planes = PlanAuditoria.objects.filter(auditor=request.user)
@@ -32,6 +49,7 @@ def dashboard_auditor(request):
         'programaciones': programaciones,
         'planes': planes,
     })
+
 
 
 @login_required
@@ -174,20 +192,6 @@ def editar_plan(request, plan_id):
 
 
 
-# @login_required
-# @user_passes_test(auditor_check)
-# def crear_acta(request, programacion_id):
-#     programacion = get_object_or_404(ProgramacionAuditoria, id=programacion_id)
-#     if request.method == 'POST':
-#         form = ActaAuditoriaForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             acta = form.save(commit=False)
-#             acta.programacion = programacion
-#             acta.save()
-#             return redirect('dashboard_auditor')
-#     else:
-#         form = ActaAuditoriaForm()
-#     return render(request, 'documentacion_auditores/acta_form.html', {'form': form, 'programacion': programacion})
 
 @login_required
 @user_passes_test(auditor_check)

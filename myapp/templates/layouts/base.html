@@ -132,6 +132,10 @@ footer {
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'dashboard_auditor' %}">Documentación de Auditores</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'listado_programaciones_auditor' %}">Mis Programaciones</a>
+                            </li>
+
                         {% endif %}
                     {% endfor %}
                     <li class="nav-item"><a class="nav-link text-danger" href="{% url 'logout' %}">Cerrar sesión</a></li>

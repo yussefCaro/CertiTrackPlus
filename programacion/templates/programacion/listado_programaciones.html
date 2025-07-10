@@ -68,8 +68,15 @@
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                <a href="{% url 'programar_auditoria' programacion.cotizacion.id %}" class="btn btn-sm btn-primary mb-1">✏️ Editar</a>
-                                <a href="{% url 'imprimir_programacion' programacion.id %}" class="btn btn-sm btn-secondary mb-1">🖨️ Imprimir</a>
+                                {% if es_auditor %}
+                                    <!-- SOLO AUDITOR: solo botón imprimir -->
+                                    <a href="{% url 'imprimir_programacion' programacion.id %}" class="btn btn-sm btn-secondary mb-1">🖨️ Imprimir</a>
+                                {% else %}
+                                    <!-- OTROS ROLES: todos los botones -->
+                                    <a href="{% url 'programar_auditoria' programacion.cotizacion.id %}" class="btn btn-sm btn-primary mb-1">✏️ Editar</a>
+                                    <a href="{% url 'imprimir_programacion' programacion.id %}" class="btn btn-sm btn-secondary mb-1">🖨️ Imprimir</a>
+                                    <a href="{% url 'eliminar_programacion' programacion.id %}" class="btn btn-sm btn-danger mb-1">🗑️ Eliminar</a>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
