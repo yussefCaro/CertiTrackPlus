@@ -17,6 +17,7 @@ from datetime import datetime
 import os
 from django.conf import settings
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 
@@ -71,7 +72,7 @@ def cambiar_estado(request, cotizacion_id):
 
 
 
-from programacion.models import ProgramacionAuditoria, Auditor
+
 
 @login_required
 def listado_programaciones(request):
@@ -102,13 +103,26 @@ def listado_programaciones(request):
     if estado:
         programaciones = programaciones.filter(estado=estado)
 
-    # Para los select de filtros
+    # Para los selects de filtros
     niveles = ProgramacionAuditoria.objects.values_list('cotizacion__solicitud__cliente__nivel_cea', flat=True).distinct()
     auditores = Auditor.objects.all()
     estados = ProgramacionAuditoria.objects.values_list('estado', flat=True).distinct()
 
+    # Paginación
+    paginator = Paginator(programaciones, 10)  # 10 programaciones por página
+    page = request.GET.get('page')
+    try:
+        programaciones_page = paginator.page(page)
+    except PageNotAnInteger:
+        programaciones_page = paginator.page(1)
+    except EmptyPage:
+        programaciones_page = paginator.page(paginator.num_pages)
+
     contexto = {
-        "programaciones": programaciones,
+        "programaciones": programaciones_page,
+        "paginator": paginator,
+        "page_obj": programaciones_page,
+        "is_paginated": programaciones_page.has_other_pages(),
         "pertenece_comercial": "Comercial" in grupos_usuario,
         "pertenece_programacion": "Programación" in grupos_usuario,
         "es_auditor": es_auditor,
@@ -120,7 +134,6 @@ def listado_programaciones(request):
         "estado_selected": estado,
     }
     return render(request, "programacion/listado_programaciones.html", contexto)
-
 
 @login_required
 def imprimir_programacion(request, programacion_id):

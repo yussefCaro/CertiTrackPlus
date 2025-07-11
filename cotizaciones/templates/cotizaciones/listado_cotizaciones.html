@@ -14,7 +14,7 @@
                 <table class="table table-bordered table-striped text-center">
                     <thead class="table-dark">
                         <tr>
-                            <th>Cotización</th>
+                            <th>Cotización </th>
                             <th>Cliente</th>
                             <th>Fecha</th>
                             <th>Estado</th>
@@ -24,7 +24,8 @@
                     <tbody>
                         {% for cotizacion in cotizaciones %}
                             <tr>
-                                <td>{{ cotizacion.numero_servici }}</td>
+                                <td>{{ cotizacion.numero_servicio}}</td>
+
                                 <td>{{ cotizacion.solicitud.cliente.nombre_establecimiento }}</td>
                                 <td>{{ cotizacion.fecha_cotizacion }}</td>
                                 <td>

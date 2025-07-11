@@ -30,7 +30,6 @@
     color: #198754;
     margin-left: 5px;
 }
-
 .fecha-etapa1-cell {
     background: #f7fafc;
     border-radius: 6px;
@@ -46,15 +45,13 @@
     color: #198754;
     margin-left: 5px;
 }
-
-
 </style>
 
 <div class="container mt-5">
     <div class="card shadow p-4">
         <h1 class="text-center text-primary mb-4">Listado de Programaciones</h1>
 
-                <!-- Filtros -->
+        <!-- Filtros -->
         <form method="get" class="row g-2 mb-4">
             <div class="col-md-3">
                 <select name="nivel" class="form-select">
@@ -86,6 +83,7 @@
         </form>
 
         <div class="table-responsive">
+            {% if programaciones %}
             <table class="table table-striped table-bordered align-middle">
                 <thead class="table-dark text-center">
                     <tr>
@@ -111,8 +109,8 @@
                                 <span>{{ programacion.fecha_programacion_etapa1 }}</span>
                                 <span class="text-success">🕐</span>
                                 <span class="text-muted">{{ programacion.hora_etapa1 }}</span>
+                                <span class="badge">{{ programacion.dias_etapa1 }}</span>
                             </td>
-
                             <td class="fechas-etapa2-cell">
                                 <ul class="list-unstyled mb-0">
                                     {% for fecha_etapa2 in programacion.fechas_etapa2.all %}
@@ -154,17 +152,61 @@
                             </td>
                             <td class="text-center">
                                 {% if es_auditor %}
-                                    <a href="{% url 'imprimir_programacion' programacion.id %}" class="btn btn-sm btn-secondary mb-1">🖨️ Imprimir</a>
+                                    <a href="{% url 'imprimir_programacion' programacion.id %}" class="btn btn-sm btn-secondary mb-1" aria-label="Imprimir programación">🖨️ Imprimir</a>
                                 {% else %}
-                                    <a href="{% url 'programar_auditoria' programacion.cotizacion.id %}" class="btn btn-sm btn-primary mb-1">✏️ Editar</a>
-                                    <a href="{% url 'imprimir_programacion' programacion.id %}" class="btn btn-sm btn-secondary mb-1">🖨️ Imprimir</a>
-                                    <a href="{% url 'eliminar_programacion' programacion.id %}" class="btn btn-sm btn-danger mb-1">🗑️ Eliminar</a>
+                                    <a href="{% url 'programar_auditoria' programacion.cotizacion.id %}" class="btn btn-sm btn-primary mb-1" aria-label="Editar programación">✏️ Editar</a>
+                                    <a href="{% url 'imprimir_programacion' programacion.id %}" class="btn btn-sm btn-secondary mb-1" aria-label="Imprimir programación">🖨️ Imprimir</a>
+                                    <a href="{% url 'eliminar_programacion' programacion.id %}" class="btn btn-sm btn-danger mb-1" aria-label="Eliminar programación">🗑️ Eliminar</a>
                                 {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            {% else %}
+                <div class="alert alert-info text-center mb-0">No hay programaciones para los filtros seleccionados.</div>
+            {% endif %}
+
+            {% if is_paginated %}
+            <nav aria-label="Paginación">
+              <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link"
+                       href="?{% if request.GET.nivel %}nivel={{ request.GET.nivel }}&{% endif %}{% if request.GET.auditor %}auditor={{ request.GET.auditor }}&{% endif %}{% if request.GET.estado %}estado={{ request.GET.estado }}&{% endif %}page={{ page_obj.previous_page_number }}"
+                       aria-label="Anterior">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                {% endif %}
+
+                {% for num in paginator.page_range %}
+                  {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                  {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                      <a class="page-link"
+                         href="?{% if request.GET.nivel %}nivel={{ request.GET.nivel }}&{% endif %}{% if request.GET.auditor %}auditor={{ request.GET.auditor }}&{% endif %}{% if request.GET.estado %}estado={{ request.GET.estado }}&{% endif %}page={{ num }}">{{ num }}</a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                  <li class="page-item">
+                    <a class="page-link"
+                       href="?{% if request.GET.nivel %}nivel={{ request.GET.nivel }}&{% endif %}{% if request.GET.auditor %}auditor={{ request.GET.auditor }}&{% endif %}{% if request.GET.estado %}estado={{ request.GET.estado }}&{% endif %}page={{ page_obj.next_page_number }}"
+                       aria-label="Siguiente">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                {% endif %}
+              </ul>
+            </nav>
+            {% endif %}
         </div>
     </div>
 </div>
