@@ -164,19 +164,31 @@ def imprimir_programacion(request, programacion_id):
 @login_required
 def programar_auditoria(request, cotizacion_id):
     cotizacion = get_object_or_404(Cotizacion, id=cotizacion_id)
-    programacion, _ = ProgramacionAuditoria.objects.get_or_create(cotizacion=cotizacion)
+
+    # Busca si ya existe una programación asociada
+    programacion = ProgramacionAuditoria.objects.filter(cotizacion=cotizacion).first()
+
+    # Si NO existe programación, es creación: bloquea si ya hay una activa
+    if not programacion:
+        if cotizacion.programacionauditoria_set.filter(
+            estado__in=["En Curso", "Finalizada", "Cancelada"]
+        ).exists():
+            messages.error(
+                request,
+                "Esta cotización ya tiene una programación activa. "
+                "Si deseas modificarla, hazlo desde el listado de programaciones."
+            )
+            return redirect('listado_cotizaciones')
+        programacion = ProgramacionAuditoria(cotizacion=cotizacion)
 
     FechaEtapa2FormSet = inlineformset_factory(
-        ProgramacionAuditoria, FechaEtapa2, form=FechaEtapa2Form, extra=0, max_num=3, can_delete=True
+        ProgramacionAuditoria, FechaEtapa2,
+        form=FechaEtapa2Form, extra=0, max_num=3, can_delete=True
     )
 
     if request.method == 'POST':
         form = ProgramacionAuditoriaForm(request.POST, instance=programacion)
         fecha_formset = FechaEtapa2FormSet(request.POST, instance=programacion)
-
-        print("POST:", request.POST)
-        print("Formset errors:", fecha_formset.errors)
-        print("Form errors:", form.errors)
 
         if form.is_valid() and fecha_formset.is_valid():
             programacion = form.save(commit=False)
@@ -186,7 +198,6 @@ def programar_auditoria(request, cotizacion_id):
             fecha_formset.save()
             messages.success(request, 'Programación guardada correctamente.')
             return redirect('listado_programaciones')
-
     else:
         form = ProgramacionAuditoriaForm(instance=programacion)
         fecha_formset = FechaEtapa2FormSet(instance=programacion)
