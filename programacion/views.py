@@ -75,10 +75,9 @@ from programacion.models import ProgramacionAuditoria, Auditor
 
 @login_required
 def listado_programaciones(request):
-    """ Muestra la lista de programaciones de auditoría según el rol del usuario. """
     grupos_usuario = request.user.groups.values_list("name", flat=True)
 
-    # Si es auditor, solo ve sus programaciones
+    # Base queryset según el rol
     if "Auditores" in grupos_usuario:
         try:
             auditor = Auditor.objects.get(user=request.user)
@@ -88,17 +87,38 @@ def listado_programaciones(request):
             programaciones = ProgramacionAuditoria.objects.none()
             es_auditor = True
     else:
-        # Programador, comercial, admin, etc. ven todas
         programaciones = ProgramacionAuditoria.objects.select_related("cotizacion__solicitud__cliente").all()
         es_auditor = False
+
+    # Filtros dinámicos
+    nivel = request.GET.get('nivel')
+    auditor_id = request.GET.get('auditor')
+    estado = request.GET.get('estado')
+
+    if nivel:
+        programaciones = programaciones.filter(cotizacion__solicitud__cliente__nivel_cea=nivel)
+    if auditor_id:
+        programaciones = programaciones.filter(auditores__id=auditor_id)
+    if estado:
+        programaciones = programaciones.filter(estado=estado)
+
+    # Para los select de filtros
+    niveles = ProgramacionAuditoria.objects.values_list('cotizacion__solicitud__cliente__nivel_cea', flat=True).distinct()
+    auditores = Auditor.objects.all()
+    estados = ProgramacionAuditoria.objects.values_list('estado', flat=True).distinct()
 
     contexto = {
         "programaciones": programaciones,
         "pertenece_comercial": "Comercial" in grupos_usuario,
         "pertenece_programacion": "Programación" in grupos_usuario,
         "es_auditor": es_auditor,
+        "niveles": niveles,
+        "auditores": auditores,
+        "estados": estados,
+        "nivel_selected": nivel,
+        "auditor_selected": auditor_id,
+        "estado_selected": estado,
     }
-
     return render(request, "programacion/listado_programaciones.html", contexto)
 
 
