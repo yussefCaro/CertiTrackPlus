@@ -104,11 +104,10 @@
                                 {% for fecha_form in fecha_formset %}
                                     <div class="fecha_etapa2 border rounded p-2 mb-2 position-relative">
                                         {{ fecha_form.as_p }}
-                                        <!-- El botón eliminar lo agrega el JS -->
                                     </div>
                                 {% endfor %}
                             </div>
-                            <!-- Formulario vacío oculto para clonar -->
+                            <!-- Formulario vacío oculto para clonar con JS -->
                             <div id="empty_form" class="d-none">
                                 {{ fecha_formset.empty_form.as_p|safe }}
                             </div>
@@ -134,6 +133,7 @@
                             </div>
                         </fieldset>
 
+
                         <button type="submit" class="btn btn-success btn-lg w-100 mt-3">
                             <i class="bi bi-save"></i> Guardar Programación
                         </button>
@@ -150,6 +150,5 @@
     </div>
 </div>
 
-<!-- Incluye el JS de Bootstrap y tu script personalizado -->
-<script src="{% static 'myapp/js/script_formulario_v2.js' %}"></script>
+<script src="{% static 'myapp/js/script_formulario.js' %}"></script>
 {% endblock %}
