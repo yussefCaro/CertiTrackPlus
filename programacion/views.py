@@ -3,27 +3,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.template.loader import render_to_string
+from django.contrib import messages
 
 from cotizaciones.models import Cotizacion
 from .forms import ProgramacionAuditoriaForm, FechaEtapa2Form, FechaEtapa2FormSet
-from .models import ProgramacionAuditoria, Auditor, FechaEtapa2
+from .models import ProgramacionAuditoria, Auditor, FechaEtapa2, NivelAuditoriaCEA
 from django.forms import inlineformset_factory
-from django.contrib import messages
-
-
-from weasyprint import HTML
 from datetime import datetime
-
-import os
-from django.conf import settings
-
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 
-
-
-
-
-# Definimos los días de auditoría por nivel
+# Días de auditoría por nivel
 DIAS_AUDITORIA = {
     "Nivel 1": {"etapa_1": 0.5, "etapa_2": 1},
     "Nivel 2": {"etapa_1": 0.5, "etapa_2": 1.5},
@@ -33,7 +23,11 @@ DIAS_AUDITORIA = {
 
 @login_required
 def listado_cotizaciones(request):
-    cotizaciones = Cotizacion.objects.filter(estado="Pendiente")
+    cotizaciones = Cotizacion.objects.filter(
+        estado="Aprobada"
+    ).exclude(
+        programacionauditoria__estado__in=["En Curso", "Finalizada", "Cancelada"]
+    )
     usuarios = User.objects.all()
 
     if request.method == "POST":
@@ -57,8 +51,6 @@ def listado_cotizaciones(request):
 
     return render(request, "programacion/listado.html", {"cotizaciones": cotizaciones, "usuarios": usuarios})
 
-
-
 @login_required
 def cambiar_estado(request, cotizacion_id):
     cotizacion = get_object_or_404(Cotizacion, id=cotizacion_id)
@@ -69,16 +61,10 @@ def cambiar_estado(request, cotizacion_id):
             cotizacion.save()
     return redirect("listado_cotizaciones")
 
-
-
-
-
-
 @login_required
 def listado_programaciones(request):
     grupos_usuario = request.user.groups.values_list("name", flat=True)
 
-    # Base queryset según el rol
     if "Auditores" in grupos_usuario:
         try:
             auditor = Auditor.objects.get(user=request.user)
@@ -91,7 +77,6 @@ def listado_programaciones(request):
         programaciones = ProgramacionAuditoria.objects.select_related("cotizacion__solicitud__cliente").all()
         es_auditor = False
 
-    # Filtros dinámicos
     nivel = request.GET.get('nivel')
     auditor_id = request.GET.get('auditor')
     estado = request.GET.get('estado')
@@ -103,13 +88,11 @@ def listado_programaciones(request):
     if estado:
         programaciones = programaciones.filter(estado=estado)
 
-    # Para los selects de filtros
     niveles = ProgramacionAuditoria.objects.values_list('cotizacion__solicitud__cliente__nivel_cea', flat=True).distinct()
     auditores = Auditor.objects.all()
     estados = ProgramacionAuditoria.objects.values_list('estado', flat=True).distinct()
 
-    # Paginación
-    paginator = Paginator(programaciones, 10)  # 10 programaciones por página
+    paginator = Paginator(programaciones, 10)
     page = request.GET.get('page')
     try:
         programaciones_page = paginator.page(page)
@@ -140,14 +123,11 @@ def imprimir_programacion(request, programacion_id):
     programacion = get_object_or_404(ProgramacionAuditoria, id=programacion_id)
     fechas_etapa2 = FechaEtapa2.objects.filter(programacion=programacion)
     usuario = request.user
-    logo_path = os.path.join(settings.BASE_DIR, 'myapp', 'static', 'myapp', 'AQ_color.png')
 
-    # Puedes pasar más variables al contexto si lo necesitas
     context = {
         "programacion": programacion,
         "fechas_etapa2": fechas_etapa2,
-        "fecha_hoy": datetime.now().strftime("%d/%m/%Y"),  # Si quieres mostrar la fecha actual
-        'logo_path': logo_path,
+        "fecha_hoy": datetime.now().strftime("%d/%m/%Y"),
         "programador_nombre": usuario.get_full_name() or usuario.username,
     }
 
@@ -158,17 +138,11 @@ def imprimir_programacion(request, programacion_id):
     response["Content-Disposition"] = 'inline; filename="programacion.pdf"'
     return response
 
-
-
-
 @login_required
 def programar_auditoria(request, cotizacion_id):
     cotizacion = get_object_or_404(Cotizacion, id=cotizacion_id)
-
-    # Busca si ya existe una programación asociada
     programacion = ProgramacionAuditoria.objects.filter(cotizacion=cotizacion).first()
 
-    # Si NO existe programación, es creación: bloquea si ya hay una activa
     if not programacion:
         if cotizacion.programacionauditoria_set.filter(
             estado__in=["En Curso", "Finalizada", "Cancelada"]
@@ -193,13 +167,33 @@ def programar_auditoria(request, cotizacion_id):
         if form.is_valid() and fecha_formset.is_valid():
             programacion = form.save(commit=False)
             programacion.cotizacion = cotizacion
+
+            # Busca la instancia de NivelAuditoriaCEA por el campo correcto
+            try:
+                nivel_nombre = cotizacion.solicitud.cliente.nivel_cea
+                nivel_obj = NivelAuditoriaCEA.objects.get(nivel=nivel_nombre)
+            except (AttributeError, NivelAuditoriaCEA.DoesNotExist):
+                nivel_obj = None
+            programacion.nivel_auditoria = nivel_obj
+
             programacion.save()
             fecha_formset.instance = programacion
             fecha_formset.save()
             messages.success(request, 'Programación guardada correctamente.')
             return redirect('listado_programaciones')
+
     else:
-        form = ProgramacionAuditoriaForm(instance=programacion)
+        try:
+            nivel_nombre = cotizacion.solicitud.cliente.nivel_cea
+            nivel_obj = NivelAuditoriaCEA.objects.get(nivel=nivel_nombre)
+        except (AttributeError, NivelAuditoriaCEA.DoesNotExist):
+            nivel_obj = None
+
+        form = ProgramacionAuditoriaForm(
+            instance=programacion,
+            initial={'nivel_auditoria': nivel_obj}
+        )
+        form.fields['nivel_auditoria'].disabled = True
         fecha_formset = FechaEtapa2FormSet(instance=programacion)
 
     return render(request, 'programacion/form_programacion.html', {

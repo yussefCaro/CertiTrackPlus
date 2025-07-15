@@ -18,6 +18,7 @@ class ProgramacionAuditoriaForm(forms.ModelForm):
 
     class Meta:
         model = ProgramacionAuditoria
+        fields = '__all__'
         exclude = ['cotizacion']
 
 class FechaEtapa2Form(forms.ModelForm):
