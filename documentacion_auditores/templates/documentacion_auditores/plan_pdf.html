@@ -1,154 +1,392 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <meta charset="utf-8">
-    <title>Plan de Auditoría</title>
-    <style>
-        body { font-family: sans-serif; font-size: 12px; }
-        .title { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
-        .section { margin-top: 20px; }
-        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
-        th, td { border: 1px solid #333; padding: 6px; }
-        th { background: #f0f0f0; }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Plan de Auditoría</title>
+  <style>
+    @page {
+      size: A4;
+      margin-top: 3.5cm;
+      margin-bottom: 2.5cm;
+      margin-left: 2cm;
+      margin-right: 2cm;
+      @top-center { content: element(header-pdf); }
+      @bottom-center {
+        content: "Este documento contiene información confidencial y no puede ser distribuido o reproducido sin autorización escrita de AQ CERTIFICATION S.A.S. "
+                 "Calle 50 No. 73-25 Barrio Normandía – Bogotá TEL: 7022433 www.aqcertification.net.co "
+                 "Página " counter(page) " de " counter(pages);
+        font-size: 10px;
+        color: #222;
+      }
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      font-size: 12pt;
+      color: #181824;
+    }
+    header.header-pdf {
+      position: running(header-pdf);
+      width: 100%;
+      margin-bottom: 2em;
+      border-bottom: 2px solid #38ce3c;
+      padding-bottom: 0.5em;
+    }
+    .header-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-logo {
+      min-width: 170px;
+      text-align: left;
+    }
+    .header-title {
+      flex: 2;
+      text-align: center;
+      font-size: 1.13em;
+      font-weight: bold;
+      color: #1a237e;
+      letter-spacing: 0.5px;
+    }
+    .header-cajas {
+      min-width: 120px;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .info-caja {
+      border: 1.2px solid #222;
+      border-radius: 8px;
+      padding: 3px 16px;
+      background: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      min-width: 105px;
+      text-align: center;
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+    .bloque-cuadro {
+      border: 2px solid #0d6efd;
+      border-radius: 10px;
+      background: #f9fbfd;
+      margin: 22px 0 0 0;
+      padding: 23px 34px 18px 34px;
+      box-shadow: 0 4px 16px 0 rgba(13, 110, 253, 0.07);
+      font-size: 12px;
+      color: #18304d;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .bloque-cuadro h3 {
+      color: #1a237e;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 1.16em;
+      letter-spacing: 0.2px;
+    }
+    .bloque-cuadro ul, .bloque-cuadro ol {
+      margin: 0;
+      padding-left: 22px;
+    }
+    .bloque-cuadro li {
+      margin-bottom: 6px;
+      text-align: justify;
+      line-height: 1.55;
+    }
+    .section-title {
+      color: #388e3c;
+      font-size: 1.04em;
+      margin: 1.7em 0 0.7em 0;
+      border-left: 4px solid #38ce3c;
+      padding-left: 0.5em;
+      font-weight: bold;
+      background: #eafaf1;
+    }
+    .info-table, .info-table-program {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.98em;
+      table-layout: auto;
+      margin-bottom: 1.3em;
+    }
+    .info-table th, .info-table td,
+    .info-table-program th, .info-table-program td {
+      border: 1px solid #b0bec5;
+      padding: 7px 10px;
+      vertical-align: top;
+      text-align: left;
+      font-size: 0.98em;
+    }
+    .info-table th,
+    .info-table-program th {
+      background: #f1f8e9;
+      font-weight: bold;
+      font-size: 1em;
+    }
+    .info-table th { width: 32%; }
+    .info-table-program th, .info-table-program td { text-align: center; }
+    .info-table-program td:nth-child(1), .info-table-program th:nth-child(1) { width: 20%; }
+    .info-table-program td:nth-child(2), .info-table-program th:nth-child(2) { width: 18%; }
+    .info-table-program td:nth-child(3), .info-table-program th:nth-child(3) { width: 62%; text-align: left;}
+    .firma {
+      margin-top: 2em;
+      font-size: 1em;
+    }
+    .firma-linea {
+      margin: 1.2em 0 0.5em 0;
+      border-bottom: 1px solid #222;
+      width: 260px;
+    }
+    .tabla-riesgos {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.97em;
+      margin-top: 32px;
+      margin-bottom: 32px;
+    }
+    .tabla-riesgos th {
+      border: 1.5px solid #1353a2;
+      background: #eafaf1;
+      color: #1353a2;
+      text-align: center;
+      padding: 8px;
+      font-size: 13px;
+    }
+    .tabla-riesgos td {
+      border: 1px solid #b0bec5;
+      padding: 7px;
+      vertical-align: top;
+      font-size: 12px;
+    }
+    .tabla-riesgos ul, .tabla-riesgos li {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.5;
+      text-align: left;
+    }
+
+  </style>
 </head>
 <body>
-    <div class="title">PLAN DE AUDITORÍA</div>
+<header class="header-pdf">
+  <div class="header-flex">
+    <div class="header-logo">
+      <img src="{% static 'myapp/AQ_color.png' %}" alt="Logo AQ Certification" style="height: 52px;">
+      <div style="font-size:13px; font-weight: bold; margin-top: 3px;">NIT. 900509054-9</div>
+    </div>
+    <div class="header-title">
+      PLAN DE AUDITORÍA<br>PARA CENTROS DE ENSEÑANZA AUTOMOVILÍSTICA.
+    </div>
+    <div class="header-cajas">
+      <div class="info-caja">CERT-FR-03</div>
+      <div class="info-caja">{{ plan.fecha_aprobacion|date:"Y-m-d" }}</div>
+    </div>
+  </div>
+</header>
 
-    <p>Actividades encontradas: {{ hora_actividades|length }}</p>
-    <p>Cliente ID: {{ programacion.cotizacion.cliente.id }}</p>
-    <p>Cliente nombre: {{ programacion.cotizacion.solicitud.cliente.nombre_propietario }}</p>
-    <p>Cliente representante legal: {{ programacion.cotizacion.cliente.representante_legal }}</p>
+<div class="bloque-cuadro">
+  <h3>Generalidades del Plan de Auditoría</h3>
+  <ul>
+    <li>El presente es el plan de auditoría que se realizará para verificar la conformidad de las actividades realizadas por la organización auditada bajo los criterios aplicables.</li>
+    <li>Se debe diligenciar la información correspondiente, por parte del equipo de AQ CERTIFICATION S.A.S., y por parte del cliente auditado según sea requerido.</li>
+    <li>Al momento de realizar la reunión de apertura y cierre tener en cuenta el personal relevante para los procesos que serán auditados.</li>
+    <li>Si el proceso de auditoria se realiza <b>in situ</b> el auditor debe coordinar con el auditado los métodos de auditoria apropiados para la prestación del servicio.</li>
+    <li>Para llevar a cabo la auditoria <b>in situ</b>, el auditado debe disponer de una oficina o sala de reunión para atender el proceso apropiadamente, además de tener disponible la documentación necesaria para verificar la conformidad de las actividades realizadas por la organización bajo los criterios aplicables.</li>
+    <li>Si en la organización del auditado existen condiciones de seguridad y salud en el trabajo, es necesario que el auditado informe a AQ CERTIFICATION S.A.S., previamente, además de disponer el suministro de los elementos de protección personal que sean necesarios.</li>
+    <li>Se debe garantizar por parte de AQ CERTIFICATION S.A.S. y por parte del auditado el cumplimiento de los protocolos de bioseguridad establecidos para la ejecución de la auditoría in situ.</li>
+    <li>Si el proceso de auditoria se realiza de manera <b>remota</b>, el auditor debe coordinar con el auditado los métodos de auditoría apropiados para la prestación del servicio.</li>
+    <li>Para llevar a cabo la auditoría de manera remota, el auditor y el auditado deben disponer de las herramientas tecnológicas e infraestructura necesaria para la adecuada prestación del servicio.</li>
+    <li>Si el proceso de auditoria se realiza de manera remota, se debe asegurar de que el equipo auditor de AQ CERTIFICATION S.A.S., y el cliente utilicen los protocolos de acceso remoto acordados.</li>
+    <li>Si se realiza la auditoria de manera remota, el auditor solicitará al cliente que disponga de conexión a internet y acceso a toda la documentación del sistema de gestión disponible en formato digital, preferiblemente PDF, para realizar el proceso eficientemente.</li>
+    <li>En caso de que la auditoria sea remota AQ CERTIFICATION S.A.S. garantiza que la transmisión de datos e información digital obtenida solo se utilizará para dar cumplimiento al objetivo de la auditoría, velando por la seguridad, integridad y confidencialidad de la información.</li>
+    <li>AQ CERTIFICATION S.A.S. como organismo de certificación declara que la información suministrada por el cliente para la ejecución de la auditoría se tratará de manera confidencial.</li>
+    <li>El Anexo 1 del CERT-FR-03 incluye los riesgos y oportunidades que se pueden presentar al realizar la auditoría de manera remota, junto con un análisis y controles según sea necesario.</li>
+    <li>El idioma de la auditoría y su documentación será en español.</li>
+    <li>Le recordamos que al aceptar este plan de auditoría que se realizará en su organización usted acepta todas las condiciones aquí planteadas en caso de que la auditoría sea in situ o remota.</li>
+  </ul>
+</div>
 
+<div class="section-title">INFORMACIÓN DEL AUDITADO</div>
+<table class="info-table">
+  <tr><th>Nombre del Establecimiento</th><td>{{ programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</td></tr>
+  <tr><th>Representante Legal</th><td>{{ programacion.cotizacion.solicitud.cliente.representante_legal }}</td></tr>
+  <tr><th>NIT</th><td>{{ programacion.cotizacion.solicitud.cliente.nit }}</td></tr>
+  <tr><th>Dirección</th><td>{{ programacion.cotizacion.solicitud.cliente.direccion }}</td></tr>
+  <tr><th>Ciudad / Departamento</th><td>{{ programacion.cotizacion.solicitud.cliente.ciudad }} - {{ programacion.cotizacion.solicitud.cliente.departamento }}</td></tr>
+  <tr><th>Teléfono</th><td>{{ programacion.cotizacion.solicitud.cliente.telefono_celular }}</td></tr>
+  <tr><th>Correo</th><td>{{ programacion.cotizacion.solicitud.cliente.correo_electronico }}</td></tr>
+</table>
 
+<div class="section-title">INFORMACIÓN DE LA AUDITORÍA</div>
+<table class="info-table">
+  <tr><th>Número de Servicio</th><td>{{ programacion.cotizacion.numero_servicio }}</td></tr>
+  <tr><th>Alcance de la auditoría</th><td>{{ programacion.nivel_auditoria }}</td></tr>
+  <tr><th>Categorías</th><td>{% for cat in programacion.cotizacion.solicitud.cliente.categorias_certificar.all %}{{ cat.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+  <tr><th>Auditor</th><td>{{ plan.auditor.get_full_name }}</td></tr>
+  <tr>
+    <th>Criterios de Auditoría</th>
+    <td>
+      <ul style="margin:0; padding-left:16px;">
+        <li>Resolución 3245 de 2009</li>
+        <li>Decreto Único Reglamentario 1079 de 2015 - Título I Capítulo III</li>
+        <li>Resolución 20203040011355 de 2020</li>
+        <li>Resolución 20223040009425 de 2022 del Ministerio de Transporte</li>
+        <li>ISO 9001:2015 - Sistema de Gestión de Calidad</li>
+      </ul>
+    </td>
+  </tr>
+  <tr><th>Tipo de Servicio</th><td>{% for ts in programacion.cotizacion.tipo_servicio.all %}{{ ts.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+</table>
 
-    <table>
-      <tr>
-        <th>Número de Servicio</th>
-        <td>{{ programacion.cotizacion.numero_servicio }}</td>
-      </tr>
-      <tr>
-        <th>Nombre del Propietario y/o Razón Social</th>
-        <td>{{ programacion.cotizacion.solicitud.cliente.nombre_propietario }}</td>
-      </tr>
-      <tr>
-        <th>Representante Legal</th>
-        <td>{{ programacion.cotizacion.solicitud.cliente.representante_legal }}</td>
-      </tr>
-      <tr>
-        <th>Nombre del Establecimiento Comercial</th>
-        <td>{{ programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</td>
-      </tr>
-      <tr>
-        <th>NIT</th>
-        <td>{{ programacion.cotizacion.solicitud.cliente.nit }}</td>
-      </tr>
-      <tr>
-        <th>Dirección</th>
-        <td>{{ programacion.cotizacion.solicitud.cliente.direccion }}</td>
-      </tr>
-      <tr>
-        <th>Ciudad</th>
-        <td>{{ programacion.cotizacion.solicitud.cliente.ciudad }}</td>
-      </tr>
-      <tr>
-        <th>Departamento</th>
-        <td>{{ programacion.cotizacion.solicitud.cliente.departamento }}</td>
-      </tr>
-      <tr>
-        <th>Teléfono</th>
-        <td>{{ programacion.cotizacion.solicitud.cliente.telefono_celular }}</td>
-      </tr>
-      <tr>
-        <th>Correo</th>
-        <td>{{ programacion.cotizacion.solicitud.cliente.correo_electronico }}</td>
-      </tr>
-      <tr>
-        <th>Tipo de Servicio</th>
-        <td>
-          {% for tipo in programacion.cotizacion.tipo_servicio.all %}
-            {{ tipo.nombre }}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
-        </td>
-      </tr>
-      <tr>
-        <th>Fechas de la carta de programación</th>
-        <td>
-          {% for fecha in programacion.fechas_etapa2.all %}
-            {{ fecha.fecha|date:"Y-m-d" }}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
-        </td>
-      </tr>
-      <tr>
-        <th>Nivel del CEA</th>
-        <td>{{ programacion.nivel_auditoria }}</td>
-      </tr>
-      <tr>
-        <th>Categorías</th>
-        <td>
-          {% for cat in programacion.cotizacion.solicitud.cliente.categorias_certificar.all %}
-            {{ cat.nombre }}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
-        </td>
-      </tr>
-      <tr>
-        <th>Checkpoint IAF MD4</th>
-        <td>
-          {% if plan.iaf_md4_verificado %}
-            <span>✔</span>
-          {% else %}
-            <span>✘</span>
-          {% endif %}
-        </td>
-      </tr>
-      <tr>
-        <th>Observaciones</th>
-        <td>{{ plan.observaciones }}</td>
-      </tr>
-      <tr>
-        <th>Auditor</th>
-        <td>{{ plan.auditor.get_full_name }}</td>
-      </tr>
-    </table>
+<div class="section-title">OBSERVACIONES GENERALES</div>
+<p>{{ plan.observaciones }}</p>
 
-    <h4>Firma del Auditado</h4>
-    <table>
+<div class="section-title">PROGRAMACIÓN DE ACTIVIDADES / ENTREVISTAS DE LA AUDITORÍA</div>
+<table class="info-table-program">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Hora</th>
+      <th>Actividad</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for hora_act in hora_actividades %}
       <tr>
-        <th>Nombre:</th>
-        <td>{{ programacion.cotizacion.cliente.representante_legal }}</td>
+        <td>{{ hora_act.fecha|date:"Y-m-d" }}</td>
+        <td>{{ hora_act.hora|time:"H:i" }}</td>
+        <td style="text-align: left;">{{ hora_act.actividad.descripcion }}</td>
       </tr>
+    {% empty %}
       <tr>
-        <th>Firma:</th>
-        <td><!-- Espacio para la firma manuscrita --></td>
+        <td colspan="3">No hay actividades registradas.</td>
       </tr>
-      <tr>
-        <th>Fecha de aprobación:</th>
-        <td>{{ plan.fecha_aprobacion|date:"Y-m-d" }}</td>
-      </tr>
-    </table>
+    {% endfor %}
+  </tbody>
+</table>
 
-    <h4>Programación de Actividades (Nivel del CEA: {{ programacion.nivel_auditoria }})</h4>
-    <table>
-        <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Actividad</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for hora_act in hora_actividades %}
-            <tr>
-                <td>{{ hora_act.fecha|date:"Y-m-d" }}</td>
-                <td>{{ hora_act.hora|time:"H:i" }}</td>
-                <td>{{ hora_act.actividad.descripcion }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3">No hay actividades registradas.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<p style="font-size:11.5px; color:#1a237e; margin-top:1em;">
+  La auditoría incluye la verificación del cumplimiento de las disposiciones, políticas, acuerdos, reglamentos y contratos establecidos con AQ CERTIFICATION S.A.S.
+</p>
+
+<div class="firma">
+  <strong>Firma del Representante Legal:</strong>
+  <div class="firma-linea"></div>
+  {{ programacion.cotizacion.solicitud.cliente.representante_legal }}<br>
+  Fecha de aprobación: {{ plan.fecha_aprobacion|date:"Y-m-d" }}
+</div>
+
+<!-- Tabla de riesgos y controles -->
+<table class="tabla-riesgos">
+  <thead>
+    <tr>
+      <th>ITEM</th>
+      <th>RIESGOS</th>
+      <th>CONTROLES PARA ABORDAR LOS RIESGOS</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1.</td>
+      <td>Que se vea afectada la confidencialidad de la información y protección de datos personales en la ejecución de la auditoria.</td>
+      <td>
+        <ul>
+          <li>El personal firma el GEHH-FR-03 (Acuerdo de confidencialidad) con AQ CERTIFICATION S.A.S., en el momento de su contratación.</li>
+          <li>El personal tiene conocimiento acerca del numeral 4.5.1 del DEST-MN-01 (Manual de calidad) en el que se plantea la política de confidencialidad de AQ CERTIFICATION S.A.S.</li>
+          <li>La información suministrada por el auditado se utilizará únicamente para fines de la auditoria.</li>
+          <li>El equipo auditor tendrá acceso y retención de la información el mismo tiempo que lo haría en una auditoria in situ.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>2.</td>
+      <td>Que las actividades de certificación se realicen de manera que afecte la imparcialidad del proceso.</td>
+      <td>
+        <ul>
+          <li>El personal firma el GEHH-FR-05 (Declaración de imparcialidad) con AQ CERTIFICATION S.A.S., en el momento de su contratación.</li>
+          <li>AQ CERTIFICATION S.A.S., garantiza que las actividades de certificación se ejecutan de manera imparcial de acuerdo con los requisitos aplicables para la organización ya sea que se realice la auditoria in situ o remota.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>3.</td>
+      <td>Falta de interacción entre el auditor y el auditado.</td>
+      <td>
+        Se establecen canales de comunicación directos con el fin de que exista una interacción directa entre el auditor y el auditado como por ejemplo (Zoom, Google Meet, Microsoft Teams, entre otros).
+      </td>
+    </tr>
+    <tr>
+      <td>4.</td>
+      <td>No se pueda realizar apropiadamente la validación de la identidad del personal que hace parte de la organización auditada.</td>
+      <td>
+        <ul>
+          <li>En la ejecución de la auditoría se realiza una reunión de apertura y cierre con el auditado a través de plataformas electrónicas que permiten la visualización del personal que hace parte de la organización (Se deja registro de la grabación del proceso siempre y cuando sea autorizado por el auditado).</li>
+          <li>Para el proceso de etapa 2, se debe identificar que el personal que atenderá la auditoria sea coherente con lo estipulado por a organización.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>5.</td>
+      <td>Que durante el proceso de auditoria exista baja calidad de la comunicación y dificultad en la visualización de documentos, ya sea de manera remota o por navegación en sitios web de la organización auditada.</td>
+      <td>
+        <ul>
+          <li>El equipo de AQ CERTIFICATION S.A.S., realizará pruebas previo a la ejecución de la auditoría con el fin de validar la conectividad y que no exista baja calidad en la comunicación.</li>
+          <li>Se establecen canales de comunicación adicionales al principal, con el fin de utilizarlos en caso que exista baja calidad de la comunicación.</li>
+          <li>Se establecen medios tales como el correo o WhatsApp para la transferencia de información en caso de que se presente dificultad en su visualización.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>6.</td>
+      <td>No se hace un uso adecuado de las tecnologías de la información y comunicación (TIC).</td>
+      <td>
+        Desde la solicitud y cotización del servicio se establece si AQ CERTIFICATION S.A.S., y el auditado cuentan con la infraestructura necesaria para respaldar el uso de las TIC, si la auditoria se realiza de manera remota.
+      </td>
+    </tr>
+    <tr>
+      <td>7.</td>
+      <td>Que el organismo de certificación no cuente con la infraestructura necesaria para respaldar el uso de las TIC si la auditoria se realiza de manera remota.</td>
+      <td>
+        Desde la solicitud y cotización del servicio se establece si AQ CERTIFICATION S.A.S., y el auditado cuentan con la infraestructura necesaria para respaldar el uso de las TIC, si la auditoria se realiza de manera remota.
+      </td>
+    </tr>
+    <tr>
+      <td>8.</td>
+      <td>Que el auditado no cuente con la infraestructura necesaria para respaldar el uso de las TIC si la auditoria se realiza de manera remota.</td>
+      <td>
+        Desde la solicitud y cotización del servicio se establece si AQ CERTIFICATION S.A.S., y el auditado cuentan con la infraestructura necesaria para respaldar el uso de las TIC, si la auditoria se realiza de manera remota.
+      </td>
+    </tr>
+    <tr>
+      <td>9.</td>
+      <td>Que el personal involucrado en el proceso realizado de manera remota no cuente con las competencias apropiadas para la prestación del servicio.</td>
+      <td>
+        AQ CERTIFICATION S.A.S., garantiza que todo el personal que se encuentra involucrado en el proceso cuenta con las competencias y el conocimiento adecuado para la prestación del servicio.
+      </td>
+    </tr>
+    <tr>
+      <td>10.</td>
+      <td>Posible manipulación de datos e información.</td>
+      <td>
+        <ul>
+          <li>AQ CERTIFICATION S.A.S., solicita al cliente previo a la ejecución de la auditoria los anexos requeridos para la prestación del servicio con el fin de que el auditor cuente con la información y no sea posible la manipulación de datos de la misma; los anexos son solicitados al auditado a través de los siguientes instructivos:</li>
+          <li>GCOM-IT-01 Instructivo solicitud de documentos esquema tipo 6 (CEAS)</li>
+          <li>GCOM-IT-04 Instructivo solicitud de documentos esquema tipo 6 Resolución No. 20203040011355 de 2020 (CEAS)</li>
+          <li>GCOM-IT-05 Instructivo solicitud de documentos esquema tipo 6 Resolución No. 20203040011355 de 2020 (CIAS)</li>
+          <li>GCOM-IT-06 Instructivo solicitud de documentos esquema tipo 6 Resolución No. 20203040011355 de 2020 (O.T)</li>
+          <li>GCOM-IT-07 Instructivo solicitud de documentos esquema tipo 6 (Bioseguridad)</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 </body>
 </html>
