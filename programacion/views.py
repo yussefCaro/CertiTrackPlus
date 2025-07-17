@@ -14,6 +14,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from weasyprint import HTML
 
+from django.contrib.staticfiles import finders
+
 # Días de auditoría por nivel
 DIAS_AUDITORIA = {
     "Nivel 1": {"etapa_1": 0.5, "etapa_2": 1},
@@ -119,17 +121,22 @@ def listado_programaciones(request):
     }
     return render(request, "programacion/listado_programaciones.html", contexto)
 
+
+
 @login_required
 def imprimir_programacion(request, programacion_id):
     programacion = get_object_or_404(ProgramacionAuditoria, id=programacion_id)
     fechas_etapa2 = FechaEtapa2.objects.filter(programacion=programacion)
     usuario = request.user
 
+    logo_path = finders.find("myapp/AQ_color.png")
+
     context = {
         "programacion": programacion,
         "fechas_etapa2": fechas_etapa2,
         "fecha_hoy": datetime.now().strftime("%d/%m/%Y"),
         "programador_nombre": usuario.get_full_name() or usuario.username,
+        "logo_path": logo_path,
     }
 
     html = render_to_string("programacion/imprimir.html", context)
@@ -138,6 +145,7 @@ def imprimir_programacion(request, programacion_id):
     response = HttpResponse(pdf, content_type="application/pdf")
     response["Content-Disposition"] = 'inline; filename="programacion.pdf"'
     return response
+
 
 @login_required
 def programar_auditoria(request, cotizacion_id):
