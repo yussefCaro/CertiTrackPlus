@@ -1,80 +1,339 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <meta charset="utf-8">
-    <title>Acta de Auditoría</title>
-    <style>
-        body { font-family: sans-serif; font-size: 12px; }
-        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
-        th, td { border: 1px solid #333; padding: 6px; }
-        th { background: #f0f0f0; }
-    </style>
+  <meta charset="UTF-8" />
+  <title>ACTA DE APERTURA Y CIERRE DE AUDITORÍA</title>
+  <style>
+    @page {
+      size: A4;
+      margin-top: 3.5cm;
+      margin-bottom: 2.5cm;
+      margin-left: 2cm;
+      margin-right: 2cm;
+      @top-center { content: element(header-pdf); }
+      @bottom-center {
+        content: "Este documento contiene información confidencial y no puede ser distribuido o reproducido sin autorización escrita de AQ CERTIFICATION S.A.S. "
+                 "Calle 50 No. 73-25 Barrio Normandía – Bogotá TEL: 7022433 www.aqcertification.net.co "
+                 "Página " counter(page) " de " counter(pages);
+        font-size: 10px;
+        color: #222;
+      }
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      font-size: 12pt;
+      color: #181824;
+    }
+    header.header-pdf {
+      position: running(header-pdf);
+      width: 100%;
+      margin-bottom: 2em;
+      border-bottom: 2px solid #38ce3c;
+      padding-bottom: 0.5em;
+    }
+    .header-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-logo {
+      min-width: 170px;
+      text-align: left;
+    }
+    .header-title {
+      flex: 2;
+      text-align: center;
+      font-size: 1.15em;
+      font-weight: bold;
+      color: #1a237e;
+      letter-spacing: 0.5px;
+    }
+    .header-cajas {
+      min-width: 120px;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .info-caja {
+      border: 1.2px solid #222;
+      border-radius: 8px;
+      padding: 3px 16px;
+      background: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      min-width: 105px;
+      text-align: center;
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+    .bloque-cuadro {
+      border: 2px solid #0d6efd;
+      border-radius: 10px;
+      background: #f9fbfd;
+      margin: 22px 0 0 0;
+      padding: 23px 34px 18px 34px;
+      box-shadow: 0 4px 16px 0 rgba(13, 110, 253, 0.07);
+      font-size: 12px;
+      color: #181824;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .bloque-cuadro h3 {
+      color: #1a237e;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 1.16em;
+      letter-spacing: 0.2px;
+    }
+    .bloque-cuadro ul {
+      margin: 0;
+      padding-left: 22px;
+    }
+    .bloque-cuadro li {
+      margin-bottom: 6px;
+      text-align: justify;
+      line-height: 1.55;
+    }
+    .section-title {
+      color: #181824;
+      font-size: 1.04em;
+      margin: 1.7em 0 0.7em 0;
+      border-left: 4px solid #38ce3c;
+      padding-left: 0.5em;
+      font-weight: bold;
+      background: #eafaf1;
+    }
+    .info-table, .info-table-program {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.98em;
+      table-layout: auto;
+      margin-bottom: 1.3em;
+    }
+    .info-table th, .info-table td,
+    .info-table-program th, .info-table-program td {
+      border: 1px solid #b0bec5;
+      padding: 7px 10px;
+      vertical-align: top;
+      text-align: left;
+      font-size: 0.98em;
+    }
+    .info-table th,
+    .info-table-program th {
+      background: #f1f8e9;
+      font-weight: bold;
+      font-size: 1em;
+    }
+    .info-table th { width: 32%; }
+    .tabla-asistentes th, .tabla-asistentes td {
+      border: 1px solid #b0bec5;
+      padding: 7px;
+      text-align: center;
+    }
+    .tabla-asistentes th {
+      background: #f1f8e9;
+      font-weight: bold;
+      font-size: 1em;
+    }
+    .firma {
+      margin-top: 2em;
+      font-size: 1em;
+    }
+    .firma-linea {
+      margin: 1.2em 0 0.5em 0;
+      border-bottom: 1px solid #222;
+      width: 260px;
+    }
+    .firmas-table {
+      width: 100%;
+      margin-top: 32px;
+      border-collapse: collapse;
+    }
+    .firmas-table td {
+      text-align: center;
+      vertical-align: bottom;
+      padding: 36px 25px 8px 25px;
+      border: none;
+    }
+    .tabla-criterios th, .tabla-criterios td {
+      border: 1px solid #b0bec5;
+      padding: 6px 8px;
+      text-align: left;
+      font-size: 12px;
+    }
+    .tabla-criterios th {
+      background: #f1f8e9;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <h2>ACTA DE AUDITORÍA</h2>
-    <table>
-        <tr><th>Número de Servicio</th><td>{{ cotizacion.numero_servicio }}</td></tr>
-        <tr><th>Nombre del Propietario y/o Razón Social</th><td>{{ cliente.nombre_propietario }}</td></tr>
-        <tr><th>Representante Legal</th><td>{{ cliente.representante_legal }}</td></tr>
-        <tr><th>Nombre del Establecimiento Comercial</th><td>{{ cliente.nombre_establecimiento }}</td></tr>
-        <tr><th>NIT</th><td>{{ cliente.nit }}</td></tr>
-        <tr>
-            <th>Fechas de la carta de programación</th>
-            <td>
-                {% for fecha in fechas %}
-                    {{ fecha.fecha|date:"Y-m-d" }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </td>
-        </tr>
-        <tr><th>Nivel del CEA</th><td>{{ programacion.nivel_auditoria }}</td></tr>
-        <tr>
-            <th>Categorías</th>
-            <td>
-                {% for cat in cliente.categorias_certificar.all %}
-                    {{ cat.nombre }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </td>
-        </tr>
-    </table>
+<header class="header-pdf">
+  <div class="header-flex">
+    <div class="header-logo">
+      <img src="file://{{ logo_path }}" alt="Logo AQ Certification" style="height: 55px;">
+      <div style="font-size:13px; font-weight: bold; margin-top: 3px;">NIT. 900509054-9</div>
+    </div>
+    <div class="header-title">
+      ACTA DE APERTURA Y CIERRE DE AUDITORÍA
+    </div>
+    <div class="header-cajas">
+      <div class="info-caja">CERT-FR-04</div>
+      <div class="info-caja">{{ plan.fecha_aprobacion|date:"Y-m-d" }}</div>
+    </div>
+  </div>
+</header>
 
-    <h4>Firmas de aceptación del acta</h4>
-    <table>
-        <tr>
-            <th>Nombre</th>
-            <th>Cargo</th>
-            <th>Firma</th>
-        </tr>
-        <tr>
-            <td>{{ cliente.representante_legal }}</td>
-            <td>Representante Legal</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>{{ auditor }}</td>
-            <td>Auditor</td>
-            <td></td>
-        </tr>
-    </table>
+<div class="bloque-cuadro">
+  <h3>Generalidades del Acta de Auditoría</h3>
+  <ul>
+    <li>Esta acta deja constancia del desarrollo de la reunión de apertura y cierre de la auditoría, en la que se revisaron y acordaron las condiciones, criterios y objetivos del proceso.</li>
+    <li>El equipo auditor y los representantes de la organización auditada registraron su asistencia y compromiso con el proceso y el cumplimiento de sus resultados.</li>
+    <li>El documento cubre la identificación, criterios, objetivos y alcance de la auditoría, así como los riesgos y controles comunicados.</li>
+    <li>La aceptación de este documento por parte del cliente implica el compromiso de cumplir con las acciones acordadas y la confidencialidad del proceso.</li>
+  </ul>
+</div>
 
-    <h4>Registro de Asistencia</h4>
-    <table>
-      <tr>
-        <th>Nombre</th>
-        <th>Cargo</th>
-        <th>Firma apertura</th>
-        <th>Firma cierre</th>
-      </tr>
-      {% for asistente in asistentes %}
-      <tr>
-        <td>{{ asistente.nombre }}</td>
-        <td>{{ asistente.cargo }}</td>
-        <td style="height:40px; border-bottom:1px solid #000;"></td>
-        <td style="height:40px; border-bottom:1px solid #000;"></td>
-      </tr>
-      {% empty %}
-      <tr><td colspan="4">No hay asistentes registrados.</td></tr>
+<div class="section-title">INFORMACIÓN DEL AUDITADO</div>
+<table class="info-table">
+  <tr><th>Número de Servicio</th><td>{{ cotizacion.numero_servicio }}</td></tr>
+  <tr><th>Nombre del Propietario y/o Razón Social</th><td>{{ cliente.nombre_propietario }}</td></tr>
+  <tr><th>Representante Legal</th><td>{{ cliente.representante_legal }}</td></tr>
+  <tr><th>Nombre del Establecimiento Comercial</th><td>{{ cliente.nombre_establecimiento }}</td></tr>
+  <tr><th>NIT</th><td>{{ cliente.nit }}</td></tr>
+  <tr><th>Fechas de la carta de programación</th>
+      <td>
+          {% for fecha in fechas %}
+              {{ fecha.fecha|date:"Y-m-d" }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+      </td>
+  </tr>
+  <tr>
+    <th>Alcance de la auditoría</th>
+    <td>{{ programacion.nivel_auditoria }}, Categorías:
+      {% for cat in cliente.categorias_certificar.all %}
+        {{ cat.nombre }}{% if not forloop.last %}, {% endif %}
       {% endfor %}
-    </table>
+    </td>
+  </tr>
+</table>
+
+<div class="section-title">OBJETIVO Y CRITERIOS DE LA AUDITORÍA</div>
+<table class="info-table">
+  <tr>
+    <th>Objetivo</th>
+    <td>
+      <ul>
+        <li>Verificar la conformidad de los requisitos exigidos por:</li>
+        <li>Resolución 3245 de 2009</li>
+        <li>Decreto Único Reglamentario 1079 de 2015</li>
+        <li>Resolución 20203040011355 de 2020, en sus títulos y capítulos aplicables</li>
+        <li>Resolución 20223040009425 de 2022 del Ministerio de Transporte</li>
+        <li>ISO 9001:2015 - Sistema de Gestión de Calidad</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Criterios</th>
+    <td>
+      <ul>
+        <li>Resolución 3245 de 2009</li>
+        <li>Decreto Único Reglamentario 1079 de 2015 - Título I Capítulo III</li>
+        <li>Resolución 20203040011355 de 2020 - Título II Capítulo I</li>
+        <li>Resolución 20223040009425 de 2022 del Ministerio de Transporte</li>
+        <li>ISO 9001:2015 - Sistema de Gestión de Calidad</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+<div class="section-title">REGISTRO DE ASISTENCIA</div>
+<table class="tabla-asistentes">
+  <tr>
+    <th>Nombre</th>
+    <th>Cargo</th>
+    <th>Firma apertura</th>
+    <th>Firma cierre</th>
+  </tr>
+  {% for asistente in asistentes %}
+  <tr>
+    <td>{{ asistente.nombre }}</td>
+    <td>{{ asistente.cargo }}</td>
+    <td style="height:40px; border-bottom:1px solid #000;"></td>
+    <td style="height:40px; border-bottom:1px solid #000;"></td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="4">No hay asistentes registrados.</td></tr>
+  {% endfor %}
+</table>
+
+<div class="section-title">ITEMS REUNIÓN DE APERTURA Y CIERRE</div>
+<table class="tabla-criterios">
+  <thead>
+    <tr>
+      <th>ITEM</th>
+      <th>CHECK</th>
+      <th>CRITERIO</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1.</td><td>✔️</td><td>Confirmación del conocimiento y la realización de la auditoria según el plan de auditoria que fue aceptado por el cliente</td></tr>
+    <tr><td>2.</td><td>✔️</td><td>Presentación del equipo auditor.</td></tr>
+    <tr><td>3.</td><td>✔️</td><td>Presentación de AQ CERTIFICATION S.A.S., y sus servicios.</td></tr>
+    <tr><td>4.</td><td>✔️</td><td>Presentación y entrega del reglamento de certificación al representante de la dirección.</td></tr>
+    <tr><td>5.</td><td>✔️</td><td>Deberes y derechos de AQ CERTIFICATION S.A.S., (reglamento, uso del certificado, cambios, etc.)</td></tr>
+    <tr><td>6.</td><td>✔️</td><td>Deberes y derechos de la organización auditada (reglamento, uso del certificado, cambios, etc.)</td></tr>
+    <tr><td>7.</td><td>✔️</td><td>Presentación de los participantes del proceso incluyendo una breve descripción de sus funciones.</td></tr>
+    <tr><td>8.</td><td>✔️</td><td>Confirmación de los datos generales de la organización auditada.</td></tr>
+    <tr><td>9.</td><td>✔️</td><td>Confirmación de: objetivos, tipo, alcance y criterios de la auditoría.</td></tr>
+    <tr><td>10.</td><td>✔️</td><td>Divulgación de canales de comunicación entre auditor y auditados.</td></tr>
+    <tr><td>11.</td><td>✔️</td><td>Confirmación de disponibilidad de recursos y logística para el equipo auditor.</td></tr>
+    <tr><td>12.</td><td>✔️</td><td>Presentación de los métodos para gestionar y controlar los riesgos para la organización, que pueden resultar de la presencia del equipo auditor en la ubicación del auditado.</td></tr>
+    <tr><td>13.</td><td>✔️</td><td>Presentación de los métodos para gestionar y controlar los riesgos para la organización, que pueden resultar al realizar la auditoría de manera remota. (Con base al Anexo 1 del plan de auditoría)</td></tr>
+    <tr><td>14.</td><td>✔️</td><td>Compromiso de confidencialidad y protocolos de seguridad de la información.</td></tr>
+    <tr><td>15.</td><td>✔️</td><td>Confirmación de los procedimientos de protección y emergencia para el equipo auditor.</td></tr>
+    <tr><td>16.</td><td>✔️</td><td>Información sobre las condiciones bajo las cuales la auditoría puede darse por terminada prematuramente.</td></tr>
+    <tr><td>17.</td><td>✔️</td><td>Confirmación del estado y clasificación de los hallazgos durante y después de la auditoría.</td></tr>
+    <tr><td>18.</td><td>✔️</td><td>Métodos y procedimientos para utilizar para llevar a cabo la auditoría (Ya sea in situ o de manera remota)</td></tr>
+    <tr><td>19.</td><td>✔️</td><td>Dar a conocer las razones por las que la auditoría se realiza ya sea in situ o remota y establecer un plan de contingencia en caso de cualquier eventualidad que se pueda presentar.</td></tr>
+    <tr><td>20.</td><td>✔️</td><td>Métodos de presentación de la información.</td></tr>
+    <tr><td>21.</td><td>✔️</td><td>Como tratar los posibles hallazgos durante la auditoría.</td></tr>
+    <tr><td>22.</td><td>✔️</td><td>Explicación en el manejo y diligenciamiento de los formatos de AQ CERTIFICATION S.A.S.</td></tr>
+    <tr><td>23.</td><td>✔️</td><td>Procedimiento para presentar quejas, apelaciones a AQ CERTIFICATION S.A.S.</td></tr>
+    <tr><td>24.</td><td>✔️</td><td>Confirmación de la eficacia de la auditoría si se realizó in situ.</td></tr>
+    <tr><td>25.</td><td>✔️</td><td>Confirmación de la eficacia de la auditoría si se realizó de manera remota.</td></tr>
+    <tr><td>26.</td><td>✔️</td><td>Oportunidad de realizar preguntas.</td></tr>
+  </tbody>
+</table>
+
+<div class="section-title">ACEPTACIÓN DE LA EMPRESA</div>
+<div style="margin-bottom: 20px; margin-top: -8px;">
+  <br> Yo, <strong>{{ cliente.representante_legal }}</strong>, Como representante de la organización auditada, desarrollo de forma integral empleando el ciclo P-H-V-A y soy consciente de los resultados y de los compromisos para dar cumplimiento y cierre a este proceso de auditoría realizada por AQ CERTIFICATION S.A.S. </br>
+</div>
+
+<h4 style="margin-top:1.2em; margin-bottom:0.8em;">Firmas de aceptación del acta</h4>
+<table class="firmas-table">
+  <tr>
+    <td>
+      <span style="display:block; margin-bottom:15px;">&nbsp;</span>
+      <hr>
+      <strong>{{ auditor }}</strong><br>
+      Auditor
+    </td>
+    <td>
+      <span style="display:block; margin-bottom:15px;">&nbsp;</span>
+      <hr>
+      <strong>{{ cliente.representante_legal }}</strong><br>
+      Representante Legal
+    </td>
+  </tr>
+</table>
 
 </body>
 </html>
