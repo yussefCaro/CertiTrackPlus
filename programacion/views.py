@@ -12,6 +12,7 @@ from django.forms import inlineformset_factory
 from datetime import datetime
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
+from weasyprint import HTML
 
 # Días de auditoría por nivel
 DIAS_AUDITORIA = {
