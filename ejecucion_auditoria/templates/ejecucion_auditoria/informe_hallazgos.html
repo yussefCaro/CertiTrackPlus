@@ -3,51 +3,12 @@
 {% block content %}
 <div id="informe-hallazgos" class="mt-4">
     <div class="d-print-none text-end">
-        <button class="btn btn-primary" onclick="window.print();">
+        <a href="{% url 'imprimir_informe_hallazgos' acta.id %}"
+           target="_blank" class="btn btn-primary">
             <i class="bi bi-printer"></i> Imprimir Informe de Hallazgos
-        </button>
+        </a>
     </div>
     <h2 class="text-center mb-4">Informe de Hallazgos</h2>
-    <table class="table table-bordered">
-        <tr><th>Número de Servicio</th><td>{{ acta.plan.programacion.cotizacion.numero_servicio }}</td></tr>
-        <tr><th>Nombre del Propietario y/o Razón Social</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</td></tr>
-        <tr><th>Representante Legal</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.representante_legal }}</td></tr>
-        <tr><th>Establecimiento Comercial</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</td></tr>
-        <tr><th>NIT</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nit }}</td></tr>
-        <tr><th>Dirección</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.direccion }}</td></tr>
-        <tr><th>Ciudad</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.ciudad }}</td></tr>
-        <tr><th>Departamento</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.departamento }}</td></tr>
-        <tr><th>Teléfono</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.telefono_celular }}</td></tr>
-        <tr><th>Correo</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.correo_electronico }}</td></tr>
-        <tr><th>Tipo de Servicio</th><td>
-          {% for tipo in programacion.cotizacion.tipo_servicio.all %}
-            {{ tipo.nombre }}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
-        </td></tr>
-        <tr><th>Fechas del Plan de Auditoría</th>
-            <td>
-                Etapa 1: {{ acta.plan.programacion.fecha_programacion_etapa1 }}<br>
-                {% for fecha in acta.plan.programacion.fechas_etapa2.all %}
-                    Etapa 2: {{ fecha.fecha }}<br>
-                {% endfor %}
-            </td>
-        </tr>
-        <tr><th>Nivel del CEA</th><td>{{ acta.plan.programacion.nivel_auditoria }}</td></tr>
-        <tr><th>Categorías</th><td>
-          {% for cat in programacion.cotizacion.solicitud.cliente.categorias_certificar.all %}
-            {{ cat.nombre }}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
-        </td></tr>
-        <tr><th>Checkpoint IAF MD4</th><td>
-          {% if plan.iaf_md4_verificado %}
-            <span>✔</span>
-          {% else %}
-            <span>✘</span>
-          {% endif %}
-        </td></tr>
-        <tr><th>Observaciones</th><td>{{ plan.observaciones }}</td></tr>
-        <tr><th>Auditor</th><td>{{ acta.plan.auditor.get_full_name }}</td></tr>
-    </table>
 
     {% if acta.aspectos_relevantes %}
         <h4 class="mt-4">Aspectos relevantes del servicio auditado</h4>
@@ -126,13 +87,7 @@
     </table>
 
 
-    <div class="mt-5">
-        <strong>Firmas finales de aceptación del documento:</strong>
-        <br><br>
-        ___________________________ &nbsp;&nbsp;&nbsp;&nbsp; ___________________________
-        <br>
-        Auditor &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Representante Legal
-    </div>
+
 </div>
 {% endblock %}
 
