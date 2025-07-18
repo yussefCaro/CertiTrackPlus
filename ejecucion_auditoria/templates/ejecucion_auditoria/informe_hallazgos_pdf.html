@@ -1,0 +1,375 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>INFORME DE HALLAZGOS DE AUDITORÍA</title>
+  <style>
+    @page {
+      size: A4;
+      margin-top: 3.5cm;
+      margin-bottom: 2.5cm;
+      margin-left: 2cm;
+      margin-right: 2cm;
+      @top-center { content: element(header-pdf); }
+      @bottom-center {
+        content: "Este documento contiene información confidencial y no puede ser distribuido o reproducido sin autorización escrita de AQ CERTIFICATION S.A.S. "
+                 "Calle 50 No. 73-25 Barrio Normandía – Bogotá TEL: 7022433 www.aqcertification.net.co "
+                 "Página " counter(page) " de " counter(pages);
+        font-size: 10px;
+        color: #222;
+      }
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      font-size: 12pt;
+      color: #181824;
+    }
+    header.header-pdf {
+      position: running(header-pdf);
+      width: 100%;
+      margin-bottom: 2em;
+      border-bottom: 2px solid #38ce3c;
+      padding-bottom: 0.5em;
+    }
+    .header-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-logo {
+      min-width: 170px;
+      text-align: left;
+    }
+    .header-title {
+      flex: 2;
+      text-align: center;
+      font-size: 1.15em;
+      font-weight: bold;
+      color: #1a237e;
+      letter-spacing: 0.5px;
+    }
+    .header-cajas {
+      min-width: 120px;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .info-caja {
+      border: 1.2px solid #222;
+      border-radius: 8px;
+      padding: 3px 16px;
+      background: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      min-width: 105px;
+      text-align: center;
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+    .bloque-cuadro {
+      border: 2px solid #0d6efd;
+      border-radius: 10px;
+      background: #f9fbfd;
+      margin: 22px 0 0 0;
+      padding: 23px 34px 18px 34px;
+      box-shadow: 0 4px 16px 0 rgba(13, 110, 253, 0.07);
+      font-size: 12px;
+      color: #181824;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .bloque-cuadro h3 {
+      color: #1a237e;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 1.16em;
+      letter-spacing: 0.2px;
+    }
+    .bloque-cuadro ul {
+      margin: 0;
+      padding-left: 22px;
+    }
+    .bloque-cuadro li {
+      margin-bottom: 6px;
+      text-align: justify;
+      line-height: 1.55;
+    }
+    .section-title {
+      color: #181824;
+      font-size: 1.04em;
+      margin: 1.7em 0 0.7em 0;
+      border-left: 4px solid #38ce3c;
+      padding-left: 0.5em;
+      font-weight: bold;
+      background: #eafaf1;
+    }
+    .info-table, .info-table-program {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.98em;
+      table-layout: auto;
+      margin-bottom: 1.3em;
+    }
+    .info-table th, .info-table td
+    {
+      border: 1px solid #b0bec5;
+      padding: 7px 10px;
+      vertical-align: top;
+      text-align: left;
+      font-size: 0.98em;
+    }
+    .info-table th
+    {
+      background: #f1f8e9;
+      font-weight: bold;
+      font-size: 1em;
+      width: 32%;
+    }
+    .table-hallazgos th, .table-hallazgos td {
+      border: 1px solid #b0bec5;
+      padding: 7px 10px;
+      vertical-align: top;
+      text-align: left;
+      font-size: 0.97em;
+    }
+    .table-hallazgos th { background: #eafaf1; font-weight: bold; text-align: center; }
+    .firmas-table {
+      width: 100%;
+      margin-top: 32px;
+      border-collapse: collapse;
+    }
+    .firmas-table td {
+      text-align: center;
+      vertical-align: bottom;
+      padding: 36px 25px 8px 25px;
+      border: none;
+    }
+    .firma {
+      margin-top: 2em;
+      font-size: 1em;
+    }
+    .firma-linea {
+      margin: 1.2em 0 0.5em 0;
+      border-bottom: 1px solid #222;
+      width: 260px;
+    }
+    ul,ol { margin-top: 4px!important; }
+  </style>
+</head>
+<body>
+<header class="header-pdf">
+  <div class="header-flex">
+    <div class="header-logo">
+      <img src="file://{{ logo_path }}" alt="Logo AQ Certification" style="height: 55px;">
+      <div style="font-size:13px; font-weight: bold; margin-top: 3px;">NIT. 900509054-9</div>
+    </div>
+    <div class="header-title">
+      INFORME DE HALLAZGOS DE AUDITORÍA
+    </div>
+    <div class="header-cajas">
+      <div class="info-caja">CERT-FR-05</div>
+      <div class="info-caja">{{ acta.plan.programacion.fecha_programacion_etapa1|date:"Y-m-d" }}</div>
+    </div>
+  </div>
+</header>
+
+<div class="bloque-cuadro">
+  <h3>Generalidades del Informe de Hallazgos</h3>
+  <ul>
+    <li>Este informe contiene los hallazgos y conclusiones identificadas en la auditoría realizada por AQ Certification S.A.S., de acuerdo con los requisitos y criterios establecidos.</li>
+    <li>Incluye información detallada del auditado, conclusiones generales, aspectos de mejora y no conformidades identificadas durante la auditoría.</li>
+    <li>El contenido de este documento es confidencial y de uso exclusivo para la empresa auditada y AQ Certification S.A.S.</li>
+  </ul>
+</div>
+
+<div class="section-title">INFORMACIÓN DEL AUDITADO</div>
+<table class="info-table">
+  <tr><th>Número de Servicio</th><td>{{ acta.plan.programacion.cotizacion.numero_servicio }}</td></tr>
+  <tr><th>Nombre del Propietario y/o Razón Social</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</td></tr>
+  <tr><th>Representante Legal</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.representante_legal }}</td></tr>
+  <tr><th>Establecimiento Comercial</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</td></tr>
+  <tr><th>NIT</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nit }}</td></tr>
+  <tr><th>Dirección</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.direccion }}</td></tr>
+  <tr><th>Ciudad</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.ciudad }}</td></tr>
+  <tr><th>Departamento</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.departamento }}</td></tr>
+  <tr><th>Teléfono</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.telefono_celular }}</td></tr>
+  <tr><th>Correo</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.correo_electronico }}</td></tr>
+</table>
+
+<div class="section-title">INFORMACIÓN DE LA AUDITORÍA</div>
+<table class="info-table">
+  <tr>
+    <th>Tipo de Servicio</th>
+    <td>
+      {% for tipo in programacion.cotizacion.tipo_servicio.all %}
+        {{ tipo.nombre }}{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </td>
+  </tr>
+  <tr>
+    <th>Fechas del Plan de Auditoría</th>
+    <td>
+      Etapa 1: {{ acta.plan.programacion.fecha_programacion_etapa1 }}<br />
+      {% for fecha in acta.plan.programacion.fechas_etapa2.all %}
+        Etapa 2: {{ fecha.fecha }}<br />
+      {% endfor %}
+    </td>
+  </tr>
+  <tr>
+    <th>Alcance de la auditoría</th>
+    <td>
+      Nivel del CEA: {{ acta.plan.programacion.nivel_auditoria }}, Categorías:
+      {% for cat in programacion.cotizacion.solicitud.cliente.categorias_certificar.all %}
+        {{ cat.nombre }}{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </td>
+  </tr>
+  <tr>
+    <th>Checkpoint IAF MD4</th>
+    <td>
+      {% if plan.iaf_md4_verificado %}
+        <span>✔</span>
+      {% else %}
+        <span>✘</span>
+      {% endif %}
+    </td>
+  </tr>
+  <tr>
+    <th>Criterios de la auditoría</th>
+    <td>
+      <ul>
+        <li>Resolución 3245 de 2009</li>
+        <li>Decreto Único Reglamentario 1079 de 2015 - Título I Capítulo III</li>
+        <li>Resolución 20203040011355 de 2020 - Título II Capítulo I</li>
+        <li>Resolución 20223040009425 de 2022 del Ministerio de Transporte</li>
+        <li>ISO 9001:2015 - Sistema de Gestión de Calidad</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Observaciones</th>
+    <td>{{ plan.observaciones }}</td>
+  </tr>
+  <tr>
+    <th>Auditor</th>
+    <td>{{ acta.plan.auditor.get_full_name }}</td>
+  </tr>
+</table>
+
+<div class="section-title">RESULTADOS DE AUDITORÍA</div>
+<table class="info-table">
+  <tr>
+    <th>Conclusiones sobre uso TIC</th>
+    <td>A lo largo del proceso se utiliza la aplicación WhatsApp y correo electrónico para el envío y recepción de información requerida para la auditoría.</td>
+  </tr>
+  <tr>
+    <th>Grado de cumplimiento de objetivos</th>
+    <td>
+      <ul>
+        <li>Se verificó que el proceso de auditoria cumple con los requisitos exigidos por:</li>
+        <li>La resolución 3245 de 2009</li>
+        <li>Decreto 1079 de 2015</li>
+        <li>Resolución 20203040011355 de 2020</li>
+        <li>Resolución 20223040009425 de 2022 del Ministerio de Transporte</li>
+        <li>ISO 9001:2015 - Sistema de Gestión de Calidad</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+{% if acta.aspectos_relevantes %}
+  <div class="section-title">Aspectos Relevantes del Servicio Auditado</div>
+  <div class="bloque-cuadro" style="padding: 13px 23px 13px 23px; background: #fffde7;">
+    <p>{{ acta.aspectos_relevantes|linebreaks }}</p>
+  </div>
+{% endif %}
+
+<div class="section-title">Aspectos de Mejora</div>
+<table class="table-hallazgos">
+  <thead>
+    <tr>
+      <th style="width:3%;">#</th>
+      <th style="width:22%;">Criterio/Requisito</th>
+      <th style="width:75%;">Observación</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ejec in ejecuciones %}
+        {% if ejec.aspecto_mejora %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ ejec.requisito.nombre }}</td>
+            <td>{{ ejec.concepto_mejora }}</td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="section-title">No Conformidades</div>
+<table class="table-hallazgos">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Criterio/Requisito</th>
+      <th>Motivo</th>
+      <th>¿Cómo se subsanó?</th>
+      <th>Subsanado</th>
+      <th>Firma Representante Legal</th>
+      <th>Firma Auditor</th>
+      <th>Fecha</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ejec in ejecuciones %}
+      {% if ejec.no_cumple %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ ejec.requisito.nombre }}</td>
+        <td>{{ ejec.concepto_no_conformidad }}</td>
+        <td>{{ ejec.como_se_subsano }}</td>
+        <td>{% if ejec.subsanado %}✔{% else %}✘{% endif %}</td>
+        <td style="height: 60px;"></td>
+        <td style="height: 60px;"></td>
+        <td>
+          {% if acta.plan.programacion.fechas_etapa2.last %}
+            {{ acta.plan.programacion.fechas_etapa2.last.fecha }}
+          {% else %}
+            {{ acta.plan.programacion.fecha_programacion_etapa1 }}
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="section-title">Aceptar Informe</div>
+<div style="margin-bottom: 20px; margin-top: -8px;">
+  Yo, <strong>{{ acta.plan.programacion.cotizacion.solicitud.cliente.representante_legal }}</strong>, como representante legal de la organización auditada, acepto y reconozco los compromisos y resultados indicados en este informe de auditoría desarrollado por AQ Certification S.A.S.
+</div>
+
+<h4 style="margin-top:1.2em; margin-bottom:0.8em;">Firmas de aceptación del informe</h4>
+<table class="firmas-table">
+  <tr>
+    <td>
+      <span style="display:block; margin-bottom:15px;">&nbsp;</span>
+      <hr>
+      <strong>{{ acta.plan.auditor.get_full_name }}</strong><br>
+      Auditor
+    </td>
+    <td>
+      <span style="display:block; margin-bottom:15px;">&nbsp;</span>
+      <hr>
+      <strong>{{ acta.plan.programacion.cotizacion.solicitud.cliente.representante_legal }}</strong><br>
+      Representante Legal
+    </td>
+  </tr>
+</table>
+</body>
+</html>

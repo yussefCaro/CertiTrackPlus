@@ -30,7 +30,8 @@
                                     <th>Acción</th>
                                     <th>Acta de apertura y cierre</th>
                                     <th>Asistentes</th>
-                                    <th>Ejecución</th>  <!-- Nueva columna -->
+                                    <th>Ejecución</th>
+                                    <th>Informe de Hallazgos</th><!-- Nueva columna -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -78,6 +79,15 @@
                                             </a>
                                         {% else %}
                                             <span class="text-secondary">No disponible</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if plan.acta %}
+                                            <a href="{% url 'imprimir_informe_hallazgos' plan.acta.id %}" class="btn btn-outline-primary btn-sm" target="_blank">
+                                                <i class="bi bi-file-earmark-arrow-down"></i> Imprimir informe de hallazgos
+                                            </a>
+                                        {% else %}
+                                            <span class="text-secondary">Pendiente acta</span>
                                         {% endif %}
                                     </td>
                                 </tr>

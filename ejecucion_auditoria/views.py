@@ -9,6 +9,9 @@ from documentacion_auditores.forms import ActaAuditoriaForm
 from .forms import EjecucionBaseFormSet, EjecucionRequisitoForm
 from documentacion_auditores.models import ActaAuditoria
 from ejecucion_auditoria.models import RequisitoAuditoria, EjecucionRequisito
+from weasyprint import HTML
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 
 @login_required
 def ejecucion_auditoria(request, acta_id):
@@ -243,3 +246,28 @@ def informe_hallazgos(request, acta_id):
         'programacion': programacion,
         'ejecuciones': ejecuciones,
     })
+@login_required
+def imprimir_informe_hallazgos(request, acta_id):
+    acta = get_object_or_404(ActaAuditoria, id=acta_id)
+    ejecuciones = EjecucionRequisito.objects.filter(acta=acta).order_by('requisito__id')
+    plan = acta.plan
+    programacion = plan.programacion
+
+    from django.contrib.staticfiles import finders
+    logo_path = finders.find('myapp/AQ_color.png')  # Ajusta según tu ruta de logo
+
+    html_string = render_to_string(
+        'ejecucion_auditoria/informe_hallazgos_pdf.html',
+        {
+            'acta': acta,
+            'plan': plan,
+            'programacion': programacion,
+            'ejecuciones': ejecuciones,
+            'logo_path': logo_path,
+            'user': request.user,
+        }
+    )
+    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf()
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'filename=InformeHallazgos_{acta_id}.pdf'
+    return response
