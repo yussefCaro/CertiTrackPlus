@@ -271,3 +271,36 @@ def imprimir_informe_hallazgos(request, acta_id):
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'filename=InformeHallazgos_{acta_id}.pdf'
     return response
+
+
+@login_required
+def imprimir_informe_auditoria(request, acta_id):
+    acta = get_object_or_404(ActaAuditoria, id=acta_id)
+    ejecuciones = EjecucionRequisito.objects.filter(acta=acta).order_by('requisito__id')
+    plan = acta.plan
+    programacion = plan.programacion
+
+    # Lógica de marca de agua y recomendación (igual)
+    no_conformidades_pendientes = ejecuciones.filter(no_cumple=True, subsanado=False).exists()
+    recomendacion_auditor = getattr(acta, 'recomendacion_auditor', None)
+
+    from django.contrib.staticfiles import finders
+    logo_path = finders.find('myapp/AQ_color.png')
+
+    html_string = render_to_string(
+        'ejecucion_auditoria/informe_auditoria_pdf.html',   # <--- Cambia solo el template aquí
+        {
+            'acta': acta,
+            'plan': plan,
+            'programacion': programacion,
+            'ejecuciones': ejecuciones,
+            'logo_path': logo_path,
+            'user': request.user,
+            'no_conformidades_pendientes': no_conformidades_pendientes,
+            'recomendacion_auditor': recomendacion_auditor,
+        }
+    )
+    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf()
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'filename=InformeAuditoria_{acta_id}.pdf'
+    return response

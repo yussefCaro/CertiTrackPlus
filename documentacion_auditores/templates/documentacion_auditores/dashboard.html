@@ -31,7 +31,8 @@
                                     <th>Acta de apertura y cierre</th>
                                     <th>Asistentes</th>
                                     <th>Ejecución</th>
-                                    <th>Informe de Hallazgos</th><!-- Nueva columna -->
+                                    <th>Informe de Hallazgos</th>
+                                    <th>Informe de Auditoria</th><!-- Nueva columna -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -90,6 +91,18 @@
                                             <span class="text-secondary">Pendiente acta</span>
                                         {% endif %}
                                     </td>
+
+                                    <td>
+                                        {% if plan.acta and plan.acta.id %}
+                                            <a href="{% url 'imprimir_informe_auditoria' plan.acta.id %}"
+                                               class="btn btn-primary btn-sm mb-1" target="_blank">
+                                                <i class="bi bi-printer"></i> Imprimir Informe de Auditoría
+                                            </a>
+                                        {% else %}
+                                            <span class="text-secondary">Pendiente acta</span>
+                                        {% endif %}
+                                    </td>
+
                                 </tr>
                                 {% endfor %}
                             </tbody>

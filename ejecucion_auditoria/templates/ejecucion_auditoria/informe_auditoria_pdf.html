@@ -1,0 +1,385 @@
+{% load static filters %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>INFORME DE AUDITORÍA</title>
+  <style>
+    @page {
+      size: A4;
+      margin-top: 108px;
+      margin-bottom: 57px;
+      margin-left: 2.1cm;
+      margin-right: 2.1cm;
+      @top-center { content: element(header-institucional);}
+      @bottom-center { content: element(footer-institucional);}
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 1.03em;
+      color: #22323d;
+      margin: 0;
+      background: #fff;
+    }
+    .header-institucional {
+      position: running(header-institucional);
+      height: 93px;
+      border-bottom: 3.2px solid #38ce3c;
+      background: #fff;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 6px;
+      box-sizing: border-box;
+      gap: 18px;
+    }
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 170px;
+      gap: 3px;
+    }
+    .header-logo { height: 55px; max-width: 125px; margin-left: 1px; }
+    .header-nit-label { font-size: 14.2px; font-weight: bold; color: #19476f;}
+    .header-title-wrap {
+      flex: 1;
+      text-align: center;
+      margin: 0 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .header-title {
+      font-size: 1.27em;
+      font-weight: 700;
+      color: #20305f;
+      letter-spacing: .01em;
+      line-height: 1.19;
+    }
+    .header-subtitle {
+      font-size: .98em;
+      color: #4782b6;
+      margin-top: 0.7em;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      line-height: 1.06;
+    }
+    .header-info-cajas {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      min-width:113px;
+    }
+    .header-caja {
+      border: 1.25px solid #19476f;
+      border-radius: 6px;
+      padding: 4px 21px;
+      min-width: 109px;
+      text-align: center;
+      font-size: 1em;
+      background: #f7fafc;
+      font-weight: 600;
+      color: #1c3354;
+    }
+
+    .footer-institucional {
+      position: running(footer-institucional);
+      height: 32px;
+      width: 100%;
+      font-size: 10.4px;
+      color: #2a2a2a;
+      text-align: center;
+      background: #fff;
+      opacity: 0.90;
+      display: flex;
+      align-items: center;
+      border-top: 1px solid #b7b7b7;
+      justify-content: center;
+      letter-spacing: 0.03em;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .pdf-container {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+    .titulo-bloque {
+      font-size: 1.06em;
+      font-weight: 700;
+      color: #125900;
+      border-left: 4px solid #38ce3c;
+      background: #f8fdf3;
+      margin: 1.08em 0 .6em 0;
+      padding-left: .75em;
+      letter-spacing: 0.01em;
+      border-radius: 3px 0 0 3px;
+    }
+    table, .table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      margin-bottom: 0.85em;
+      font-size: 0.99em;
+    }
+    th, td {
+      border: 1px solid #b0bec5;
+      padding: 5px 6px;
+      background: #fff;
+      color: #21242a;
+      font-size: 0.99em;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-line;
+      vertical-align: top;
+    }
+    .table thead th { background: #173d2d linear-gradient(90deg, #173d2d 67%, #219c3c 100%); color: #fff; }
+    .table th { font-weight: bold; color: #125900;}
+    .table-bordered th, .table-bordered td { border: 1px solid #b0bec5; }
+    .tabla-hallazgos td, .tabla-hallazgos th {
+      font-size: 0.95em;
+      max-width: 140px;
+      word-break: break-word;
+    }
+    .celda-numero { text-align: right; padding-right: 13px !important; font-size:1em; color:#125900; font-weight: bold;}
+    .firma-bloque { margin-top:2em; font-size:1em; }
+    .firma-linea { margin:0.75em 0 0.3em 0; border-bottom:1px solid #222; width: 170px; }
+    img { max-width: 100%; height: auto; }
+    .alert-info {
+      background: #e9fce6;
+      color: #214e2b;
+      border: 1px solid #80ca93;
+      border-radius: 5px;
+      padding:9px 15px;
+      margin: 12px 0 17px 0;
+      font-size: .97em;
+    }
+    .badge {
+      border-radius: 11px;
+      background: #29cc97;
+      color: #fff;
+      padding:2px 15px;
+      font-size:0.95em;
+      margin-right:5px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Encabezado institucional -->
+<div class="header-institucional">
+  <div class="header-left">
+    <img src="{{ logo_path }}" alt="Logo AQ Certification" class="header-logo">
+    <span class="header-nit-label">NIT. 900509054-9</span>
+  </div>
+  <div class="header-title-wrap">
+    <div class="header-title">
+      INFORME DE AUDITORÍA
+    </div>
+    <div class="header-subtitle">
+      Lista de Verificación y Hallazgos
+    </div>
+  </div>
+  <div class="header-info-cajas">
+    <div class="header-caja">{{ codigo_formato|default:"CERT-FR-06" }}</div>
+    <div class="header-caja">{{ fecha_informe|date:"Y-m-d"|default:"2025-07-21" }}</div>
+  </div>
+</div>
+
+<!-- Pie de página institucional (fijo en todas las hojas en PDF) -->
+<div class="footer-institucional">
+  Este documento contiene información confidencial de AQ CERTIFICATION S.A.S. ·
+  Calle 50 No. 73-25 Barrio Normandía – Bogotá · TEL: 7022433 · www.aqcertification.net.co
+</div>
+
+<div class="pdf-container">
+
+  <!-- Bloque de plan de muestreo -->
+  <div style="background: #eaf6fb; border: 1px solid #b6d4e7; padding: 13px 13px 7px 14px; margin-bottom: 19px; font-size: 1em; border-radius: 7px;">
+    <strong>NOTA:</strong> El plan de muestreo aplica para registros de estudiantes (inscripción, contrato, clases, evaluaciones, datos en plataformas, etc.).
+    <span style="color:#1a8510;">Los registros de vehículos, instructores, cumplimiento normativo, etc., se revisan al 100%.</span>
+    <br>
+    <div style="margin-top: 7.5px; font-size: 0.98em;">
+      <strong>Si el muestreo no cumple o está en Ac-Re, se aplicará plan NAC 2.5%, Normal, Tipo General 1A, Inspección normal ISO 2859-1.</strong>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-top: 14px;">
+      <div style="width: 48%; text-align: center;">
+        <strong>PLAN INSPECCIÓN MUESTREO NORMAL</strong><br>
+        UNIVERSO: <span style="font-weight: bold;">{{ acta.universo_normal }}</span><br>
+        POBLACIÓN: <span style="font-weight: bold;">{{ acta.poblacion_normal }}</span><br>
+        MUESTRA: <span style="font-weight: bold;">{{ acta.muestra_normal }}</span>
+      </div>
+      <div style="width: 48%; text-align: center;">
+        <strong>PLAN INSPECCIÓN MUESTREO REDUCIDO</strong><br>
+        UNIVERSO: <span style="font-weight: bold;">{{ acta.universo_reducido }}</span><br>
+        POBLACIÓN: <span style="font-weight: bold;">{{ acta.poblacion_reducido }}</span><br>
+        MUESTRA: <span style="font-weight: bold;">{{ acta.muestra_reducido }}</span>
+      </div>
+    </div>
+    <div style="margin-top: 10px; font-size: 0.93em;">
+      <span style="display:inline-block; width: 49%; vertical-align: top;">
+        <strong>NOTA:</strong> Universo: totalidad de elementos posibles.<br>
+        <strong>NOTA:</strong> Población: subconjunto sobre el que se estudia.
+      </span>
+      <span style="display:inline-block; width: 49%; vertical-align: top;">
+        <strong>NOTA:</strong> Muestra: subconjunto de la población para estudio directo.
+      </span>
+    </div>
+  </div>
+  <!-- /fin bloque de muestreo -->
+
+  <div class="titulo-bloque">Datos Generales</div>
+  <table class="table table-bordered">
+    <tr><th>Número de Servicio</th><td>{{ acta.plan.programacion.cotizacion.numero_servicio|default:"–" }}</td></tr>
+    <tr><th>Nombre del Propietario y/o Razón Social</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento|default:"–" }}</td></tr>
+    <tr><th>Representante Legal</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.representante_legal|default:"–" }}</td></tr>
+    <tr><th>Establecimiento Comercial</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento|default:"–" }}</td></tr>
+    <tr><th>NIT</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nit|default:"–" }}</td></tr>
+    <tr><th>Dirección</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.direccion|default:"–" }}</td></tr>
+    <tr><th>Ciudad</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.ciudad|default:"–" }}</td></tr>
+    <tr><th>Departamento</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.departamento|default:"–" }}</td></tr>
+    <tr><th>Teléfono</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.telefono_celular|default:"–" }}</td></tr>
+    <tr><th>Correo</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.correo_electronico|default:"–" }}</td></tr>
+  </table>
+
+  <div class="titulo-bloque">Información de la Auditoría</div>
+  <table class="table table-bordered">
+    <tr>
+      <th>Tipo de Servicio</th>
+      <td>
+        {% for tipo in programacion.cotizacion.tipo_servicio.all %}
+          {{ tipo.nombre }}{% if not forloop.last %}, {% endif %}
+        {% empty %} – {% endfor %}
+      </td>
+    </tr>
+    <tr>
+      <th>Fechas del Plan de Auditoría</th>
+      <td>
+        Etapa 1: {{ acta.plan.programacion.fecha_programacion_etapa1 }}<br />
+        {% for fecha in acta.plan.programacion.fechas_etapa2.all %}
+          Etapa 2: {{ fecha.fecha }}<br />
+        {% endfor %}
+      </td>
+    </tr>
+    <tr>
+      <th>Alcance de la Auditoría</th>
+      <td>
+        Nivel del CEA: {{ acta.plan.programacion.nivel_auditoria }}, Categorías:
+        {% for cat in programacion.cotizacion.solicitud.cliente.categorias_certificar.all %}
+          {{ cat.nombre }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </td>
+    </tr>
+    <tr>
+      <th>Checkpoint IAF MD4</th>
+      <td>
+        {% if plan.iaf_md4_verificado %}✔{% else %}✘{% endif %}
+      </td>
+    </tr>
+    <tr><th>Auditor</th><td>{{ acta.plan.auditor.get_full_name|default:"–" }}</td></tr>
+  </table>
+
+  {% if acta.aspectos_relevantes %}
+    <div class="titulo-bloque">Aspectos relevantes del servicio auditado</div>
+    <div style="background:#fffde7; border:1px solid #ffe082; padding:10px 14px; margin-bottom:17px; border-radius:5px;">
+      {{ acta.aspectos_relevantes|linebreaks }}
+    </div>
+  {% endif %}
+
+  <div class="titulo-bloque">Lista de Verificación y Hallazgos</div>
+  <table class="table table-bordered tabla-hallazgos" style="font-size:0.96em;">
+    <thead>
+      <tr>
+        <th style="width:6%;" class="celda-numero">#</th>
+        <th style="width:94%;">Criterio / Requisito · Evaluación y Conceptos</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ejec in ejecuciones %}
+      <tr>
+        <td class="celda-numero">{{ forloop.counter }}</td>
+        <td>
+          <div style="font-weight:bold; color:#183153;">{{ ejec.requisito.nombre|default:"(Sin nombre de criterio)" }}</div>
+          <div style="font-size:0.98em; color:#2e4156;">{{ ejec.requisito.descripcion|default:"–" }}</div>
+          <div style="font-size:0.95em; color:#22795b;">Checkpoint IAF MD4: {{ ejec.requisito.checkpoint_iaf_md4|default:"–" }}</div>
+          <table class="table table-sm mb-0 mt-2 tabla-hallazgos" style="width:100%; font-size:0.93em;">
+            <tr>
+              <th style="width:14%;">Cumple</th>
+              <th style="width:16%;">No Cumple</th>
+              <th style="width:17%;">Aspecto de Mejora</th>
+              <th style="width:12%;">No Aplica</th>
+              <th style="width:17%;">Subsanado</th>
+              <th style="width:24%;">Evidencia</th>
+            </tr>
+            <tr>
+              <td>{% if ejec.cumple %}✔{% else %}–{% endif %}</td>
+              <td>
+                {% if ejec.no_cumple %}✔{% endif %}
+                {% if ejec.no_cumple and ejec.concepto_no_conformidad %}
+                  <div><strong>Motivo:</strong> {{ ejec.concepto_no_conformidad }}</div>
+                {% else %}–{% endif %}
+              </td>
+              <td>
+                {% if ejec.aspecto_mejora %}✔{% endif %}
+                {% if ejec.aspecto_mejora and ejec.concepto_mejora %}
+                  <div><strong>Observación:</strong> {{ ejec.concepto_mejora }}</div>
+                {% else %}–{% endif %}
+              </td>
+              <td>{% if ejec.no_aplica %}✔{% else %}–{% endif %}</td>
+              <td>
+                {% if ejec.subsanado %}✔{% endif %}
+                {% if ejec.como_se_subsano %}
+                  <div style="color: #2a6f2a;"><strong>¿Cómo se subsanó?</strong> {{ ejec.como_se_subsano }}</div>
+                {% else %}–{% endif %}
+              </td>
+              <td>
+                {% if ejec.get_evidencia_display %}{{ ejec.get_evidencia_display }}{% else %}–{% endif %}
+                {% if ejec.concepto_evidencia %}
+                  <div><strong>Detalle:</strong> {{ ejec.concepto_evidencia }}</div>
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <th>Imágenes</th>
+              <td colspan="5">
+                {% if ejec.imagen1 %}<img src="{{ ejec.imagen1.url }}" width="70">{% endif %}
+                {% if ejec.imagen2 %}<img src="{{ ejec.imagen2.url }}" width="70">{% endif %}
+                {% if not ejec.imagen1 and not ejec.imagen2 %}–{% endif %}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="alert-info">
+    <strong>Nota:</strong> Este documento se adjunta con el listado de vehículos e instructores cargado en el plan de auditoría.
+  </div>
+
+  {% if acta.recomendaciones %}
+    <div class="alert-info" style="margin-top: 1em;">
+      <strong>Recomendación del auditor:</strong>
+      {% for rec in acta.recomendaciones|split:"," %}
+        <span class="badge">{{ rec }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="firma-bloque">
+    <div class="firma-linea"></div>
+    <strong>{{ acta.plan.auditor.get_full_name|default:"–" }}</strong><br>
+    Auditor
+  </div>
+  <div class="firma-bloque" style="margin-top:33px;">
+    <div class="firma-linea"></div>
+    <strong>{{ acta.plan.programacion.cotizacion.solicitud.cliente.representante_legal|default:"–" }}</strong><br>
+    Representante Legal
+  </div>
+</div>
+</body>
+</html>
