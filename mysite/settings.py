@@ -19,7 +19,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 DEBUG = True
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['72.60.114.139', 'localhost', '127.0.0.1']
+
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
@@ -91,11 +92,16 @@ IS_RENDER = os.environ.get('RENDER_EXTERNAL_HOSTNAME') is not None
 if IS_RENDER:
     # Configuración para Render (usa PostgreSQL)
     DATABASES = {
-        'default': dj_database_url.config(
-            default='postgresql://postgres:postgres@localhost/postgres',
-            conn_max_age=600
-        )
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'certitrackdb',
+            'USER': 'certitrackuser',
+            'PASSWORD': 'C4ROYU553FCa',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
     }
+
 else:
     # Configuración para desarrollo local (usa SQLite)
     DATABASES = {
