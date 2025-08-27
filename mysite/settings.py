@@ -13,6 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -95,7 +96,6 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 IS_RENDER = os.environ.get('RENDER_EXTERNAL_HOSTNAME') is not None
 
 if IS_RENDER:
-    # Configuración para Render (usa PostgreSQL)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -104,8 +104,13 @@ if IS_RENDER:
             'PASSWORD': 'C4ROYU553FCa',
             'HOST': 'localhost',
             'PORT': '5432',
+            'CONN_MAX_AGE': 600,  # Reutilizar conexiones
+            'OPTIONS': {
+                'sslmode': 'prefer',  # Usar SSL si está disponible
+            },
         }
     }
+
 
 else:
     # Configuración para desarrollo local (usa SQLite)
@@ -153,7 +158,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -170,7 +175,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 
