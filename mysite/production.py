@@ -1,7 +1,8 @@
 from .base import *
 
 DEBUG = False
-ALLOWED_HOSTS = ['tudominio.com', 'www.tudominio.com']
+ALLOWED_HOSTS = ['72.60.114.139', 'localhost', '127.0.0.1']
+
 
 DATABASES = {
     'default': {
