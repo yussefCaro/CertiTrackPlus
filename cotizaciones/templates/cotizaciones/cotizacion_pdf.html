@@ -106,6 +106,33 @@
     .info-table td {
       background: #fff;
     }
+    /* --- Estilo tabla de días de auditoría --- */
+    .audit-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-family: Arial, sans-serif;
+      font-size: 0.95em;
+      text-align: center;
+    }
+    .audit-table th {
+      background-color: #e8eaf6;
+      color: #1a237e;
+      font-weight: bold;
+      padding: 8px;
+      border: 1px solid #999;
+    }
+    .audit-table td {
+      border: 1px solid #999;
+      padding: 8px;
+    }
+    .audit-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .audit-table tr:hover {
+      background-color: #f1f7ff;
+    }
+    /* --- */
     .condiciones-pago {
       border: 1.5px solid #222;
       border-radius: 7px;
@@ -143,53 +170,67 @@
 </head>
 <body>
   <header class="header-pdf">
-  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-    <!-- Logo y NIT a la izquierda -->
-    <div style="min-width: 200px; text-align: left;">
-      <img src="file://{{ logo_path }}" alt="Logo AQ Certification" style="height: 55px;">
-      <div style="font-size: 0.95em; color: #181824; font-weight: bold; margin-top: 4px;">
-        NIT. 900509054-9
+    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+      <!-- Logo y NIT a la izquierda -->
+      <div style="min-width: 200px; text-align: left;">
+        <img src="file://{{ logo_path }}" alt="Logo AQ Certification" style="height: 55px;">
+        <div style="font-size: 0.95em; color: #181824; font-weight: bold; margin-top: 4px;">
+          NIT. 900509054-9
+        </div>
+      </div>
+      <!-- Título centrado -->
+      <div style="flex: 2; text-align: center;">
+        <span style="font-size: 1.15em; font-weight: bold; color: #181824; letter-spacing: 0.5px;">
+          COTIZACIÓN DE SERVICIOS CENTROS DE ENSEÑANZA<br>
+          AUTOMOVILÍSTICA.
+        </span>
+      </div>
+      <!-- Datos a la derecha -->
+      <div style="min-width: 120px; text-align: right; display: flex; flex-direction: column; gap: 8px;">
+        <div style="border: 1.2px solid #222; border-radius: 7px; padding: 3px 16px; display: inline-block; font-size: 12px;">
+          GCOM-FR-03
+        </div>
+        <div style="border: 1.2px solid #222; border-radius: 7px; padding: 3px 16px; display: inline-block; font-size: 12px;">
+          2025-09-04
+        </div>
       </div>
     </div>
-    <!-- Título centrado -->
-    <div style="flex: 2; text-align: center;">
-      <span style="font-size: 1.15em; font-weight: bold; color: #181824; letter-spacing: 0.5px;">
-        COTIZACIÓN DE SERVICIOS CENTROS DE ENSEÑANZA<br>
-        AUTOMOVILÍSTICA.
-      </span>
-    </div>
-    <!-- Datos a la derecha -->
-    <div style="min-width: 120px; text-align: right; display: flex; flex-direction: column; gap: 8px;">
-      <div style="border: 1.2px solid #222; border-radius: 7px; padding: 3px 16px; display: inline-block; font-size: 12px;">
-        GCOM-FR-02
-      </div>
-      <div style="border: 1.2px solid #222; border-radius: 7px; padding: 3px 16px; display: inline-block; font-size: 12px;">
-        2024-03-14
-      </div>
-    </div>
-  </div>
-</header>
+  </header>
+
+  {% if dias_cliente %}
+  <div class="section-title">Días de auditoría por nivel CEA</div>
+  <table class="audit-table">
+    <thead>
+      <tr>
+        <th>Nivel del CEA</th>
+        <th>Etapa 1</th>
+        <th>Etapa 2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ nivel_cliente }}</td>
+        <td>{{ dias_cliente.etapa1 }}</td>
+        <td>{{ dias_cliente.etapa2 }}</td>
+      </tr>
+    </tbody>
+  </table>
+  {% endif %}
 
   <h2>Detalles de la Cotización</h2>
 
   <table class="info-table">
     <tr>
-      <th>ID</th>
-      <td>{{ cotizacion.id }}</td>
       <th>Número de Servicio</th>
       <td>{{ cotizacion.numero_servicio }}</td>
-    </tr>
-    <tr>
-      <th>Cliente</th>
-      <td>{{ cliente.nombre_propietario }}</td>
-      <th>Nombre del Establecimiento</th>
-      <td>{{ cliente.nombre_establecimiento }}</td>
-    </tr>
-    <tr>
-      <th>Estado</th>
-      <td><span class="badge-estado">{{ cotizacion.solicitud.estado }}</span></td>
       <th>NIT</th>
       <td>{{ cliente.nit }}</td>
+    </tr>
+    <tr>
+      <th>Nombre de propietario y/o razón social</th>
+      <td>{{ cliente.nombre_propietario }}</td>
+      <th>Establecimiento de comercio</th>
+      <td>{{ cliente.nombre_establecimiento }}</td>
     </tr>
     <tr>
       <th>Nombre del Representante</th>
@@ -207,6 +248,10 @@
       <th class="precio-total">Precio Total (con IVA)</th>
       <td class="precio-total">${{ cotizacion.precio_total|floatformat:2|intcomma }}</td>
       <th colspan="2" class="observacion">Precio con IVA incluido</th>
+    </tr>
+    <tr>
+      <th>Estado</th>
+      <td><span class="badge-estado">{{ cotizacion.solicitud.estado }}</span></td>
     </tr>
   </table>
 
@@ -237,12 +282,10 @@
           No especificado
         {% endfor %}
       </td>
-      <th>Nivel del CEA</th>
-      <td>{{ cliente.nivel_cea }}</td>
     </tr>
     <tr>
-      <th>Categorías</th>
-      <td colspan="3">
+      <th>Alcance</th>
+      <td>{{ cliente.nivel_cea }} - Categorías a Certificar:
         {% for categoria in cliente.categorias_certificar.all %}
           {{ categoria.nombre }}{% if not forloop.last %}, {% endif %}
         {% empty %}
@@ -250,7 +293,23 @@
         {% endfor %}
       </td>
     </tr>
+    <tr>
+      <th>Tipo de esquema:</th>
+      <td colspan="3">6</td>
+    </tr>
+    <tr>
+      <th>Certificación de otro ente</th>
+      <td>{{ certificacion_ente }}</td>
+    </tr>
   </table>
+
+  <div class="condiciones-pago">
+    <p>
+      Criterio Resolución 3245 de 2009 - Decreto 1079 de 2015 Título I Capítulo III – Resolución 20203040011355 de 2020 Título II Capítulo I – Resolución 20223040009425 de 2022 del Ministerio de Transporte de Colombia.
+      <br>
+      <strong>ISO 9001:2015 (SISTEMAS DE GESTIÓN DE LA CALIDAD)</strong>
+    </p>
+  </div>
 
   <div class="condiciones-pago">
     <ol style="margin-bottom: 0; padding-left: 1.2em;">
@@ -259,27 +318,41 @@
       <li>Si se realiza el pago por PSE por favor diligenciar en el espacio “Concepto del pago” el nombre del Centro de Enseñanza Automovilística por el que se está realizando el pago.</li>
       <li>Al firmar la cotización se da por entendido que está siendo aceptada por parte del cliente y se continuará con el proceso.</li>
       <li>En caso de que el cliente desee la devolución del dinero posterior a la aceptación comercial y envío del soporte de pago, este deberá solicitarlo formalmente por correo electrónico, detallando las causas sobre las cuales está solicitando la devolución del dinero y la cancelación del servicio en un plazo no mayor a 5 días posteriores a la recepción del pago.<br>
-        <strong>NOTA 1:</strong> Si el cliente envía la solicitud dentro de los 5 días posteriores a la recepción del pago, el área comercial revisará la solicitud de devolución del dinero y cancelación del servicio y realizará el reembolso del 80% del valor cancelado, teniendo en cuenta los gastos administrativos que se generaron por la cancelación del servicio.<br>
-        <strong>NOTA 2:</strong> Si el cliente envía la solicitud después de los 5 días referenciados anteriormente, el área comercial revisará la solicitud de devolución del dinero y la cancelación del servicio y realizará el reembolso del 40% del valor cancelado, teniendo en cuenta los gastos administrativos que se generaron por la cancelación del servicio y la facturación electrónica realizada.<br>
-        <strong>NOTA 3:</strong> Una vez ejecutado el servicio de programación, etapa 1 o etapa 2 de auditoría, no se realiza por ningún motivo la devolución del dinero.
+        <strong>NOTA 1:</strong> Si el cliente envía la solicitud dentro de los 5 días posteriores a la recepción del pago, el área comercial revisará la solicitud de devolución del dinero y cancelación del servicio y realizará el reembolso del 80% del valor cancelado.<br>
+        <strong>NOTA 2:</strong> Si la solicitud llega después de 5 días, el reembolso será del 40%.<br>
+        <strong>NOTA 3:</strong> Una vez ejecutado el servicio de programación, etapa 1 o etapa 2 de auditoría, no se realiza devolución del dinero.
       </li>
-      <li>Para realizar la etapa 1 del proceso de auditoría, se deben contar con el total de los anexos que se encuentran definidos en el GCOM-IT-01 INSTRUCTIVO SOLICITUD DE DOCUMENTOS ESQUEMA TIPO 6 (CEA)</li>
+      <li>Para realizar la etapa 1 del proceso de auditoría, se deben contar con el total de los anexos definidos en el GCOM-IT-01 INSTRUCTIVO SOLICITUD DE DOCUMENTOS ESQUEMA TIPO 6 (CEA).</li>
       <li>La programación del servicio se realizará en el orden de llegada de las solicitudes, confirmación de pago y disponibilidad de agenda.</li>
       <li>Al momento de la programación del servicio se determinará si esta se realizará in situ o de forma remota.</li>
-      <li>Estos valores referenciados en la presente cotización NO incluyen gastos de traslado y alojamiento de nuestros funcionarios.</li>
-      <li>Los gastos de traslado y condiciones logísticas de los funcionarios de AQ CERTIFICATION S.A.S. deben ser asumidos por el cliente.</li>
-      <li><strong>AQ CERTIFICATION S.A.S.</strong> NO utiliza procedimientos diferentes que impidan o inhiban el acceso a los solicitantes.</li>
-      <li>Los servicios prestados por parte de <strong>AQ CERTIFICATION S.A.S.</strong> son accesibles a todos los solicitantes siempre y cuando el servicio que soliciten se encuentre bajo el alcance acreditado del organismo.</li>
-      <li><strong>AQ CERTIFICATION S.A.S.</strong> no tiene distinciones o preferencias referentes al tamaño del cliente, ni de la membresía de cualquier asociación para realizar las actividades de certificación.</li>
+      <li>Estos valores no incluyen gastos de traslado y alojamiento de nuestros funcionarios.</li>
+      <li>Los gastos de traslado y condiciones logísticas de AQ CERTIFICATION S.A.S. deben ser asumidos por el cliente.</li>
+      <li><strong>AQ CERTIFICATION S.A.S.</strong> NO utiliza procedimientos que impidan o inhiban el acceso a los solicitantes.</li>
+      <li>Los servicios prestados son accesibles a todos los solicitantes siempre y cuando el servicio esté bajo el alcance acreditado del organismo.</li>
+      <li><strong>AQ CERTIFICATION S.A.S.</strong> no tiene distinciones o preferencias referentes al tamaño del cliente, ni de la membresía de cualquier asociación.</li>
     </ol>
   </div>
 
-  <div class="firma">
-    <strong>Firma de aprobación del cliente:</strong>
-    <div class="firma-linea"></div>
-    Nombre y Firma del Cliente
-    <br>
-    Fecha: ____________________
-  </div>
+  <h3 style="margin-top: 40px;">Firmas</h3>
+<table style="width: 100%; border: none; margin-top: 20px; text-align: center;">
+  <tr>
+    <!-- Firma Cliente -->
+    <td style="width: 50%; border: none; padding: 10px;">
+      ____________________________<br>
+      <strong>Firma de aprobación del cliente</strong><br>
+      Nombre: {{ cliente.nombre_propietario }}<br>
+      Fecha: ____________________
+    </td>
+
+    <!-- Firma Comercial -->
+    <td style="width: 50%; border: none; padding: 10px;">
+      ____________________________<br>
+      <strong>Firma del Comercial</strong><br>
+      {{ usuario.get_full_name|default:usuario.username }}
+    </td>
+  </tr>
+</table>
+
+
 </body>
 </html>

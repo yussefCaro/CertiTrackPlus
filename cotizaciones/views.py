@@ -8,13 +8,14 @@ from decimal import Decimal
 from django.utils.formats import localize
 from django.template.loader import render_to_string
 from weasyprint import HTML
-
+import os
+from django.conf import settings
 
 
 @login_required
 def listado_solicitudes(request):
     """ Muestra las solicitudes pendientes para cotización """
-    solicitudes = Solicitud.objects.filter(estado="Pendiente").select_related("cliente")  # Optimización con select_related
+    solicitudes = Solicitud.objects.filter(estado="Pendiente").select_related("cliente")
     return render(request, "cotizaciones/listado_solicitudes.html", {"solicitudes": solicitudes})
 
 
@@ -23,15 +24,14 @@ def crear_cotizacion(request, solicitud_id):
     solicitud = get_object_or_404(Solicitud, id=solicitud_id)
 
     if request.method == "POST":
-        print("POST DATA:", request.POST)  # Depuración para ver qué datos llegan
+        print("POST DATA:", request.POST)
         form = CotizacionForm(request.POST)
 
         if form.is_valid():
-            cotizacion = form.save(commit=False)  # Se guarda la cotización SIN el ManyToMany aún
+            cotizacion = form.save(commit=False)
             cotizacion.solicitud = solicitud
-            cotizacion.save()  # Guardamos la cotización en la BD primero
-
-            form.save_m2m()  # Ahora guardamos la relación ManyToMany
+            cotizacion.save()
+            form.save_m2m()
 
             solicitud.estado = "Cotizada"
             solicitud.save()
@@ -65,6 +65,7 @@ def listado_cotizaciones(request):
         }
     )
 
+
 @login_required
 def detalle_cotizacion(request, cotizacion_id):
     """ Muestra el detalle de una cotización """
@@ -74,38 +75,66 @@ def detalle_cotizacion(request, cotizacion_id):
     cotizacion.precio_total = localize(cotizacion.precio_total)
 
     solicitud = cotizacion.solicitud
-    cliente = solicitud.cliente  # Cliente asociado a la solicitud
+    cliente = solicitud.cliente
 
     context = {
         "cotizacion": cotizacion,
         "solicitud": solicitud,
-        "cliente": cliente,  # Agregar cliente al contexto
+        "cliente": cliente,
     }
 
     return render(request, "cotizaciones/detalle_cotizacion.html", context)
 
 
-import os
-from django.conf import settings
-
 @login_required
 def cotizacion_pdf(request, cotizacion_id):
     cotizacion = get_object_or_404(Cotizacion, id=cotizacion_id)
     cliente = cotizacion.solicitud.cliente
+    usuario = request.user
 
-    # Ruta absoluta al archivo del logo
+    # Categorías
+    categorias = cliente.categorias_certificar.all()
+    categorias_str = ", ".join([c.nombre for c in categorias]) if categorias.exists() else "No especificado"
+
+    # Certificación de otro ente
+    if cliente.certificado_conformidad and cliente.Organismo_certificador_y_alcance:
+        certificacion_ente = f"{cliente.certificado_conformidad} - {cliente.Organismo_certificador_y_alcance}"
+    elif cliente.certificado_conformidad:
+        certificacion_ente = cliente.certificado_conformidad
+    else:
+        certificacion_ente = "No aplica"
+
+    # Datos de días de auditoría por nivel CEA
+    tabla_dias = {
+        "Nivel 1": {"etapa1": "0,5 días", "etapa2": "1 día"},
+        "Nivel 2": {"etapa1": "0,5 días", "etapa2": "1,5 días"},
+        "Nivel 3": {"etapa1": "0,5 días", "etapa2": "2 días"},
+        "Nivel 3 con Formación de Instructores": {"etapa1": "0,5 días", "etapa2": "2,5 días"},
+    }
+
+    nivel_cliente = getattr(cliente, "nivel_cea", None)
+    dias_cliente = tabla_dias.get(nivel_cliente, None)
+
+    # Ruta absoluta al logo
     logo_path = os.path.join(settings.STATIC_ROOT, 'myapp', 'AQ_color.png')
 
+    # Renderizar HTML
     html_string = render_to_string('cotizaciones/cotizacion_pdf.html', {
         'cotizacion': cotizacion,
         'cliente': cliente,
-        'logo_path': logo_path,  # Pásalo al contexto
+        'categorias_str': categorias_str,
+        'certificacion_ente': certificacion_ente,
+        'organismo_certificador': cliente.Organismo_certificador_y_alcance,
+        'logo_path': logo_path,
+        'nivel_cliente': nivel_cliente,
+        'dias_cliente': dias_cliente,
+        'usuario': usuario,
     })
+
     pdf_file = HTML(string=html_string, base_url=".").write_pdf()
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="cotizacion_{cotizacion.numero_servicio}.pdf"'
     return response
-
 
 
 @login_required
@@ -122,11 +151,11 @@ def editar_cotizacion(request, cotizacion_id):
         form = CotizacionForm(request.POST, instance=cotizacion)
 
         if form.is_valid():
-            cotizacion = form.save(commit=False)  # Guardamos sin ManyToMany
-            cotizacion.save()  # Guardamos la cotización primero
-            form.save_m2m()  # Ahora guardamos las relaciones ManyToMany
+            cotizacion = form.save(commit=False)
+            cotizacion.save()
+            form.save_m2m()
 
-            print("Servicios seleccionados:", form.cleaned_data.get("tipo_servicio"))  # ✅ Solo se ejecuta si el formulario es válido
+            print("Servicios seleccionados:", form.cleaned_data.get("tipo_servicio"))
 
             return redirect("listado_cotizaciones")
 
@@ -134,6 +163,3 @@ def editar_cotizacion(request, cotizacion_id):
         form = CotizacionForm(instance=cotizacion)
 
     return render(request, "cotizaciones/editar_cotizacion.html", {"form": form, "cotizacion": cotizacion})
-
-
-

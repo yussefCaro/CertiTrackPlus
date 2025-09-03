@@ -97,6 +97,10 @@ def generar_solicitud_pdf(request, cliente_id):
         'categorias_str': categorias_str,
         'certificacion_ente': certificacion_ente,
         'logo_path': logo_path,  # Pásalo al template
+        "organismo_certificador": cliente.Organismo_certificador_y_alcance,
+
+
+
     })
 
     # 5. Generar el PDF

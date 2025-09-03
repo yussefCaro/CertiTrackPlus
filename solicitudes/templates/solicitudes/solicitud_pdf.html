@@ -154,7 +154,15 @@
 
       <tr><td>Cantidad de Vehículos</td><td>{{ cliente.cantidad_vehiculos }}</td></tr>
       <tr><td>Cantidad de Instructores</td><td>{{ cliente.cantidad_instructores }}</td></tr>
-      <tr><td>Certificación de otro ente</td><td>{{ certificacion_ente }}</td></tr>
+      <tr>
+          <td>Certificación ente</td>
+          <td>
+              {{ certificacion_ente }}
+              {% if organismo_certificador %}
+
+              {% endif %}
+          </td>
+      </tr>
       <tr><td>Fecha de Solicitud</td><td>{{ fecha_solicitud_str }}</td></tr>
       <tr>
         <td>Observaciones</td>
