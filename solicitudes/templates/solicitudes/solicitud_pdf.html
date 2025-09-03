@@ -130,8 +130,8 @@
     <table class="tabla-datos">
       <tr><th>Campo</th><th>Valor</th></tr>
       <tr><td>NIT</td><td>{{ cliente.nit }}</td></tr>
-      <tr><td>Nombre del Propietario</td><td>{{ cliente.nombre_propietario }}</td></tr>
-      <tr><td>Establecimiento Comercial</td><td>{{ cliente.nombre_establecimiento }}</td></tr>
+      <tr><td>Nombre de propietario y/o razón social</td><td>{{ cliente.nombre_propietario }}</td></tr>
+      <tr><td>Establecimiento de comercio</td><td>{{ cliente.nombre_establecimiento }}</td></tr>
       <tr><td>Representante Legal</td><td>{{ cliente.representante_legal }}</td></tr>
       <tr><td>Cédula de Ciudadanía</td><td>{{ cliente.cedula_ciudadania }}</td></tr>
       <tr><td>Ciudad</td><td>{{ cliente.ciudad }}</td></tr>
@@ -141,8 +141,17 @@
       <tr><td>Cargo</td><td>{{ cliente.cargo }}</td></tr>
       <tr><td>Correo Electrónico</td><td>{{ cliente.correo_electronico }}</td></tr>
       <tr><td>Teléfono Celular</td><td>{{ cliente.telefono_celular }}</td></tr>
-      <tr><td>Nivel del CEA</td><td>{{ cliente.nivel_cea }}</td></tr>
-      <tr><td>Categorías a Certificar</td><td>{{ categorias_str }}</td></tr>
+      <tr>
+          <td>Alcance</td>
+          <td>{{ cliente.nivel_cea }} - Categorías a Certificar: {{ categorias_str }}</td>
+      </tr>
+
+        <tr>
+            <td>CRITERIO DE LA CERTIFICACIÓN SOLICITADA</td>
+          <td>
+          Resolución 3245 de 2009, Decreto Único Reglamentario 1079 de 2015 Título I Capítulo III, Resolución 20203040011355 de 2020 Título II Capítulo I y Resolución 20223040009425 de 2022 del Ministerio de Transporte de Colombia.
+          </td>
+
       <tr><td>Cantidad de Vehículos</td><td>{{ cliente.cantidad_vehiculos }}</td></tr>
       <tr><td>Cantidad de Instructores</td><td>{{ cliente.cantidad_instructores }}</td></tr>
       <tr><td>Certificación de otro ente</td><td>{{ certificacion_ente }}</td></tr>
@@ -158,10 +167,7 @@
         </td>
       </tr>
     </table>
-    <div class="criterio">
-      <strong>CRITERIO DE LA CERTIFICACIÓN SOLICITADA</strong><br>
-      Resolución 3245 de 2009, Decreto Único Reglamentario 1079 de 2015 Título I Capítulo III, Resolución 20203040011355 de 2020 Título II Capítulo I y Resolución 20223040009425 de 2022 del Ministerio de Transporte de Colombia.
-    </div>
+
   </div>
 </body>
 </html>

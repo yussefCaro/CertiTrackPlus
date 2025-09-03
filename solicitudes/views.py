@@ -79,8 +79,8 @@ def generar_solicitud_pdf(request, cliente_id):
     fecha_solicitud_str = cliente.fecha_solicitud.strftime('%d/%m/%Y') if cliente.fecha_solicitud else "No registrada"
     categorias = cliente.categorias_certificar.all()
     categorias_str = ", ".join([c.nombre for c in categorias]) if categorias.exists() else "No especificado"
-    if cliente.certificado_conformidad and cliente.nombre_ente_certificador:
-        certificacion_ente = f"{cliente.certificado_conformidad} - {cliente.nombre_ente_certificador}"
+    if cliente.certificado_conformidad and cliente.Organismo_certificador_y_alcance:
+        certificacion_ente = f"{cliente.certificado_conformidad} - {cliente.Organismo_certificador_y_alcance}"
     elif cliente.certificado_conformidad:
         certificacion_ente = cliente.certificado_conformidad
     else:
