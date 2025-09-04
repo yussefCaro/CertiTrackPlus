@@ -1,181 +1,302 @@
+{% load static humanize mathfilters %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Solicitud PDF</title>
   <style>
     @page {
       size: A4;
-      margin: 3.2cm 2cm 3.2cm 2cm;
-      @top-center { content: element(header); }
+      margin-top: 3.5cm;
+      margin-bottom: 2.5cm;
+      margin-left: 2cm;
+      margin-right: 2cm;
+      @top-center {
+        content: element(header-pdf);
+      }
       @bottom-center {
-        content:
-          "Este documento contiene información confidencial y no puede ser distribuido o reproducido sin autorización escrita de AQ CERTIFICATION S.A.S.\A"
-          "Calle 50 No. 73-25 Barrio Normandía – Bogotá TEL: 7022433 www.aqcertification.net.co\A"
-          "Página " counter(page) " de " counter(pages);
+        content: "Este documento contiene información confidencial y no puede ser distribuido o reproducido sin autorización escrita de AQ CERTIFICATION S.A.S. "
+                 "Calle 50 No. 73-25 Barrio Normandía – Bogotá TEL: 7022433 [www.aqcertification.net.co](https://www.aqcertification.net.co) "
+                 "Página " counter(page) " de " counter(pages);
         font-size: 10px;
-        color: #555;
-        text-align: center;
+        color: #222;
       }
     }
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      font-family: 'Arial', sans-serif;
+      font-size: 12pt;
+      color: #181824;
     }
-    header {
-      position: running(header);
-      height: 2.5cm;
-      border-bottom: 1px solid #ccc;
-      margin-bottom: 0.5cm;
+    header.header-pdf {
+      position: running(header-pdf);
+      width: 100%;
+      margin-bottom: 2em;
+      border-bottom: 2px solid #38ce3c;
+      padding-bottom: 0.5em;
     }
     .header-flex {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      height: 100%;
+      justify-content: space-between;
     }
-    .logo-nit {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+    .header-logo {
+      min-width: 180px;
+      text-align: left;
     }
-    .logo-nit img {
-      height: 50px;
-      margin-bottom: 2px;
-    }
-    .logo-nit .nit {
-      font-size: 12px;
-      font-weight: bold;
-      margin-top: 2px;
-    }
-    .titulo-centro {
-      flex: 1;
+    .header-title {
+      flex: 2;
       text-align: center;
-      font-size: 20px;
+      font-size: 1.25em;
       font-weight: bold;
+      color: #1a237e;
       letter-spacing: 0.5px;
-      line-height: 1.2;
     }
-    .doc-info {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 6px;
+    .header-data {
+      min-width: 140px;
+      text-align: right;
+      font-size: 0.98em;
     }
-    .doc-caja {
-      border: 1.5px solid #222;
+    .header-box {
+      border: 1.2px solid #222;
       border-radius: 7px;
-      padding: 3px 16px;
-      font-size: 12px;
-      font-weight: 500;
+      padding: 6px 18px;
+      display: inline-block;
+      margin-bottom: 8px;
+      margin-left: 2px;
+    }
+    h2 {
       text-align: center;
-      min-width: 90px;
-      background: #fff;
+      color: #1a237e;
+      margin-bottom: 1.3em;
+      font-size: 1.15em;
       letter-spacing: 0.5px;
     }
-    .contenido {
-      margin-top: 0.7cm;
-      margin-bottom: 0.3cm;
+    .section-title {
+      color: #388e3c;
+      font-size: 1.05em;
+      margin-top: 2em;
+      margin-bottom: 0.7em;
+      border-left: 4px solid #38ce3c;
+      padding-left: 0.5em;
+      font-weight: bold;
+      background: #eafaf1;
     }
-    /* ... el resto de tu CSS para tablas y contenido ... */
-    .tabla-datos {
+    .info-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 20px;
-      font-size: 13px;
-      page-break-inside: avoid;
+      margin-bottom: 1.5em;
+      font-size: 0.97em;
     }
-    .tabla-datos th, .tabla-datos td {
-      padding: 6px 10px;
-      border: 1px solid #ccc;
-      vertical-align: top;
-      word-break: break-word;
-    }
-    .tabla-datos th {
-      background: #f2f2f2;
+    .info-table th, .info-table td {
+      border: 1px solid #b0bec5;
+      padding: 7px 10px;
       text-align: left;
-      width: 35%;
+      vertical-align: top;
     }
-    .criterio {
-      margin-top: 30px;
-      font-size: 12px;
-      border: 1px solid #0d6efd;
-      border-radius: 6px;
-      padding: 12px;
+    .info-table th {
+      background: #f1f8e9;
+      color: #181824;
+      width: 30%;
+      font-weight: bold;
+    }
+    .info-table td {
+      background: #fff;
+    }
+    .condiciones-pago {
+      border: 1.5px solid #222;
+      border-radius: 7px;
+      padding: 18px 22px;
+      font-size: 0.98em;
+      margin-top: 2rem;
       background: #f8f9fa;
+      color: #222;
+    }
+    .firma {
+      margin-top: 3em;
+      font-size: 1em;
+    }
+    .firma-linea {
+      margin: 1.2em 0 0.5em 0;
+      border-bottom: 1px solid #222;
+      width: 260px;
+    }
+    .badge-estado {
+      background: #e3f2fd;
+      color: #1a237e;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.96em;
+    }
+    .precio-total {
+      color: #388e3c;
+      font-weight: bold;
+    }
+    .observacion {
+      color: #888;
+      font-size: 0.97em;
+    }
+    .estado-aprobado {
+      background: #e8f5e8;
+      color: #2e7d32;
+    }
+    .estado-pendiente {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+    .estado-rechazado {
+      background: #ffebee;
+      color: #d32f2f;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-flex">
-      <div class="logo-nit">
-        <img src="file://{{ logo_path }}" alt="Logo AQ Certification" style="height:60px;">
-        <span class="nit">NIT. 900509054-9</span>
+  <header class="header-pdf">
+    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+      <!-- Logo y NIT a la izquierda -->
+      <div style="min-width: 200px; text-align: left;">
+        <img src="file://{{ logo_path }}" alt="Logo AQ Certification" style="height: 55px;">
+        <div style="font-size: 0.95em; color: #181824; font-weight: bold; margin-top: 4px;">
+          NIT. 900509054-9
+        </div>
       </div>
-      <div class="titulo-centro">
-        SOLICITUD DE COTIZACIÓN CENTROS DE ENSEÑANZA<br>AUTOMOVILÍSTICA.
+      <!-- Título centrado -->
+      <div style="flex: 2; text-align: center;">
+        <span style="font-size: 1.15em; font-weight: bold; color: #181824; letter-spacing: 0.5px;">
+          SOLICITUD DE SERVICIOS CENTROS DE ENSEÑANZA<br>
+          AUTOMOVILÍSTICA.
+        </span>
       </div>
-      <div class="doc-info">
-        <div class="doc-caja">GCOM-FR-02</div>
-        <div class="doc-caja">{{ fecha }}</div>
+      <!-- Datos a la derecha -->
+      <div style="min-width: 120px; text-align: right; display: flex; flex-direction: column; gap: 8px;">
+        <div style="border: 1.2px solid #222; border-radius: 7px; padding: 3px 16px; display: inline-block; font-size: 12px;">
+          GCOM-FR-02
+        </div>
+        <div style="border: 1.2px solid #222; border-radius: 7px; padding: 3px 16px; display: inline-block; font-size: 12px;">
+          04-09-2025
+        </div>
       </div>
     </div>
   </header>
 
-  <div class="contenido">
-    <h2 style="display:none;">Solicitud de Cotización</h2>
-    <table class="tabla-datos">
-      <tr><th>Campo</th><th>Valor</th></tr>
-      <tr><td>NIT</td><td>{{ cliente.nit }}</td></tr>
-      <tr><td>Nombre de propietario y/o razón social</td><td>{{ cliente.nombre_propietario }}</td></tr>
-      <tr><td>Establecimiento de comercio</td><td>{{ cliente.nombre_establecimiento }}</td></tr>
-      <tr><td>Representante Legal</td><td>{{ cliente.representante_legal }}</td></tr>
-      <tr><td>Cédula de Ciudadanía</td><td>{{ cliente.cedula_ciudadania }}</td></tr>
-      <tr><td>Ciudad</td><td>{{ cliente.ciudad }}</td></tr>
-      <tr><td>Departamento</td><td>{{ cliente.departamento }}</td></tr>
-      <tr><td>Dirección</td><td>{{ cliente.direccion }}</td></tr>
-      <tr><td>Representante del Organismo</td><td>{{ cliente.representante_organismo }}</td></tr>
-      <tr><td>Cargo</td><td>{{ cliente.cargo }}</td></tr>
-      <tr><td>Correo Electrónico</td><td>{{ cliente.correo_electronico }}</td></tr>
-      <tr><td>Teléfono Celular</td><td>{{ cliente.telefono_celular }}</td></tr>
+<div class="section-title">Información del Centro de Enseñanza Automovilística</div>
+  <table class="info-table">
+    <tr>
+      <th>NIT</th>
+      <td>{{ cliente.nit }}</td>
+        <th>Establecimiento de comercio</th>
+      <td>{{ cliente.nombre_establecimiento }}</td>
+    </tr>
+    <tr>
+      <th>Nombre de propietario y/o razón social</th>
+      <td>{{ cliente.nombre_propietario }}</td>
+        <th>Representante legal</th>
+      <td>{{ cliente.representante_legal }}</td>
+
+    </tr>
+    <tr>
+        <th>Cédula Ciudadanía</th>
+      <td>{{ cliente.cedula_ciudadania }}</td>
+
+      <th>Fecha Solicitud</th>
+      <td>{{ fecha_solicitud_str }}</td>
+    </tr>
       <tr>
-          <td>Alcance</td>
-          <td>{{ cliente.nivel_cea }} - Categorías a Certificar: {{ categorias_str }}</td>
+        <th>Representante del Organismo</th>
+      <td>{{ cliente.representante_organismo }}</td>
+
+      <th>Cargo</th>
+      <td>{{ cliente.cargo }}</td>
+    </tr>
+
       </tr>
-
-        <tr>
-            <td>CRITERIO DE LA CERTIFICACIÓN SOLICITADA</td>
-          <td>
-          Resolución 3245 de 2009, Decreto Único Reglamentario 1079 de 2015 Título I Capítulo III, Resolución 20203040011355 de 2020 Título II Capítulo I y Resolución 20223040009425 de 2022 del Ministerio de Transporte de Colombia.
-          </td>
-
-      <tr><td>Cantidad de Vehículos</td><td>{{ cliente.cantidad_vehiculos }}</td></tr>
-      <tr><td>Cantidad de Instructores</td><td>{{ cliente.cantidad_instructores }}</td></tr>
       <tr>
-          <td>Certificación ente</td>
-          <td>
-              {{ certificacion_ente }}
+        <th>Cantidad de Vehículos</th>
+      <td>{{ cliente.cantidad_vehiculos }}</td>
+
+      <th>Cantidad de Instructores</th>
+      <td>{{ cliente.cantidad_instructores }}</td>
+    </tr>
+
+  </table>
+
+  <div class="section-title">Información de Contacto</div>
+  <table class="info-table">
+    <tr>
+      <th>Teléfono Celular</th>
+      <td>{{ cliente.telefono_celular }}</td>
+      <th>Teléfono Fijo</th>
+      <td>{{ cliente.telefono_fijo|default:"No especificado" }}</td>
+    </tr>
+    <tr>
+      <th>Correo Electrónico</th>
+      <td>{{ cliente.correo_electronico }}</td>
+        <th>Dirección</th>
+      <td>{{ cliente.direccion }}</td>
+
+    </tr>
+    <tr>
+
+      <th>Ciudad</th>
+      <td>{{ cliente.ciudad }}</td>
+        <th>Departamento</th>
+      <td>{{ cliente.departamento }}</td>
+    </tr>
+  </table>
+
+
+
+
+  <div class="section-title">Detalles del Servicio Solicitado</div>
+  <table class="info-table">
+
+    <tr>
+      <th>Alcance</th>
+      <td colspan="3">
+                  {{ cliente.nivel_cea }}-Categorías a Certificar: {{ categorias_str }}
+      </td>
+    </tr>
+    <tr>
+      <th>Criterio de la certificación solicitada</th>
+      <td colspan="3">
+                  Resolución 3245 de 2009, Decreto Único Reglamentario 1079 de 2015 Título I Capítulo III, Resolución 20203040011355 de 2020 Título II Capítulo I y Resolución 20223040009425 de 2022 del Ministerio de Transporte de Colombia. <strong>ISO 9001:2015 (SISTEMAS DE GESTIÓN DE LA CALIDAD)</strong>
+      </td>
+    </tr>
+
+    <tr>
+      <th>Certificación ente</th>
+      <td>{{ certificacion_ente }}
               {% if organismo_certificador %}
 
-              {% endif %}
-          </td>
-      </tr>
-      <tr><td>Fecha de Solicitud</td><td>{{ fecha_solicitud_str }}</td></tr>
-      <tr>
-        <td>Observaciones</td>
-        <td>
-          {% if cliente.observaciones %}
-            {{ cliente.observaciones }}
-          {% else %}
-            Ninguna
-          {% endif %}
-        </td>
-      </tr>
-    </table>
+              {% endif %}</td>
 
+    </tr>
+  </table>
+
+  {% if cliente.observaciones %}
+  <div class="section-title">Observaciones</div>
+  <div class="condiciones-pago">
+    <p>{{ cliente.observaciones }}</p>
   </div>
+  {% endif %}
+
+
+  <div class="condiciones-pago">
+    <h4 style="margin-top: 0; color: #1a237e;">CONDICIONES GENERALES DEL SERVICIO:</h4>
+    <ol style="margin-bottom: 0; padding-left: 1.2em;">
+      <li>Para proceder con la solicitud, el cliente debe proporcionar toda la documentación requerida según el GCOM-IT-01 INSTRUCTIVO SOLICITUD DE DOCUMENTOS ESQUEMA TIPO 6 (CEA).</li>
+      <li>La recepción de esta solicitud no garantiza automáticamente la prestación del servicio, el cual está sujeto a evaluación previa y disponibilidad.</li>
+      <li>Los tiempos de respuesta para la evaluación de la solicitud son de máximo 15 días hábiles a partir de la recepción completa de la documentación.</li>
+      <li>Una vez aprobada la solicitud, se procederá a generar la cotización correspondiente con los términos y condiciones específicos del servicio.</li>
+      <li><strong>AQ CERTIFICATION S.A.S.</strong> NO utiliza procedimientos que impidan o inhiban el acceso a los solicitantes.</li>
+      <li>Los servicios prestados son accesibles a todos los solicitantes siempre y cuando el servicio esté bajo el alcance acreditado del organismo.</li>
+      <li><strong>AQ CERTIFICATION S.A.S.</strong> no tiene distinciones o preferencias referentes al tamaño del cliente, ni de la membresía de cualquier asociación.</li>
+      <li>El solicitante debe notificar cualquier cambio en la información proporcionada que pueda afectar la capacidad de AQ CERTIFICATION S.A.S. para proporcionar el servicio de certificación.</li>
+    </ol>
+  </div>
+
+
 </body>
 </html>
