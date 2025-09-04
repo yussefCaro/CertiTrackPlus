@@ -348,7 +348,8 @@
     <td style="width: 50%; border: none; padding: 10px;">
       ____________________________<br>
       <strong>Firma del Comercial</strong><br>
-      {{ usuario.get_full_name|default:usuario.username }}
+      {{ usuario.get_full_name|default_if_none:usuario.username }}
+
     </td>
   </tr>
 </table>
