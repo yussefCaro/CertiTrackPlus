@@ -150,12 +150,16 @@
   <div class="section-title">Información de Contacto</div>
   <div class="row mb-3">
     <div class="col-md-6">
+      <p><strong>Nombre del Establecimiento:</strong> {{ programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</p>
+      <p><strong>NIT:</strong> {{ programacion.cotizacion.solicitud.cliente.nit }}</p>
+      <p><strong>Representante:</strong> {{ programacion.cotizacion.solicitud.cliente.representante_legal }}</p>
       <p><strong>Teléfono:</strong> {{ programacion.cotizacion.solicitud.cliente.telefono_celular }}</p>
       <p><strong>Correo:</strong> {{ programacion.cotizacion.solicitud.cliente.correo_electronico }}</p>
     </div>
     <div class="col-md-6">
       <p><strong>Dirección:</strong> {{ programacion.cotizacion.solicitud.cliente.direccion }}</p>
       <p><strong>Ciudad:</strong> {{ programacion.cotizacion.solicitud.cliente.ciudad }}, {{ programacion.cotizacion.solicitud.cliente.departamento }}</p>
+
     </div>
   </div>
 
@@ -164,9 +168,7 @@
   <div class="row mb-3">
     <div class="col-md-6">
       <p><strong>Número de Servicio:</strong> {{ programacion.cotizacion.numero_servicio }}</p>
-      <p><strong>Nombre del Establecimiento:</strong> {{ programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</p>
-      <p><strong>NIT:</strong> {{ programacion.cotizacion.solicitud.cliente.nit }}</p>
-      <p><strong>Representante:</strong> {{ programacion.cotizacion.solicitud.cliente.representante_legal }}</p>
+
     </div>
     <div class="col-md-6">
       <p><strong>Auditor:</strong> {{ programacion.auditores.user.get_full_name|default:programacion.auditores.user.username }}</p>
@@ -219,14 +221,7 @@
             No especificado
           {% endfor %}</td>
       </tr>
-      <tr>
-        <th>Criterio</th>
-        <td>Criterio Resolución 3245 de 2009 -Decreto 1079 de 2015 Titulo I Capitulo III – Resolución 20203040011355 de 2020 Titulo II Capitulo I-resolución 20223040009425 de 2022 del  Ministerio de Transporte de Colombia.
-            <br>
-            <strong>ISO 90012015(SISTEMAS DE GESTION DE LA CALIDAD)<strong>
-        </td>
 
-    </tr>
       <tr>
         <th>Observaciones</th>
         <td>

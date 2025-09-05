@@ -197,25 +197,7 @@
     </div>
   </header>
 
-  {% if dias_cliente %}
-  <div class="section-title">Días de auditoría por nivel CEA</div>
-  <table class="audit-table">
-    <thead>
-      <tr>
-        <th>Nivel del CEA</th>
-        <th>Etapa 1</th>
-        <th>Etapa 2</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>{{ nivel_cliente }}</td>
-        <td>{{ dias_cliente.etapa1 }}</td>
-        <td>{{ dias_cliente.etapa2 }}</td>
-      </tr>
-    </tbody>
-  </table>
-  {% endif %}
+
 
   <h2>Detalles de la Cotización</h2>
 
@@ -254,6 +236,26 @@
       <td><span class="badge-estado">{{ cotizacion.solicitud.estado }}</span></td>
     </tr>
   </table>
+
+  {% if dias_cliente %}
+  <div class="section-title">Días de auditoría por nivel CEA</div>
+  <table class="audit-table">
+    <thead>
+      <tr>
+        <th>Nivel del CEA</th>
+        <th>Etapa 1</th>
+        <th>Etapa 2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ nivel_cliente }}</td>
+        <td>{{ dias_cliente.etapa1 }}</td>
+        <td>{{ dias_cliente.etapa2 }}</td>
+      </tr>
+    </tbody>
+  </table>
+  {% endif %}
 
   <div class="section-title">Información de Contacto</div>
   <table class="info-table">
