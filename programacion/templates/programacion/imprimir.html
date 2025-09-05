@@ -130,11 +130,11 @@
       </div>
       <div style="flex: 1; min-width: 140px; text-align: right;">
         <div style="border: 1.2px solid #198754; border-radius: 7px; padding: 6px 18px; margin-bottom: 10px; display: inline-block;">
-          GCOM-FR-02
+          DEST-FR-24
         </div>
         <br>
         <div style="border: 1.2px solid #198754; border-radius: 7px; padding: 6px 18px; display: inline-block;">
-          {{ fecha_hoy }}
+          05-09-2025
         </div>
       </div>
     </div>
@@ -143,8 +143,20 @@
   <div class="intro mb-4">
     Bogotá D. C., {{ fecha_hoy }}<br>
     Señores<br>
-    CENTRO DE ENSEÑANZA AUTOMOVILISTICA {{ programacion.cotizacion.solicitud.cliente.nombre_establecimiento|upper }}<br><br>
+    {{ programacion.cotizacion.solicitud.cliente.nombre_establecimiento|upper }}<br><br>
     Por medio de la presente notificamos la asistencia del personal asignado por parte de <b>AQ CERTIFICATION S.A.S.</b> para realizar el servicio descrito a continuación.
+  </div>
+  <!-- Información de Contacto -->
+  <div class="section-title">Información de Contacto</div>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <p><strong>Teléfono:</strong> {{ programacion.cotizacion.solicitud.cliente.telefono_celular }}</p>
+      <p><strong>Correo:</strong> {{ programacion.cotizacion.solicitud.cliente.correo_electronico }}</p>
+    </div>
+    <div class="col-md-6">
+      <p><strong>Dirección:</strong> {{ programacion.cotizacion.solicitud.cliente.direccion }}</p>
+      <p><strong>Ciudad:</strong> {{ programacion.cotizacion.solicitud.cliente.ciudad }}, {{ programacion.cotizacion.solicitud.cliente.departamento }}</p>
+    </div>
   </div>
 
   <!-- Detalles de la Programación -->
@@ -158,31 +170,32 @@
     </div>
     <div class="col-md-6">
       <p><strong>Auditor:</strong> {{ programacion.auditores.user.get_full_name|default:programacion.auditores.user.username }}</p>
-      <p><strong>Fecha Etapa 1:</strong> {{ programacion.fecha_programacion_etapa1 }} - {{ programacion.hora_etapa1 }}</p>
+      <p><strong>Fecha Etapa 1:</strong> {{ programacion.fecha_programacion_etapa1 }} - {{ programacion.hora_etapa1 }}- <strong>Lugar:</strong> Instalación del OEC</p>
       <p><strong>Fechas Etapa 2:</strong>
         <ul style="padding-left: 18px; margin:0;">
           {% for fecha_etapa2 in programacion.fechas_etapa2.all %}
-            <li>{{ fecha_etapa2.fecha }} - {{ fecha_etapa2.hora }} - {{ fecha_etapa2.dias_auditoria }} días</li>
+            <li>{{ fecha_etapa2.fecha }} - {{ fecha_etapa2.hora }} </li>
           {% empty %}
             <li>No asignadas</li>
           {% endfor %}
         </ul>
       </p>
+
+      <p><strong>IAF MD4 Confirmado:</strong>
+          <td class="text-center">
+
+          {% if programacion.iaf_md4_confirmado %}
+                                    ✅ Sí
+                                {% else %}
+                                    ❌ No
+                                {% endif %}
+         </td>
+      </p>
+
     </div>
   </div>
 
-  <!-- Información de Contacto -->
-  <div class="section-title">Información de Contacto</div>
-  <div class="row mb-3">
-    <div class="col-md-6">
-      <p><strong>Teléfono:</strong> {{ programacion.cotizacion.solicitud.cliente.telefono_celular }}</p>
-      <p><strong>Correo:</strong> {{ programacion.cotizacion.solicitud.cliente.correo_electronico }}</p>
-    </div>
-    <div class="col-md-6">
-      <p><strong>Dirección:</strong> {{ programacion.cotizacion.solicitud.cliente.direccion }}</p>
-      <p><strong>Ciudad:</strong> {{ programacion.cotizacion.solicitud.cliente.ciudad }}, {{ programacion.cotizacion.solicitud.cliente.departamento }}</p>
-    </div>
-  </div>
+
 
   <!-- Detalles del Servicio -->
   <div class="section-title">Detalles del Servicio</div>
@@ -199,19 +212,21 @@
         </td>
       </tr>
       <tr>
-        <th>Nivel del CEA</th>
-        <td>{{ programacion.cotizacion.solicitud.cliente.nivel_cea }}</td>
-      </tr>
-      <tr>
-        <th>Categorías</th>
-        <td>
-          {% for categoria in programacion.cotizacion.solicitud.cliente.categorias_certificar.all %}
+        <th>Alcance</th>
+        <td>{{ programacion.cotizacion.solicitud.cliente.nivel_cea }} - Categorías a Certificar: {% for categoria in programacion.cotizacion.solicitud.cliente.categorias_certificar.all %}
             {{ categoria.nombre }}{% if not forloop.last %}, {% endif %}
           {% empty %}
             No especificado
-          {% endfor %}
-        </td>
+          {% endfor %}</td>
       </tr>
+      <tr>
+        <th>Criterio</th>
+        <td>Criterio Resolución 3245 de 2009 -Decreto 1079 de 2015 Titulo I Capitulo III – Resolución 20203040011355 de 2020 Titulo II Capitulo I-resolución 20223040009425 de 2022 del  Ministerio de Transporte de Colombia.
+            <br>
+            <strong>ISO 90012015(SISTEMAS DE GESTION DE LA CALIDAD)<strong>
+        </td>
+
+    </tr>
       <tr>
         <th>Observaciones</th>
         <td>
@@ -224,14 +239,7 @@
       </tr>
 
 
-    <tr>
-        <th>Criterio</th>
-        <td>Criterio Resolución 3245 de 2009 -Decreto 1079 de 2015 Titulo I Capitulo III – Resolución 20203040011355 de 2020 Titulo II Capitulo I-resolución 20223040009425 de 2022 del  Ministerio de Transporte de Colombia.
-            <br>
-            <strong>ISO 90012015(SISTEMAS DE GESTION DE LA CALIDAD)<strong>
-        </td>
 
-    </tr>
     </tbody>
   </table>
 
