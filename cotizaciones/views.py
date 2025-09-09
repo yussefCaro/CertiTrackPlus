@@ -11,6 +11,10 @@ from django.conf import settings
 from solicitudes.models import Solicitud
 from .models import Cotizacion, TipoServicio
 from .forms import CotizacionForm
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.contrib import messages
+
 
 
 # ------------------------------------------------------
@@ -55,20 +59,41 @@ def crear_cotizacion(request, solicitud_id):
 # ------------------------------------------------------
 @login_required
 def listado_cotizaciones(request):
-    """Muestra la lista de cotizaciones creadas."""
+    """Muestra la lista de cotizaciones creadas con filtros y paginación."""
     es_comercial = request.user.groups.filter(name='Comercial').exists()
     es_programacion = request.user.groups.filter(name='Programacion').exists()
 
+    # Base queryset
     if es_programacion:
         cotizaciones = Cotizacion.objects.filter(estado='Aprobada')
     else:
         cotizaciones = Cotizacion.objects.all()
 
+    # ---- FILTROS ----
+    estado = request.GET.get("estado")
+    buscar = request.GET.get("buscar")
+
+    if estado and estado != "None":  # 👈 así evitamos el problema de mostrar "None"
+        cotizaciones = cotizaciones.filter(estado=estado)
+
+    if buscar:
+        cotizaciones = cotizaciones.filter(
+            Q(cliente__nombre_establecimiento__icontains=buscar) |
+            Q(id__icontains=buscar)
+        )
+
+    # ---- PAGINACIÓN ----
+    paginator = Paginator(cotizaciones, 10)  # 10 por página
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     return render(
         request,
         "cotizaciones/listado_cotizaciones.html",
         {
-            "cotizaciones": cotizaciones,
+            "page_obj": page_obj,
+            "estado": estado if estado else "",
+            "buscar": buscar if buscar else "",
             "es_comercial": es_comercial,
             "es_programacion": es_programacion,
         }
@@ -171,3 +196,19 @@ def editar_cotizacion(request, cotizacion_id):
         form = CotizacionForm(instance=cotizacion)
 
     return render(request, "cotizaciones/editar_cotizacion.html", {"form": form, "cotizacion": cotizacion})
+
+
+@login_required
+def eliminar_cotizacion(request, cotizacion_id):
+    cotizacion = get_object_or_404(Cotizacion, id=cotizacion_id)
+    solicitud = cotizacion.solicitud  # obtenemos la solicitud asociada
+
+    cotizacion.delete()
+
+    # Restaurar la solicitud a Pendiente
+    solicitud.estado = "Pendiente"
+    solicitud.save()
+
+    messages.success(request, "La cotización fue eliminada y la solicitud volvió a estado 'Pendiente'.")
+    return redirect("listado_cotizaciones")
+
