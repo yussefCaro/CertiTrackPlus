@@ -1,35 +1,143 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>pendientes</title>
-</head>
 {% extends 'layouts/base.html' %}
 {% block content %}
-<body>
-    <h2>Solicitudes Pendientes</h2>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Cliente</th>
-        <th>Estado</th>
-        <th>Acción</th>
-    </tr>
-    {% for solicitud in solicitudes %}
-    <tr>
-        <td>{{ solicitud.id }}</td>
-        <td>{{ solicitud.cliente.nombre_establecimiento }}</td>
-        <td>{{ solicitud.estado }}</td>
-        <td><a href="{% url 'crear_cotizacion' solicitud.id %}">Crear Cotización</a></td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="4">No hay solicitudes pendientes.</td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="container mt-4">
+    <h2 class="mb-3">📋 Listado de Solicitudes</h2>
 
-</body>
+    <!-- Formulario de filtros -->
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <input type="text" name="cliente" class="form-control"
+                   placeholder="Buscar por cliente..."
+                   value="{{ cliente }}">
+        </div>
+        <div class="col-md-3">
+            <select name="estado" class="form-select">
+                <option value="">Todos los estados</option>
+                <option value="Pendiente" {% if estado == "Pendiente" %}selected{% endif %}>Pendiente</option>
+                <option value="Aprobada" {% if estado == "Aprobada" %}selected{% endif %}>Aprobada</option>
+                <option value="Rechazada" {% if estado == "Rechazada" %}selected{% endif %}>Rechazada</option>
+                <option value="Programada" {% if estado == "Programada" %}selected{% endif %}>Programada</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">🔍 Filtrar</button>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'listado_solicitudes' %}" class="btn btn-secondary w-100">↩ Reset</a>
+        </div>
+    </form>
+
+    <!-- Tabla de solicitudes -->
+    <table class="table table-dark table-hover table-bordered align-middle text-center">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for solicitud in solicitudes %}
+            <tr>
+                <td>{{ solicitud.id }}</td>
+                <td>{{ solicitud.cliente.nombre_establecimiento }}</td>
+                <td>
+                    {% if solicitud.estado == "Pendiente" %}
+                        <span class="badge bg-warning text-dark">Pendiente</span>
+                    {% elif solicitud.estado == "Aprobada" %}
+                        <span class="badge bg-success">Aprobada</span>
+                    {% elif solicitud.estado == "Rechazada" %}
+                        <span class="badge bg-danger">Rechazada</span>
+                    {% elif solicitud.estado == "Programada" %}
+                        <span class="badge bg-info text-dark">Programada</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ solicitud.estado }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'crear_cotizacion' solicitud.id %}" class="btn btn-sm btn-primary">💰 Cotizar</a>
+                    <a href="{% url 'imprimir_solicitud' solicitud.id %}" target="_blank" class="btn btn-sm btn-success">🖨 Imprimir</a>
+                    <a href="{% url 'eliminar_solicitud' solicitud.id %}"
+                       onclick="return confirm('¿Seguro que deseas eliminar esta solicitud?');"
+                       class="btn btn-sm btn-danger">❌ Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No hay solicitudes registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Paginación -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+
+            {# Botón primero y anterior #}
+            {% if solicitudes.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if cliente %}&cliente={{ cliente }}{% endif %}{% if estado %}&estado={{ estado }}{% endif %}">⏮</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ solicitudes.previous_page_number }}{% if cliente %}&cliente={{ cliente }}{% endif %}{% if estado %}&estado={{ estado }}{% endif %}">⬅</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">⏮</span></li>
+                <li class="page-item disabled"><span class="page-link">⬅</span></li>
+            {% endif %}
+
+            {# Mostrar siempre la primera página #}
+            {% if solicitudes.number > 3 %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if cliente %}&cliente={{ cliente }}{% endif %}{% if estado %}&estado={{ estado }}{% endif %}">1</a>
+                </li>
+                {% if solicitudes.number > 4 %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endif %}
+
+            {# Rango dinámico (página actual ±2) #}
+            {% for num in solicitudes.paginator.page_range %}
+                {% if num >= solicitudes.number|add:"-2" and num <= solicitudes.number|add:"2" %}
+                    {% if num == solicitudes.number %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if cliente %}&cliente={{ cliente }}{% endif %}{% if estado %}&estado={{ estado }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {# Mostrar última página con "..." #}
+            {% if solicitudes.number < solicitudes.paginator.num_pages|add:"-2" %}
+                {% if solicitudes.number < solicitudes.paginator.num_pages|add:"-3" %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ solicitudes.paginator.num_pages }}{% if cliente %}&cliente={{ cliente }}{% endif %}{% if estado %}&estado={{ estado }}{% endif %}">{{ solicitudes.paginator.num_pages }}</a>
+                </li>
+            {% endif %}
+
+            {# Botón siguiente y último #}
+            {% if solicitudes.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ solicitudes.next_page_number }}{% if cliente %}&cliente={{ cliente }}{% endif %}{% if estado %}&estado={{ estado }}{% endif %}">➡</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ solicitudes.paginator.num_pages }}{% if cliente %}&cliente={{ cliente }}{% endif %}{% if estado %}&estado={{ estado }}{% endif %}">⏭</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">➡</span></li>
+                <li class="page-item disabled"><span class="page-link">⏭</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+
+
+
+</div>
 {% endblock %}
-</html>
