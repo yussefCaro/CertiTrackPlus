@@ -313,6 +313,13 @@
     </p>
   </div>
 
+  {% if cliente.observaciones %}
+  <div class="section-title">Observaciones</div>
+  <div class="condiciones-pago">
+    <p>{{ cliente.observaciones }}</p>
+  </div>
+  {% endif %}
+
   <div class="condiciones-pago">
     <ol style="margin-bottom: 0; padding-left: 1.2em;">
       <li><strong>FORMA ÚNICA DE PAGO:</strong> ANTICIPO DEL 100% al BANCO DE BOGOTÁ, Cuenta corriente No. 092635713 a nombre de AQ CERTIFICATION S.A.S.</li>
