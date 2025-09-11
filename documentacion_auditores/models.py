@@ -63,6 +63,14 @@ class HoraActividadPlan(models.Model):
     actividad = models.ForeignKey(ActividadCEA, on_delete=models.CASCADE)
     fecha = models.DateField()
     hora = models.TimeField()
+    # NUEVOS CAMPOS AGREGADOS:
+    nombre_auditado = models.CharField(max_length=255, blank=True, null=True, help_text="Nombre de la persona entrevistada")
+    cargo_auditado = models.CharField(max_length=100, blank=True, null=True, help_text="Cargo del entrevistado")
+
+    class Meta:
+        ordering = ['fecha', 'hora']
+        verbose_name = "Actividad del Plan"
+        verbose_name_plural = "Actividades del Plan"
 
     def __str__(self):
         return f"{self.actividad.descripcion[:30]} - {self.fecha} {self.hora}"

@@ -1,5 +1,5 @@
 from django import forms
-from .models import PlanAuditoria, ActaAuditoria, AsistenteActa
+from .models import PlanAuditoria, ActaAuditoria, AsistenteActa, HoraActividadPlan
 
 class PlanAuditoriaForm(forms.ModelForm):
     class Meta:
@@ -13,20 +13,12 @@ class ActaAuditoriaForm(forms.ModelForm):
                   'firma_representante', 'firma_auditor', 'fecha_inicio', 'fecha_cierre',
                   'aspectos_relevantes',
                   'universo_normal', 'poblacion_normal', 'muestra_normal',
-                  'universo_reducido', 'poblacion_reducido', 'muestra_reducido',
-                  ]
+                  'universo_reducido', 'poblacion_reducido', 'muestra_reducido']
         widgets = {
             'aspectos_relevantes': forms.Textarea(attrs={
                 'rows': 4,
                 'placeholder': 'Describa aquí los aspectos relevantes observados durante la auditoría',
-                'class': 'form-control',
-                'representante_legal_nombre': forms.HiddenInput(),
-                'representante_legal_cargo': forms.HiddenInput(),
-                'fecha_inicio': forms.HiddenInput(),
-
-
-
-
+                'class': 'form-control'
             }),
         }
 
@@ -36,14 +28,17 @@ class AsistenteActaForm(forms.ModelForm):
         fields = ['nombre', 'cargo']
         exclude = ['firma_apertura', 'firma_cierre']
 
-
+# FormSet ACTUALIZADO para incluir los nuevos campos
 from django.forms import modelformset_factory
-from .models import HoraActividadPlan
 
 HoraActividadPlanFormSet = modelformset_factory(
     HoraActividadPlan,
-    fields=('fecha', 'hora'),
-    extra=0
+    fields=('fecha', 'hora', 'actividad', 'nombre_auditado', 'cargo_auditado'),  # ← CAMPOS AGREGADOS
+    extra=1,
+    widgets={
+        'fecha': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        'hora': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+        'nombre_auditado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre completo'}),
+        'cargo_auditado': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Cargo o posición'})
+    }
 )
-
-

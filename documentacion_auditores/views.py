@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.conf import settings
 import os
 
+
 # 🔐 Validación de grupo
 def auditor_check(user):
     return user.groups.filter(name='Auditores').exists()
@@ -44,6 +45,7 @@ def dashboard_auditor(request):
         'planes': planes,
     })
 
+
 @login_required
 @user_passes_test(auditor_check)
 def crear_plan(request, programacion_id):
@@ -56,7 +58,13 @@ def crear_plan(request, programacion_id):
 
     actividades = list(ActividadCEA.objects.filter(nivel=programacion.nivel_auditoria))
     fechas_disponibles = [f.fecha for f in programacion.fechas_etapa2.all()]
-    formset_factory = modelformset_factory(HoraActividadPlan, fields=('fecha', 'hora'), extra=len(actividades))
+
+    # ← CAMBIO: Usar el FormSet actualizado con los nuevos campos
+    formset_factory = modelformset_factory(
+        HoraActividadPlan,
+        fields=('fecha', 'hora', 'nombre_auditado', 'cargo_auditado'),  # ← NUEVOS CAMPOS
+        extra=len(actividades)
+    )
 
     if request.method == 'POST':
         form = PlanAuditoriaForm(request.POST, request.FILES)
@@ -66,19 +74,25 @@ def crear_plan(request, programacion_id):
             plan = form.save(commit=False)
             plan.programacion = programacion
             plan.auditor = request.user
-            if fechas_disponibles:
-                plan.fecha_aprobacion = fechas_disponibles[0] - timedelta(days=2)
+            # Tomar la primera fecha de etapa 2 y restarle 2 días
+            fecha_etapa2 = programacion.fechas_etapa2.order_by("fecha").first()
+            if fecha_etapa2:
+                plan.fecha_aprobacion = fecha_etapa2.fecha - timedelta(days=2)
             else:
                 plan.fecha_aprobacion = timezone.now().date()
+
             plan.save()
 
             ActaAuditoria.objects.get_or_create(plan=plan)
 
+            # ← CAMBIO: Guardar con los nuevos campos
             for subform, actividad in zip(formset, actividades):
-                hora_actividad = subform.save(commit=False)
-                hora_actividad.plan = plan
-                hora_actividad.actividad = actividad
-                hora_actividad.save()
+                if subform.cleaned_data:  # ← Validar datos
+                    hora_actividad = subform.save(commit=False)
+                    hora_actividad.plan = plan
+                    hora_actividad.actividad = actividad
+                    # Los campos nombre_auditado y cargo_auditado ya están incluidos automáticamente
+                    hora_actividad.save()
 
             messages.success(request, "Plan de auditoría creado correctamente.")
             return redirect('dashboard_auditor')
@@ -86,7 +100,16 @@ def crear_plan(request, programacion_id):
             messages.error(request, "Corrige los errores en el formulario.")
     else:
         form = PlanAuditoriaForm()
-        formset = formset_factory(queryset=HoraActividadPlan.objects.none())
+
+        # ← CAMBIO: Crear formset inicial con actividades y campos nuevos
+        initial_data = []
+        for actividad in actividades:
+            initial_data.append({
+                'actividad': actividad.id,
+                'nombre_auditado': '',  # ← Campo nuevo
+                'cargo_auditado': ''  # ← Campo nuevo
+            })
+        formset = formset_factory(queryset=HoraActividadPlan.objects.none(), initial=initial_data)
 
     return render(request, 'documentacion_auditores/plan_form.html', {
         'form': form,
@@ -95,6 +118,7 @@ def crear_plan(request, programacion_id):
         'fechas_disponibles': fechas_disponibles,
         'programacion': programacion,
     })
+
 
 @login_required
 @user_passes_test(auditor_check)
@@ -108,7 +132,13 @@ def editar_plan(request, plan_id):
     actividades = list(ActividadCEA.objects.filter(nivel=plan.programacion.nivel_auditoria))
     fechas_disponibles = [f.fecha for f in plan.programacion.fechas_etapa2.all()]
     queryset_horas = HoraActividadPlan.objects.filter(plan=plan)
-    formset_factory = modelformset_factory(HoraActividadPlan, fields=('fecha', 'hora'), extra=0)
+
+    # ← CAMBIO: FormSet con los nuevos campos
+    formset_factory = modelformset_factory(
+        HoraActividadPlan,
+        fields=('fecha', 'hora', 'nombre_auditado', 'cargo_auditado'),  # ← NUEVOS CAMPOS
+        extra=0
+    )
 
     if request.method == 'POST':
         form = PlanAuditoriaForm(request.POST, request.FILES, instance=plan)
@@ -116,11 +146,14 @@ def editar_plan(request, plan_id):
 
         if form.is_valid() and formset.is_valid():
             form.save()
+            # ← CAMBIO: Guardar con nuevos campos
             for subform, actividad in zip(formset, actividades):
-                hora_actividad = subform.save(commit=False)
-                hora_actividad.plan = plan
-                hora_actividad.actividad = actividad
-                hora_actividad.save()
+                if subform.cleaned_data:  # ← Validar datos
+                    hora_actividad = subform.save(commit=False)
+                    hora_actividad.plan = plan
+                    hora_actividad.actividad = actividad
+                    # Los campos nombre_auditado y cargo_auditado se guardan automáticamente
+                    hora_actividad.save()
             return redirect('dashboard_auditor')
     else:
         form = PlanAuditoriaForm(instance=plan)
@@ -142,7 +175,14 @@ def aprobar_plan_cliente(request, plan_id):
 
     if request.method == 'POST':
         plan.aprobado_por_cliente = True
-        plan.fecha_aprobacion_cliente = timezone.now()
+
+        # Calcular fecha de aprobación cliente: 2 días antes de la primera fecha de etapa 2
+        fecha_etapa2 = plan.programacion.fechas_etapa2.order_by("fecha").first()
+        if fecha_etapa2:
+            plan.fecha_aprobacion_cliente = fecha_etapa2.fecha - timedelta(days=2)
+        else:
+            plan.fecha_aprobacion_cliente = timezone.now().date()
+
         plan.save()
 
         if not hasattr(plan, 'acta'):
@@ -153,6 +193,7 @@ def aprobar_plan_cliente(request, plan_id):
                 fecha_inicio=plan.programacion.fechas_etapa2.first().fecha if plan.programacion.fechas_etapa2.exists() else timezone.now().date(),
                 fecha_cierre=plan.programacion.fechas_etapa2.last().fecha if plan.programacion.fechas_etapa2.exists() else timezone.now().date(),
             )
+
         messages.success(request, "El plan ha sido aprobado por el cliente.")
     return redirect('dashboard_auditor')
 

@@ -7,7 +7,7 @@
 <p>Fechas disponibles: {{ fechas_disponibles|length }}</p>
 <p>Formset TOTAL_FORMS: {{ formset.management_form.TOTAL_FORMS.value }}</p>
 <h2>Plan de Auditoría - Servicio {{ programacion.cotizacion.numero_servicio }}</h2>
-text
+
 {% if form.errors %}
   <div class="alert alert-danger">{{ form.errors }}</div>
 {% endif %}
@@ -36,6 +36,8 @@ text
                 <th>Fecha</th>
                 <th>Hora</th>
                 <th>PROCESO/ACTIVIDAD/REQUISITO POR AUDITAR</th>
+                <th>Nombre del Auditado</th> <!-- ← NUEVA COLUMNA -->
+                <th>Cargo</th>                <!-- ← NUEVA COLUMNA -->
             </tr>
         </thead>
         <tbody>
@@ -55,6 +57,9 @@ text
                     </td>
                     <td>{{ subform.hora }}</td>
                     <td style="white-space: pre-line;">{{ actividad.descripcion }}</td>
+                    <!-- NUEVAS CELDAS PARA LOS CAMPOS AGREGADOS -->
+                    <td>{{ subform.nombre_auditado }}</td>
+                    <td>{{ subform.cargo_auditado }}</td>
                 </tr>
                 {% endwith %}
             {% endfor %}

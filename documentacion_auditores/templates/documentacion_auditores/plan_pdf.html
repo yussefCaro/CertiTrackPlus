@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,7 +14,7 @@
       @top-center { content: element(header-pdf); }
       @bottom-center {
         content: "Este documento contiene información confidencial y no puede ser distribuido o reproducido sin autorización escrita de AQ CERTIFICATION S.A.S. "
-                 "Calle 50 No. 73-25 Barrio Normandía – Bogotá TEL: 7022433 www.aqcertification.net.co "
+                 "Calle 50 No. 73-25 Barrio Normandía – Bogotá TEL: 7022433 [www.aqcertification.net.co](https://www.aqcertification.net.co) "
                  "Página " counter(page) " de " counter(pages);
         font-size: 10px;
         color: #222;
@@ -132,9 +131,14 @@
     }
     .info-table th { width: 32%; }
     .info-table-program th, .info-table-program td { text-align: center; }
-    .info-table-program td:nth-child(1), .info-table-program th:nth-child(1) { width: 20%; }
-    .info-table-program td:nth-child(2), .info-table-program th:nth-child(2) { width: 18%; }
-    .info-table-program td:nth-child(3), .info-table-program th:nth-child(3) { width: 62%; text-align: left;}
+
+    /* Ajustar anchos para 5 columnas */
+    .info-table-program td:nth-child(1), .info-table-program th:nth-child(1) { width: 12%; } /* Fecha */
+    .info-table-program td:nth-child(2), .info-table-program th:nth-child(2) { width: 12%; } /* Hora */
+    .info-table-program td:nth-child(3), .info-table-program th:nth-child(3) { width: 40%; text-align: left; } /* Actividad */
+    .info-table-program td:nth-child(4), .info-table-program th:nth-child(4) { width: 20%; } /* Nombre */
+    .info-table-program td:nth-child(5), .info-table-program th:nth-child(5) { width: 16%; } /* Cargo */
+
     .firma {
       margin-top: 2em;
       font-size: 1em;
@@ -171,7 +175,6 @@
       line-height: 1.5;
       text-align: left;
     }
-
   </style>
 </head>
 <body>
@@ -215,20 +218,43 @@
 
 <div class="section-title">INFORMACIÓN DEL AUDITADO</div>
 <table class="info-table">
-  <tr><th>Nombre del Establecimiento</th><td>{{ programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</td></tr>
-  <tr><th>Representante Legal</th><td>{{ programacion.cotizacion.solicitud.cliente.representante_legal }}</td></tr>
-  <tr><th>NIT</th><td>{{ programacion.cotizacion.solicitud.cliente.nit }}</td></tr>
+
+
+   <tr><th>Nombre de propietario y/o razón social</th><td>{{ programacion.cotizacion.solicitud.cliente.nombre_propietario }}</td></tr>
+   <tr><th>Establecimiento de comercio</th><td>{{ programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</td></tr>
+   <tr><th>NIT</th><td>{{ programacion.cotizacion.solicitud.cliente.nit }}</td></tr>
   <tr><th>Dirección</th><td>{{ programacion.cotizacion.solicitud.cliente.direccion }}</td></tr>
   <tr><th>Ciudad / Departamento</th><td>{{ programacion.cotizacion.solicitud.cliente.ciudad }} - {{ programacion.cotizacion.solicitud.cliente.departamento }}</td></tr>
+  <tr><th>Representante Legal</th><td>{{ programacion.cotizacion.solicitud.cliente.representante_legal }}</td></tr>
   <tr><th>Teléfono</th><td>{{ programacion.cotizacion.solicitud.cliente.telefono_celular }}</td></tr>
   <tr><th>Correo</th><td>{{ programacion.cotizacion.solicitud.cliente.correo_electronico }}</td></tr>
+
+
+
+
 </table>
 
 <div class="section-title">INFORMACIÓN DE LA AUDITORÍA</div>
 <table class="info-table">
   <tr><th>Número de Servicio</th><td>{{ programacion.cotizacion.numero_servicio }}</td></tr>
-  <tr><th>Alcance de la auditoría</th><td>{{ programacion.nivel_auditoria }}</td></tr>
-  <tr><th>Categorías</th><td>{% for cat in programacion.cotizacion.solicitud.cliente.categorias_certificar.all %}{{ cat.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+
+  <tr>
+    <th>Objetivo de la auditoria:</th>
+    <td>
+      <ul style="margin:0; padding-left:16px;">
+        <li>Verificar la conformidad de los requisitos exigidos por la Resolución 3245 de 2009/li>
+        <li>Decreto 1079 de 2015 </li>
+        <li>Resolución 20203040011355 de 2020 en sus títulos y capítulos aplicables </li>
+        <li>Resolución 20223040009425 de 2022 y su Sistema de Gestión de Calidad bajo la ISO 9001:2015.</li>
+
+      </ul>
+    </td>
+  </tr>
+
+
+
+  <tr><th>Alcance de la auditoría</th><td>{{ programacion.nivel_auditoria }} - Categorías a Certificar: {% for cat in programacion.cotizacion.solicitud.cliente.categorias_certificar.all %}{{ cat.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+
   <tr><th>Auditor</th><td>{{ plan.auditor.get_full_name }}</td></tr>
   <tr>
     <th>Criterios de Auditoría</th>
@@ -243,6 +269,13 @@
     </td>
   </tr>
   <tr><th>Tipo de Servicio</th><td>{% for ts in programacion.cotizacion.tipo_servicio.all %}{{ ts.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+
+  <tr><th>IAF MD4 Confirmado:</th><td>{% if programacion.iaf_md4_confirmado %}
+                                    ✅ Sí
+                                {% else %}
+                                    ❌ No
+                                {% endif %}</td></tr>
+
 </table>
 
 <div class="section-title">OBSERVACIONES GENERALES</div>
@@ -255,6 +288,8 @@
       <th>Fecha</th>
       <th>Hora</th>
       <th>Actividad</th>
+      <th>Nombre del Auditado</th>
+      <th>Cargo</th>
     </tr>
   </thead>
   <tbody>
@@ -263,10 +298,12 @@
         <td>{{ hora_act.fecha|date:"Y-m-d" }}</td>
         <td>{{ hora_act.hora|time:"H:i" }}</td>
         <td style="text-align: left;">{{ hora_act.actividad.descripcion }}</td>
+        <td>{{ hora_act.nombre_auditado|default:"-" }}</td>
+        <td>{{ hora_act.cargo_auditado|default:"-" }}</td>
       </tr>
     {% empty %}
       <tr>
-        <td colspan="3">No hay actividades registradas.</td>
+        <td colspan="5">No hay actividades registradas.</td>
       </tr>
     {% endfor %}
   </tbody>
@@ -283,7 +320,7 @@
   Fecha de aprobación: {{ plan.fecha_aprobacion|date:"Y-m-d" }}
 </div>
 
-
+{% if programacion.iaf_md4_confirmado %}
 <div class="section-title"> ANEXO 1 (ANÁLISIS DE RIESGOS Y CONTROLES PARA LA EJECUCIÓN DE LA AUDITORIA SI SE REALIZA DE MANERA REMOTA)</div>
 <h5 style="margin-bottom:8px;">Teniendo en cuenta las directrices establecidas en el documento mandatorio IAF MD4 se realiza un análisis de riesgos que pueden afectar la eficacia de la auditoria si se realiza de manera remota, este análisis se realiza de la siguiente manera: </h5>
 
@@ -407,6 +444,6 @@
     <li>Se puede realizar el seguimiento de actividades que no se encuentran en curso en el momento de la auditoría, ya sea por medio de videos de forma asincrónica, sin afectar el proceso o las fechas de ejecución.</li>
   </ol>
 </div>
-
+{% endif %}
 </body>
 </html>
