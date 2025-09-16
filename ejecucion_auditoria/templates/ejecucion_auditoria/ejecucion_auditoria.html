@@ -112,6 +112,17 @@
 </div>
 <!-- === FIN DEL BLOQUE DE PLAN DE MUESTREO === -->
 
+<!-- === Conclusiones etapa 1 === -->
+<div class="mb-4">
+  <label for="{{ form.conclusiones_etapa1.id_for_label }}" class="form-label">
+    Conclusiones de etapa 1:
+  </label>
+  {{ form.conclusiones_etapa1 }}
+  {% if form.conclusiones_etapa1.errors %}
+    <div class="text-danger">{{ form.conclusiones_etapa1.errors }}</div>
+  {% endif %}
+</div>
+
 
     <div class="table-responsive">
         <table class="table table-bordered align-middle">
@@ -204,6 +215,31 @@
         {% endif %}
     </div>
     <!-- ============================ -->
+
+    <!-- === Quejas registradas === -->
+<div class="mb-4">
+  <label for="{{ form.quejas_registradas.id_for_label }}" class="form-label">
+    Quejas registradas:
+  </label>
+  {{ form.quejas_registradas }}
+  {% if form.quejas_registradas.errors %}
+    <div class="text-danger">{{ form.quejas_registradas.errors }}</div>
+  {% endif %}
+</div>
+
+
+
+    <!-- === Conclusiones etapa 2 === -->
+<div class="mb-4">
+  <label for="{{ form.conclusiones_etapa2.id_for_label }}" class="form-label">
+    Conclusiones de etapa 2:
+  </label>
+  {{ form.conclusiones_etapa2 }}
+  {% if form.conclusiones_etapa2.errors %}
+    <div class="text-danger">{{ form.conclusiones_etapa2.errors }}</div>
+  {% endif %}
+</div>
+
 
     <div class="boton-flotante">
         <button type="submit" name="guardar" class="btn btn-success me-2">Guardar avance</button>

@@ -231,6 +231,12 @@
   </div>
   <!-- /fin bloque de muestreo -->
 
+<div class="titulo-bloque">Conclusiones Etapa 1</div>
+<div style="background:#fffde7; border:1px solid #ffe082; padding:10px 14px; margin-bottom:17px; border-radius:5px;">
+  {{ acta.conclusiones_etapa1|default:"–"|linebreaks }}
+</div>
+
+
   <div class="titulo-bloque">Datos Generales</div>
   <table class="table table-bordered">
     <tr><th>Número de Servicio</th><td>{{ acta.plan.programacion.cotizacion.numero_servicio|default:"–" }}</td></tr>
@@ -290,13 +296,6 @@
     <tr><th>Auditor</th><td>{{ acta.plan.auditor.get_full_name|default:"–" }}</td></tr>
   </table>
 
-  {% if acta.aspectos_relevantes %}
-    <div class="titulo-bloque">Conclusiones Etapa 1</div>
-    <div style="background:#fffde7; border:1px solid #ffe082; padding:10px 14px; margin-bottom:17px; border-radius:5px;">
-      {{ acta.aspectos_relevantes|linebreaks }}
-    </div>
-  {% endif %}
-
   <div class="titulo-bloque">Lista de Verificación y Hallazgos</div>
   <table class="table table-bordered tabla-hallazgos" style="font-size:0.96em;">
     <thead>
@@ -323,19 +322,25 @@
               <th style="width:24%;">Evidencia</th>
             </tr>
             <tr>
-
+              <td>{% if ejec.cumple %}✔{% else %}–{% endif %}</td>
               <td>
-                {% if ejec.aspecto_mejora %}✔{% endif %}
+                {% if ejec.no_cumple %}✔{% else %}–{% endif %}
+                {% if ejec.no_cumple and ejec.concepto_no_conformidad %}
+                  <div><strong>NC:</strong> {{ ejec.concepto_no_conformidad }}</div>
+                {% endif %}
+              </td>
+              <td>
+                {% if ejec.aspecto_mejora %}✔{% else %}–{% endif %}
                 {% if ejec.aspecto_mejora and ejec.concepto_mejora %}
                   <div><strong>Observación:</strong> {{ ejec.concepto_mejora }}</div>
-                {% else %}–{% endif %}
+                {% endif %}
               </td>
               <td>{% if ejec.no_aplica %}✔{% else %}–{% endif %}</td>
               <td>
-                {% if ejec.subsanado %}✔{% endif %}
+                {% if ejec.subsanado %}✔{% else %}–{% endif %}
                 {% if ejec.como_se_subsano %}
-                  <div style="color: #2a6f2a;"><strong>¿Cómo se subsanó?</strong> {{ ejec.como_se_subsano }}</div>
-                {% else %}–{% endif %}
+                  <div style="color:#2a6f2a;"><strong>¿Cómo se subsanó?</strong> {{ ejec.como_se_subsano }}</div>
+                {% endif %}
               </td>
               <td>
                 {% if ejec.get_evidencia_display %}{{ ejec.get_evidencia_display }}{% else %}–{% endif %}
@@ -344,6 +349,7 @@
                 {% endif %}
               </td>
             </tr>
+
             <tr>
               <th>Imágenes</th>
               <td colspan="5">
@@ -366,12 +372,17 @@
     {% endif %}
 </div>
 
-<div class="alert-info">
-    {% if acta.aspectos_relevantes %}
-        <h3>Conclusiones etapa 2  </h3>
-        <p>{{ acta.aspectos_relevantes|linebreaks }}</p>
-    {% endif %}
+<div class="titulo-bloque">Quejas registradas</div>
+<div style="background:#eef7ff; border:1px solid #c5dcff; padding:10px 14px; margin-bottom:17px; border-radius:5px;">
+  {{ acta.quejas_registradas|default:"–"|linebreaks }}
 </div>
+
+
+<div class="alert-info">
+  <h3>Conclusiones etapa 2</h3>
+  <p>{{ acta.conclusiones_etapa2|default:"–"|linebreaks }}</p>
+</div>
+
 
 
 <div class="alert-info">RESULTADOS DE AUDITORÍA</div>

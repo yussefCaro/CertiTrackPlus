@@ -33,6 +33,9 @@ class ActaAuditoria(models.Model):
     universo_reducido = models.PositiveIntegerField("Universo (Reducido)", default=0)
     poblacion_reducido = models.PositiveIntegerField("Población (Reducido)", default=0)
     muestra_reducido = models.PositiveIntegerField("Muestra (Reducido)", default=0)
+    conclusiones_etapa1 = models.TextField("Conclusiones de etapa 1", blank=True, null=True)
+    quejas_registradas = models.TextField("Quejas registradas", blank=True, null=True)
+    conclusiones_etapa2 = models.TextField("Conclusiones de etapa 2", blank=True, null=True)
 
     def __str__(self):
         return f"Acta Auditoría - {self.plan.programacion.cotizacion.numero_servicio}"
