@@ -184,8 +184,8 @@
     </div>
   </div>
   <div class="header-info-cajas">
-    <div class="header-caja">{{ codigo_formato|default:"CERT-FR-06" }}</div>
-    <div class="header-caja">{{ fecha_informe|date:"Y-m-d"|default:"2025-07-21" }}</div>
+    <div class="header-caja">CERT-FR-44</div>
+    <div class="header-caja">2025-09-15</div>
   </div>
 </div>
 
@@ -236,7 +236,7 @@
     <tr><th>Número de Servicio</th><td>{{ acta.plan.programacion.cotizacion.numero_servicio|default:"–" }}</td></tr>
     <tr><th>Nombre del Propietario y/o Razón Social</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento|default:"–" }}</td></tr>
     <tr><th>Representante Legal</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.representante_legal|default:"–" }}</td></tr>
-    <tr><th>Establecimiento Comercial</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento|default:"–" }}</td></tr>
+    <tr><th>Establecimiento de comercio</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento|default:"–" }}</td></tr>
     <tr><th>NIT</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nit|default:"–" }}</td></tr>
     <tr><th>Dirección</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.direccion|default:"–" }}</td></tr>
     <tr><th>Ciudad</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.ciudad|default:"–" }}</td></tr>
@@ -273,17 +273,25 @@
         {% endfor %}
       </td>
     </tr>
+      <tr>
+
+        <th> Criterio </th>
+          <td>
+                    Resolución 3245 de 2009 - Decreto 1079 de 2015 Título I Capítulo III – Resolución 20203040011355 de 2020 Título II Capítulo I – Resolución 20223040009425 de 2022 del Ministerio de Transporte de Colombia. <strong>ISO 9001:2015 (SISTEMAS DE GESTIÓN DE LA CALIDAD)</strong>
+
+          </td>
+      </tr>
     <tr>
       <th>Checkpoint IAF MD4</th>
       <td>
-        {% if plan.iaf_md4_verificado %}✔{% else %}✘{% endif %}
+        {% if plan.iaf_md4_verificado %}✔ Si{% else %}✘ No {% endif %}
       </td>
     </tr>
     <tr><th>Auditor</th><td>{{ acta.plan.auditor.get_full_name|default:"–" }}</td></tr>
   </table>
 
   {% if acta.aspectos_relevantes %}
-    <div class="titulo-bloque">Aspectos relevantes del servicio auditado</div>
+    <div class="titulo-bloque">Conclusiones Etapa 1</div>
     <div style="background:#fffde7; border:1px solid #ffe082; padding:10px 14px; margin-bottom:17px; border-radius:5px;">
       {{ acta.aspectos_relevantes|linebreaks }}
     </div>
@@ -315,13 +323,7 @@
               <th style="width:24%;">Evidencia</th>
             </tr>
             <tr>
-              <td>{% if ejec.cumple %}✔{% else %}–{% endif %}</td>
-              <td>
-                {% if ejec.no_cumple %}✔{% endif %}
-                {% if ejec.no_cumple and ejec.concepto_no_conformidad %}
-                  <div><strong>Motivo:</strong> {{ ejec.concepto_no_conformidad }}</div>
-                {% else %}–{% endif %}
-              </td>
+
               <td>
                 {% if ejec.aspecto_mejora %}✔{% endif %}
                 {% if ejec.aspecto_mejora and ejec.concepto_mejora %}
@@ -357,18 +359,56 @@
     </tbody>
   </table>
 
+<div class="alert-info">
+    {% if acta.aspectos_relevantes %}
+        <h3>Aspectos por resaltar - Fechas Límites de Envío de Solicitud de Acción Correctiva y Cierre de No Conformidades (Si Aplica) </h3>
+        <p>{{ acta.aspectos_relevantes|linebreaks }}</p>
+    {% endif %}
+</div>
+
+<div class="alert-info">
+    {% if acta.aspectos_relevantes %}
+        <h3>Conclusiones etapa 2  </h3>
+        <p>{{ acta.aspectos_relevantes|linebreaks }}</p>
+    {% endif %}
+</div>
+
+
+<div class="alert-info">RESULTADOS DE AUDITORÍA</div>
+<table class="info-table">
+  <tr>
+    <th>Conclusiones sobre uso TIC</th>
+    <td>A lo largo del proceso se utiliza la aplicación WhatsApp y correo electrónico para el envío y recepción de información requerida para la auditoría.</td>
+  </tr>
+  <tr>
+    <th>Grado de cumplimiento de objetivos</th>
+    <td>
+      <ul>
+        <li>Se verificó que el proceso de auditoria cumple con los requisitos exigidos por:</li>
+        <li>La resolución 3245 de 2009</li>
+        <li>Decreto 1079 de 2015</li>
+        <li>Resolución 20203040011355 de 2020</li>
+        <li>Resolución 20223040009425 de 2022 del Ministerio de Transporte</li>
+        <li>ISO 9001:2015 - Sistema de Gestión de Calidad</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
   <div class="alert-info">
     <strong>Nota:</strong> Este documento se adjunta con el listado de vehículos e instructores cargado en el plan de auditoría.
   </div>
 
   {% if acta.recomendaciones %}
     <div class="alert-info" style="margin-top: 1em;">
-      <strong>Recomendación del auditor:</strong>
+      <strong>Recomendación del auditor:</strong> Al culminar el proceso de auditoría y de acuerdo con los resultados obtenidos, SE RECOMIENDA AL COMITÉ DE CERTIFICACIÓN
       {% for rec in acta.recomendaciones|split:"," %}
         <span class="badge">{{ rec }}</span>
-      {% endfor %}
+      {% endfor %}  en cumplimiento de infraestructura, documentación legal y sistema de gestión de calidad, de acuerdo con los requisitos establecidos en la resolución 3245 de 2009 – Decreto 1079 de 2015 – Resolución 20203040011355 de 2020 en sus títulos y capítulos aplicables y el Sistema de Gestión de Calidad bajo la norma ISO 9001:2015.
     </div>
   {% endif %}
+
+
 
   <div class="firma-bloque">
     <div class="firma-linea"></div>

@@ -26,7 +26,7 @@ class ActaAuditoria(models.Model):
     fecha_cierre = models.DateField(null=True, blank=True)
     fecha_inicio_subsanacion = models.DateField(null=True, blank=True)
     recomendaciones = models.CharField(max_length=200, blank=True)
-    aspectos_relevantes = models.TextField("Aspectos relevantes del servicio auditado", blank=True)
+    aspectos_relevantes = models.TextField("Aspectos relevantes del servicio auditado", blank=True, null=True)
     universo_normal = models.PositiveIntegerField("Universo (Normal)", default=0)
     poblacion_normal = models.PositiveIntegerField("Población (Normal)", default=0)
     muestra_normal = models.PositiveIntegerField("Muestra (Normal)", default=0)

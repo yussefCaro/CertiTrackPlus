@@ -293,25 +293,7 @@
   </tbody>
 </table>
 
-<div class="section-title">REGISTRO DE ASISTENCIA</div>
-<table class="tabla-asistentes">
-  <tr>
-    <th>Nombre</th>
-    <th>Cargo</th>
-    <th>Firma apertura</th>
-    <th>Firma cierre</th>
-  </tr>
-  {% for asistente in asistentes %}
-  <tr>
-    <td>{{ asistente.nombre }}</td>
-    <td>{{ asistente.cargo }}</td>
-    <td style="height:40px; border-bottom:1px solid #000;"></td>
-    <td style="height:40px; border-bottom:1px solid #000;"></td>
-  </tr>
-  {% empty %}
-  <tr><td colspan="4">No hay asistentes registrados.</td></tr>
-  {% endfor %}
-</table>
+
 
 <div class="section-title">ACEPTACIÓN DE LA EMPRESA</div>
 <div style="margin-bottom: 20px; margin-top: -8px;">
@@ -336,5 +318,24 @@
   </tr>
 </table>
 
+<div class="section-title">REGISTRO DE ASISTENCIA</div>
+<table class="tabla-asistentes">
+  <tr>
+    <th>Nombre</th>
+    <th>Cargo</th>
+    <th>Firma apertura</th>
+    <th>Firma cierre</th>
+  </tr>
+  {% for asistente in asistentes %}
+  <tr>
+    <td>{{ asistente.nombre }}</td>
+    <td>{{ asistente.cargo }}</td>
+    <td style="height:40px; border-bottom:1px solid #000;"></td>
+    <td style="height:40px; border-bottom:1px solid #000;"></td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="4">No hay asistentes registrados.</td></tr>
+  {% endfor %}
+</table>
 </body>
 </html>

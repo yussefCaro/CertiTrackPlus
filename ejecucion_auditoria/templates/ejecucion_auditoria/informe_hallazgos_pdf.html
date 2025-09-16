@@ -172,8 +172,8 @@
       INFORME DE HALLAZGOS DE AUDITORÍA
     </div>
     <div class="header-cajas">
-      <div class="info-caja">CERT-FR-05</div>
-      <div class="info-caja">{{ acta.plan.programacion.fecha_programacion_etapa1|date:"Y-m-d" }}</div>
+      <div class="info-caja">CERT-FR-08</div>
+      <div class="info-caja">2025-09-12</div>
     </div>
   </div>
 </header>
@@ -181,8 +181,10 @@
 <div class="bloque-cuadro">
   <h3>Generalidades del Informe de Hallazgos</h3>
   <ul>
-    <li>Este informe contiene los hallazgos y conclusiones identificadas en la auditoría realizada por AQ Certification S.A.S., de acuerdo con los requisitos y criterios establecidos.</li>
-    <li>Incluye información detallada del auditado, conclusiones generales, aspectos de mejora y no conformidades identificadas durante la auditoría.</li>
+    <li>El informe de hallazgos es un documento clave dentro del proceso de auditoría que sirve para comunicar de manera clara, objetiva y estructurada los resultados de la auditoría en relación con los criterios establecidos.</li>
+    <li>El presente documento incluye información detallada del auditado, conclusiones generales, aspectos por resaltar, aspectos por mejora y hallazgos de no conformidad como resultado del proceso de auditoría realizado.</li>
+    <li>La firma de este informe de hallazgos por parte de los representantes de la organización auditada no implica necesariamente la aceptación total de los hallazgos presentados, sino que deja constancia de que los resultados han sido debidamente comunicados y recibidos.</li>
+    <li>En caso de existir desacuerdos o diferencias de interpretación respecto a alguno de los hallazgos, la organización auditada podrá presentar su recurso de apelación de acuerdo con las condiciones establecidas en el DEST-PC-03 QUEJAS Y APELACIONES.</li>
     <li>El contenido de este documento es confidencial y de uso exclusivo para la empresa auditada y AQ Certification S.A.S.</li>
   </ul>
 </div>
@@ -192,7 +194,7 @@
   <tr><th>Número de Servicio</th><td>{{ acta.plan.programacion.cotizacion.numero_servicio }}</td></tr>
   <tr><th>Nombre del Propietario y/o Razón Social</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</td></tr>
   <tr><th>Representante Legal</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.representante_legal }}</td></tr>
-  <tr><th>Establecimiento Comercial</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</td></tr>
+  <tr><th>Establecimiento de comercio</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento }}</td></tr>
   <tr><th>NIT</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nit }}</td></tr>
   <tr><th>Dirección</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.direccion }}</td></tr>
   <tr><th>Ciudad</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.ciudad }}</td></tr>
@@ -233,9 +235,9 @@
     <th>Checkpoint IAF MD4</th>
     <td>
       {% if plan.iaf_md4_verificado %}
-        <span>✔</span>
+        <span>✔ SI</span>
       {% else %}
-        <span>✘</span>
+        <span>✘ NO</span>
       {% endif %}
     </td>
   </tr>
@@ -283,7 +285,7 @@
 </table>
 
 {% if acta.aspectos_relevantes %}
-  <div class="section-title">Aspectos Relevantes del Servicio Auditado</div>
+  <div class="section-title">Aspectos por resaltar</div>
   <div class="bloque-cuadro" style="padding: 13px 23px 13px 23px; background: #fffde7;">
     <p>{{ acta.aspectos_relevantes|linebreaks }}</p>
   </div>
@@ -318,11 +320,9 @@
       <th>#</th>
       <th>Criterio/Requisito</th>
       <th>Motivo</th>
-      <th>¿Cómo se subsanó?</th>
-      <th>Subsanado</th>
-      <th>Firma Representante Legal</th>
+      <th>Firmas de aceptación de la no conformidad</th>
       <th>Firma Auditor</th>
-      <th>Fecha</th>
+      <th>Fecha de la No conformidad </th>
     </tr>
   </thead>
   <tbody>
@@ -332,8 +332,7 @@
         <td>{{ forloop.counter }}</td>
         <td>{{ ejec.requisito.nombre }}</td>
         <td>{{ ejec.concepto_no_conformidad }}</td>
-        <td>{{ ejec.como_se_subsano }}</td>
-        <td>{% if ejec.subsanado %}✔{% else %}✘{% endif %}</td>
+
         <td style="height: 60px;"></td>
         <td style="height: 60px;"></td>
         <td>
@@ -348,13 +347,25 @@
     {% endfor %}
   </tbody>
 </table>
+<!-- 🔹 Bloque nuevo de compromisos para no conformidades -->
+<div class="bloque-cuadro" style="padding: 15px 20px; background:#f9f9f9; margin-top: 15px;">
+  <h3 style="margin-top:0; color:#1a237e;">Compromisos asociados a las No Conformidades</h3>
+  <ul style="margin:0; padding-left:20px;">
+    <li> El cliente tiene  <strong> 10 días hábiles</strong> para remitir la solicitud de acción correctiva al auditor.</li>
+    <li> El auditor tiene 5 días calendario para revisar y aprobar la solicitud.
+      En caso de que las acciones propuestas no se consideren adecuadas, el cliente tendrá <strong>5 días calendario</strong> adicionales para ajustar, y la respuesta final se dará en máximo <strong>2 días calendario</strong>.
+    </li>
+    <li> El cliente tiene <strong>90 días calendario </strong>desde el momento de la revisión y aprobación de la solicitud de acción correctiva remitida por el cliente para ejecutar el plan de acción que subsane los hallazgos de no conformidad presentados.</li>
+  </ul>
+</div>
 
+<!-- 🔹 Fin del bloque nuevo -->
 <div class="section-title">Aceptar Informe</div>
 <div style="margin-bottom: 20px; margin-top: -8px;">
   Yo, <strong>{{ acta.plan.programacion.cotizacion.solicitud.cliente.representante_legal }}</strong>, como representante legal de la organización auditada, acepto y reconozco los compromisos y resultados indicados en este informe de auditoría desarrollado por AQ Certification S.A.S.
 </div>
 
-<h4 style="margin-top:1.2em; margin-bottom:0.8em;">Firmas de aceptación del informe</h4>
+<h4 style="margin-top:1.2em; margin-bottom:0.8em;">Firma del representante legal</h4>
 <table class="firmas-table">
   <tr>
     <td>
