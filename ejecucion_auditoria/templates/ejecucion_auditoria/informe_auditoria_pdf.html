@@ -237,6 +237,67 @@
 </div>
 
 
+    <div class="titulo-bloque">ETAPA 2 · Selección de modalidad</div>
+<table class="table table-bordered" style="margin-bottom:12px;">
+  <tr>
+    <th style="width:50%; text-align:center;">AUDITORÍA IN SITU</th>
+    <th style="width:50%; text-align:center;">AUDITORÍA REMOTA</th>
+  </tr>
+  <tr>
+    <td style="text-align:center; font-size:1.2em;">{% if not programacion.iaf_md4_confirmado %}☒{% else %}☐{% endif %}</td>
+    <td style="text-align:center; font-size:1.2em;">{% if programacion.iaf_md4_confirmado %}☒{% else %}☐{% endif %}</td>
+  </tr>
+</table>
+
+{% if programacion.iaf_md4_confirmado %}
+  <!-- AUDITORÍA IN SITU -->
+  <div class="titulo-bloque">AUDITORÍA IN SITU · Criterios y Cumplimiento</div>
+  <table class="table table-bordered tabla-hallazgos">
+    <thead>
+      <tr>
+        <th style="width:60%;">CRITERIOS</th>
+        <th style="width:40%;">CUMPLIMIENTO (SI · NO · N/A)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Se cuenta con canales de comunicación con el personal requerido para realizar la auditoría.</td><td>☐ · ☐ · ☒</td></tr>
+      <tr><td>Se cuenta con acceso a documentos y registros requeridos para realizar la auditoría.</td><td>☐ · ☐ · ☒</td></tr>
+      <tr><td>Se cumple con el plan de auditoría que fue aceptado por el cliente.</td><td>☐ · ☐ · ☒</td></tr>
+      <tr><td>Se consideran riesgos y controles para ejecución remota según ANEXO 1 del plan de auditoría.</td><td>☐ · ☐ · ☒</td></tr>
+      <tr><td>El organismo cuenta con herramientas tecnológicas e infraestructura necesarias para auditorías remotas.</td><td>☐ · ☐ · ☒</td></tr>
+      <tr><td>Condiciones de seguridad de la información, confidencialidad e integridad de datos adecuadas.</td><td>☐ · ☐ · ☒</td></tr>
+      <tr><td>Condiciones que permitan el cumplimiento de objetivos en auditorías remotas.</td><td>☐ · ☐ · ☒</td></tr>
+      <tr><td>El cliente cuenta con herramientas e infraestructura para auditorías remotas.</td><td>☐ · ☐ · ☒</td></tr>
+      <tr><td colspan="2"><em>Nota: Se deben contemplar el total de criterios para ejecutar la etapa 2 de manera remota.</em></td></tr>
+    </tbody>
+  </table>
+{% else %}
+  <!-- AUDITORÍA REMOTA -->
+  <div class="titulo-bloque">AUDITORÍA REMOTA · Criterios y Cumplimiento</div>
+  <table class="table table-bordered tabla-hallazgos">
+    <thead>
+      <tr>
+        <th style="width:60%;">CRITERIOS</th>
+        <th style="width:40%;">CUMPLIMIENTO (SI · NO · N/A)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+          <td>Se cuenta con el personal en sitio requerido para realizar la auditoría.</td><td>☒ · ☐ · ☐</td></tr>
+      <tr><td>Se cuenta con los documentos y registros requeridos para realizar la auditoría.</td><td>☒ · ☐ · ☐</td></tr>
+      <tr><td>Se cumple con el plan de auditoría que fue aceptado por el cliente.</td><td>☒ · ☐ · ☐</td></tr>
+      <tr><td>Existen rutas disponibles para la logística si la auditoría es in situ.</td><td>☒ · ☐ · ☐</td></tr>
+      <tr><td>El cliente y el personal de AQ CERTIFICATION S.A.S. establecieron los protocolos de bioseguridad para realizar la auditoría in situ.</td><td>☒ · ☐ · ☐</td></tr>
+      <tr><td>El cliente coordinó condiciones logísticas de los funcionarios de AQ CERTIFICATION S.A.S. para realizar la auditoría in situ.</td><td>☒ · ☐ · ☐</td></tr>
+      <tr><td>El cliente dispuso de oficina/sala y acceso a la documentación requerida para auditoría in situ.</td><td>☒ · ☐ · ☐</td></tr>
+      <tr><td colspan="2"><em>Nota: Se deben contemplar el total de criterios para ejecutar la etapa 2 de auditoría in situ.</em></td>
+      </tr>
+    </tbody>
+  </table>
+{% endif %}
+
+
+
   <div class="titulo-bloque">Datos Generales</div>
   <table class="table table-bordered">
     <tr><th>Número de Servicio</th><td>{{ acta.plan.programacion.cotizacion.numero_servicio|default:"–" }}</td></tr>
@@ -290,7 +351,11 @@
     <tr>
       <th>Checkpoint IAF MD4</th>
       <td>
-        {% if plan.iaf_md4_verificado %}✔ Si{% else %}✘ No {% endif %}
+          {% if programacion.iaf_md4_confirmado %}
+                                    ✅ Sí
+                                {% else %}
+                                    ❌ No
+                                {% endif %}
       </td>
     </tr>
     <tr><th>Auditor</th><td>{{ acta.plan.auditor.get_full_name|default:"–" }}</td></tr>
