@@ -5,6 +5,7 @@
   <meta charset="utf-8" />
   <title>INFORME DE AUDITORÍA</title>
   <style>
+    /* Estilos globales y de página */
     @page {
       size: A4;
       margin-top: 108px;
@@ -21,6 +22,8 @@
       margin: 0;
       background: #fff;
     }
+
+    /* Estilos del Encabezado */
     .header-institucional {
       position: running(header-institucional);
       height: 93px;
@@ -85,6 +88,7 @@
       color: #1c3354;
     }
 
+    /* Estilos del Pie de Página */
     .footer-institucional {
       position: running(footer-institucional);
       height: 32px;
@@ -101,6 +105,8 @@
       letter-spacing: 0.03em;
       font-family: 'Segoe UI', Arial, sans-serif;
     }
+
+    /* Estilos de Contenedores y Títulos */
     .pdf-container {
       box-sizing: border-box;
       padding: 0;
@@ -117,6 +123,8 @@
       letter-spacing: 0.01em;
       border-radius: 3px 0 0 3px;
     }
+
+    /* Estilos de Tablas */
     table, .table {
       width: 100%;
       border-collapse: collapse;
@@ -147,6 +155,8 @@
     .firma-bloque { margin-top:2em; font-size:1em; }
     .firma-linea { margin:0.75em 0 0.3em 0; border-bottom:1px solid #222; width: 170px; }
     img { max-width: 100%; height: auto; }
+
+    /* Estilos de Alertas y Badges */
     .alert-info {
       background: #e9fce6;
       color: #214e2b;
@@ -169,19 +179,14 @@
 </head>
 <body>
 
-<!-- Encabezado institucional -->
 <div class="header-institucional">
   <div class="header-left">
-    <img src="file://{{ logo_path }}" alt="Logo AQ Certification" style="height: 55px;">
+    <img src="file://{{ logo_path }}" alt="Logo AQ Certification" class="header-logo">
     <span class="header-nit-label">NIT. 900509054-9</span>
   </div>
   <div class="header-title-wrap">
-    <div class="header-title">
-      INFORME DE AUDITORÍA
-    </div>
-    <div class="header-subtitle">
-      Lista de Verificación y Hallazgos
-    </div>
+    <div class="header-title">INFORME DE AUDITORÍA</div>
+    <div class="header-subtitle">Lista de Verificación y Hallazgos</div>
   </div>
   <div class="header-info-cajas">
     <div class="header-caja">CERT-FR-44</div>
@@ -189,7 +194,6 @@
   </div>
 </div>
 
-<!-- Pie de página institucional (fijo en todas las hojas en PDF) -->
 <div class="footer-institucional">
   Este documento contiene información confidencial de AQ CERTIFICATION S.A.S. ·
   Calle 50 No. 73-25 Barrio Normandía – Bogotá · TEL: 7022433 · www.aqcertification.net.co
@@ -197,11 +201,9 @@
 
 <div class="pdf-container">
 
-  <!-- Bloque de plan de muestreo -->
   <div style="background: #eaf6fb; border: 1px solid #b6d4e7; padding: 13px 13px 7px 14px; margin-bottom: 19px; font-size: 1em; border-radius: 7px;">
     <strong>NOTA:</strong> El plan de muestreo aplica para registros de estudiantes (inscripción, contrato, clases, evaluaciones, datos en plataformas, etc.).
     <span style="color:#1a8510;">Los registros de vehículos, instructores, cumplimiento normativo, etc., se revisan al 100%.</span>
-    <br>
     <div style="margin-top: 7.5px; font-size: 0.98em;">
       <strong>Si el muestreo no cumple o está en Ac-Re, se aplicará plan NAC 2.5%, Normal, Tipo General 1A, Inspección normal ISO 2859-1.</strong>
     </div>
@@ -229,74 +231,66 @@
       </span>
     </div>
   </div>
-  <!-- /fin bloque de muestreo -->
 
-<div class="titulo-bloque">Conclusiones Etapa 1</div>
-<div style="background:#fffde7; border:1px solid #ffe082; padding:10px 14px; margin-bottom:17px; border-radius:5px;">
-  {{ acta.conclusiones_etapa1|default:"–"|linebreaks }}
-</div>
+  <div class="titulo-bloque">Conclusiones Etapa 1</div>
+  <div style="background:#fffde7; border:1px solid #ffe082; padding:10px 14px; margin-bottom:17px; border-radius:5px;">
+    {{ acta.conclusiones_etapa1|default:"–"|linebreaks }}
+  </div>
 
-
-    <div class="titulo-bloque">ETAPA 2 · Selección de modalidad</div>
-<table class="table table-bordered" style="margin-bottom:12px;">
-  <tr>
-    <th style="width:50%; text-align:center;">AUDITORÍA IN SITU</th>
-    <th style="width:50%; text-align:center;">AUDITORÍA REMOTA</th>
-  </tr>
-  <tr>
-    <td style="text-align:center; font-size:1.2em;">{% if not programacion.iaf_md4_confirmado %}☒{% else %}☐{% endif %}</td>
-    <td style="text-align:center; font-size:1.2em;">{% if programacion.iaf_md4_confirmado %}☒{% else %}☐{% endif %}</td>
-  </tr>
-</table>
-
-{% if programacion.iaf_md4_confirmado %}
-  <!-- AUDITORÍA IN SITU -->
-  <div class="titulo-bloque">AUDITORÍA IN SITU · Criterios y Cumplimiento</div>
-  <table class="table table-bordered tabla-hallazgos">
-    <thead>
-      <tr>
-        <th style="width:60%;">CRITERIOS</th>
-        <th style="width:40%;">CUMPLIMIENTO (SI · NO · N/A)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>Se cuenta con canales de comunicación con el personal requerido para realizar la auditoría.</td><td>☐ · ☐ · ☒</td></tr>
-      <tr><td>Se cuenta con acceso a documentos y registros requeridos para realizar la auditoría.</td><td>☐ · ☐ · ☒</td></tr>
-      <tr><td>Se cumple con el plan de auditoría que fue aceptado por el cliente.</td><td>☐ · ☐ · ☒</td></tr>
-      <tr><td>Se consideran riesgos y controles para ejecución remota según ANEXO 1 del plan de auditoría.</td><td>☐ · ☐ · ☒</td></tr>
-      <tr><td>El organismo cuenta con herramientas tecnológicas e infraestructura necesarias para auditorías remotas.</td><td>☐ · ☐ · ☒</td></tr>
-      <tr><td>Condiciones de seguridad de la información, confidencialidad e integridad de datos adecuadas.</td><td>☐ · ☐ · ☒</td></tr>
-      <tr><td>Condiciones que permitan el cumplimiento de objetivos en auditorías remotas.</td><td>☐ · ☐ · ☒</td></tr>
-      <tr><td>El cliente cuenta con herramientas e infraestructura para auditorías remotas.</td><td>☐ · ☐ · ☒</td></tr>
-      <tr><td colspan="2"><em>Nota: Se deben contemplar el total de criterios para ejecutar la etapa 2 de manera remota.</em></td></tr>
-    </tbody>
+  <div class="titulo-bloque">ETAPA 2 · Selección de modalidad</div>
+  <table class="table table-bordered" style="margin-bottom:12px;">
+    <tr>
+      <th style="width:50%; text-align:center;">AUDITORÍA IN SITU</th>
+      <th style="width:50%; text-align:center;">AUDITORÍA REMOTA</th>
+    </tr>
+    <tr>
+      <td style="text-align:center; font-size:1.2em;">{% if not programacion.iaf_md4_confirmado %}☒{% else %}☐{% endif %}</td>
+      <td style="text-align:center; font-size:1.2em;">{% if programacion.iaf_md4_confirmado %}☒{% else %}☐{% endif %}</td>
+    </tr>
   </table>
-{% else %}
-  <!-- AUDITORÍA REMOTA -->
-  <div class="titulo-bloque">AUDITORÍA REMOTA · Criterios y Cumplimiento</div>
-  <table class="table table-bordered tabla-hallazgos">
-    <thead>
-      <tr>
-        <th style="width:60%;">CRITERIOS</th>
-        <th style="width:40%;">CUMPLIMIENTO (SI · NO · N/A)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-          <td>Se cuenta con el personal en sitio requerido para realizar la auditoría.</td><td>☒ · ☐ · ☐</td></tr>
-      <tr><td>Se cuenta con los documentos y registros requeridos para realizar la auditoría.</td><td>☒ · ☐ · ☐</td></tr>
-      <tr><td>Se cumple con el plan de auditoría que fue aceptado por el cliente.</td><td>☒ · ☐ · ☐</td></tr>
-      <tr><td>Existen rutas disponibles para la logística si la auditoría es in situ.</td><td>☒ · ☐ · ☐</td></tr>
-      <tr><td>El cliente y el personal de AQ CERTIFICATION S.A.S. establecieron los protocolos de bioseguridad para realizar la auditoría in situ.</td><td>☒ · ☐ · ☐</td></tr>
-      <tr><td>El cliente coordinó condiciones logísticas de los funcionarios de AQ CERTIFICATION S.A.S. para realizar la auditoría in situ.</td><td>☒ · ☐ · ☐</td></tr>
-      <tr><td>El cliente dispuso de oficina/sala y acceso a la documentación requerida para auditoría in situ.</td><td>☒ · ☐ · ☐</td></tr>
-      <tr><td colspan="2"><em>Nota: Se deben contemplar el total de criterios para ejecutar la etapa 2 de auditoría in situ.</em></td>
-      </tr>
-    </tbody>
-  </table>
-{% endif %}
 
-
+  {% if programacion.iaf_md4_confirmado %}
+    <div class="titulo-bloque">AUDITORÍA REMOTA · Criterios y Cumplimiento</div>
+    <table class="table table-bordered tabla-hallazgos">
+      <thead>
+        <tr>
+          <th style="width:60%;">CRITERIOS</th>
+          <th style="width:40%;">CUMPLIMIENTO (SI · NO · N/A)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Se cuenta con canales de comunicación con el personal requerido para realizar la auditoría.</td><td>☐ · ☐ · ☒</td></tr>
+        <tr><td>Se cuenta con acceso a documentos y registros requeridos para realizar la auditoría.</td><td>☐ · ☐ · ☒</td></tr>
+        <tr><td>Se cumple con el plan de auditoría que fue aceptado por el cliente.</td><td>☐ · ☐ · ☒</td></tr>
+        <tr><td>Se consideran riesgos y controles para ejecución remota según ANEXO 1 del plan de auditoría.</td><td>☐ · ☐ · ☒</td></tr>
+        <tr><td>El organismo cuenta con herramientas tecnológicas e infraestructura necesarias para auditorías remotas.</td><td>☐ · ☐ · ☒</td></tr>
+        <tr><td>Condiciones de seguridad de la información, confidencialidad e integridad de datos adecuadas.</td><td>☐ · ☐ · ☒</td></tr>
+        <tr><td>Condiciones que permitan el cumplimiento de objetivos en auditorías remotas.</td><td>☐ · ☐ · ☒</td></tr>
+        <tr><td>El cliente cuenta con herramientas e infraestructura para auditorías remotas.</td><td>☐ · ☐ · ☒</td></tr>
+        <tr><td colspan="2"><em>Nota: Se deben contemplar el total de criterios para ejecutar la etapa 2 de manera remota.</em></td></tr>
+      </tbody>
+    </table>
+  {% else %}
+    <div class="titulo-bloque">AUDITORÍA IN SITU · Criterios y Cumplimiento</div>
+    <table class="table table-bordered tabla-hallazgos">
+      <thead>
+        <tr>
+          <th style="width:60%;">CRITERIOS</th>
+          <th style="width:40%;">CUMPLIMIENTO (SI · NO · N/A)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Se cuenta con el personal en sitio requerido para realizar la auditoría.</td><td>☒ · ☐ · ☐</td></tr>
+        <tr><td>Se cuenta con los documentos y registros requeridos para realizar la auditoría.</td><td>☒ · ☐ · ☐</td></tr>
+        <tr><td>Se cumple con el plan de auditoría que fue aceptado por el cliente.</td><td>☒ · ☐ · ☐</td></tr>
+        <tr><td>Existen rutas disponibles para la logística si la auditoría es in situ.</td><td>☒ · ☐ · ☐</td></tr>
+        <tr><td>El cliente y el personal de AQ CERTIFICATION S.A.S. establecieron los protocolos de bioseguridad para realizar la auditoría in situ.</td><td>☒ · ☐ · ☐</td></tr>
+        <tr><td>El cliente coordinó condiciones logísticas de los funcionarios de AQ CERTIFICATION S.A.S. para realizar la auditoría in situ.</td><td>☒ · ☐ · ☐</td></tr>
+        <tr><td>El cliente dispuso de oficina/sala y acceso a la documentación requerida para auditoría in situ.</td><td>☒ · ☐ · ☐</td></tr>
+        <tr><td colspan="2"><em>Nota: Se deben contemplar el total de criterios para ejecutar la etapa 2 de auditoría in situ.</em></td></tr>
+      </tbody>
+    </table>
+  {% endif %}
 
   <div class="titulo-bloque">Datos Generales</div>
   <table class="table table-bordered">
@@ -340,22 +334,16 @@
         {% endfor %}
       </td>
     </tr>
-      <tr>
-
-        <th> Criterio </th>
-          <td>
-                    Resolución 3245 de 2009 - Decreto 1079 de 2015 Título I Capítulo III – Resolución 20203040011355 de 2020 Título II Capítulo I – Resolución 20223040009425 de 2022 del Ministerio de Transporte de Colombia. <strong>ISO 9001:2015 (SISTEMAS DE GESTIÓN DE LA CALIDAD)</strong>
-
-          </td>
-      </tr>
+    <tr>
+      <th> Criterio </th>
+      <td>
+        Resolución 3245 de 2009 - Decreto 1079 de 2015 Título I Capítulo III – Resolución 20203040011355 de 2020 Título II Capítulo I – Resolución 20223040009425 de 2022 del Ministerio de Transporte de Colombia. <strong>ISO 9001:2015 (SISTEMAS DE GESTIÓN DE LA CALIDAD)</strong>
+      </td>
+    </tr>
     <tr>
       <th>Checkpoint IAF MD4</th>
       <td>
-          {% if programacion.iaf_md4_confirmado %}
-                                    ✅ Sí
-                                {% else %}
-                                    ❌ No
-                                {% endif %}
+        {% if programacion.iaf_md4_confirmado %} ✅ Sí {% else %} ❌ No {% endif %}
       </td>
     </tr>
     <tr><th>Auditor</th><td>{{ acta.plan.auditor.get_full_name|default:"–" }}</td></tr>
@@ -377,14 +365,14 @@
           <div style="font-weight:bold; color:#183153;">{{ ejec.requisito.nombre|default:"(Sin nombre de criterio)" }}</div>
           <div style="font-size:0.98em; color:#2e4156;">{{ ejec.requisito.descripcion|default:"–" }}</div>
           <div style="font-size:0.95em; color:#22795b;">Checkpoint IAF MD4: {{ ejec.requisito.checkpoint_iaf_md4|default:"–" }}</div>
-          <table class="table table-sm mb-0 mt-2 tabla-hallazgos" style="width:100%; font-size:0.93em;">
+
+          <table style="width:100%; border:none; margin-bottom: 5px;">
             <tr>
               <th style="width:14%;">Cumple</th>
               <th style="width:16%;">No Cumple</th>
               <th style="width:17%;">Aspecto de Mejora</th>
               <th style="width:12%;">No Aplica</th>
               <th style="width:17%;">Subsanado</th>
-              <th style="width:24%;">Evidencia</th>
             </tr>
             <tr>
               <td>{% if ejec.cumple %}✔{% else %}–{% endif %}</td>
@@ -397,79 +385,84 @@
               <td>
                 {% if ejec.aspecto_mejora %}✔{% else %}–{% endif %}
                 {% if ejec.aspecto_mejora and ejec.concepto_mejora %}
-                  <div><strong>Observación:</strong> {{ ejec.concepto_mejora }}</div>
+                  <div><strong>Obs.:</strong> {{ ejec.concepto_mejora }}</div>
                 {% endif %}
               </td>
               <td>{% if ejec.no_aplica %}✔{% else %}–{% endif %}</td>
               <td>
                 {% if ejec.subsanado %}✔{% else %}–{% endif %}
                 {% if ejec.como_se_subsano %}
-                  <div style="color:#2a6f2a;"><strong>¿Cómo se subsanó?</strong> {{ ejec.como_se_subsano }}</div>
+                  <div style="color:#2a6f2a;"><strong>¿Cómo?</strong> {{ ejec.como_se_subsano }}</div>
                 {% endif %}
               </td>
-              <td>
-                {% if ejec.get_evidencia_display %}{{ ejec.get_evidencia_display }}{% else %}–{% endif %}
+            </tr>
+          </table>
+
+          <table style="width:100%; border:none;">
+            <tr>
+              <th style="width:35%; border:1px solid #b0bec5;">Imágenes</th>
+              <th style="width:65%; border:1px solid #b0bec5;">Evidencia</th>
+            </tr>
+            <tr>
+              <td style="border:1px solid #b0bec5;">
+                {% if ejec.imagen1 %}<img src="{{ ejec.imagen1.url }}" width="80" style="margin-right:6px;">{% endif %}
+                {% if ejec.imagen2 %}<img src="{{ ejec.imagen2.url }}" width="80">{% endif %}
+                {% if not ejec.imagen1 and not ejec.imagen2 %}–{% endif %}
+              </td>
+              <td style="border:1px solid #b0bec5;">
+                {% if ejec.get_evidencia_display %}
+                  {{ ejec.get_evidencia_display }}
+                {% else %}–{% endif %}
                 {% if ejec.concepto_evidencia %}
                   <div><strong>Detalle:</strong> {{ ejec.concepto_evidencia }}</div>
                 {% endif %}
               </td>
             </tr>
-
-            <tr>
-              <th>Imágenes</th>
-              <td colspan="5">
-                {% if ejec.imagen1 %}<img src="{{ ejec.imagen1.url }}" width="70">{% endif %}
-                {% if ejec.imagen2 %}<img src="{{ ejec.imagen2.url }}" width="70">{% endif %}
-                {% if not ejec.imagen1 and not ejec.imagen2 %}–{% endif %}
-              </td>
-            </tr>
           </table>
+
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 
-<div class="alert-info">
+  <div class="alert-info">
     {% if acta.aspectos_relevantes %}
-        <h3>Aspectos por resaltar - Fechas Límites de Envío de Solicitud de Acción Correctiva y Cierre de No Conformidades (Si Aplica) </h3>
-        <p>{{ acta.aspectos_relevantes|linebreaks }}</p>
+      <h3>Aspectos por resaltar - Fechas Límites de Envío de Solicitud de Acción Correctiva y Cierre de No Conformidades (Si Aplica)</h3>
+      <p>{{ acta.aspectos_relevantes|linebreaks }}</p>
     {% endif %}
-</div>
+  </div>
 
-<div class="titulo-bloque">Quejas registradas</div>
-<div style="background:#eef7ff; border:1px solid #c5dcff; padding:10px 14px; margin-bottom:17px; border-radius:5px;">
-  {{ acta.quejas_registradas|default:"–"|linebreaks }}
-</div>
+  <div class="titulo-bloque">Quejas registradas</div>
+  <div style="background:#eef7ff; border:1px solid #c5dcff; padding:10px 14px; margin-bottom:17px; border-radius:5px;">
+    {{ acta.quejas_registradas|default:"–"|linebreaks }}
+  </div>
 
+  <div class="alert-info">
+    <h3>Conclusiones etapa 2</h3>
+    <p>{{ acta.conclusiones_etapa2|default:"–"|linebreaks }}</p>
+  </div>
 
-<div class="alert-info">
-  <h3>Conclusiones etapa 2</h3>
-  <p>{{ acta.conclusiones_etapa2|default:"–"|linebreaks }}</p>
-</div>
-
-
-
-<div class="alert-info">RESULTADOS DE AUDITORÍA</div>
-<table class="info-table">
-  <tr>
-    <th>Conclusiones sobre uso TIC</th>
-    <td>A lo largo del proceso se utiliza la aplicación WhatsApp y correo electrónico para el envío y recepción de información requerida para la auditoría.</td>
-  </tr>
-  <tr>
-    <th>Grado de cumplimiento de objetivos</th>
-    <td>
-      <ul>
-        <li>Se verificó que el proceso de auditoria cumple con los requisitos exigidos por:</li>
-        <li>La resolución 3245 de 2009</li>
-        <li>Decreto 1079 de 2015</li>
-        <li>Resolución 20203040011355 de 2020</li>
-        <li>Resolución 20223040009425 de 2022 del Ministerio de Transporte</li>
-        <li>ISO 9001:2015 - Sistema de Gestión de Calidad</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+  <div class="alert-info">RESULTADOS DE AUDITORÍA</div>
+  <table class="info-table">
+    <tr>
+      <th>Conclusiones sobre uso TIC</th>
+      <td>A lo largo del proceso se utiliza la aplicación WhatsApp y correo electrónico para el envío y recepción de información requerida para la auditoría.</td>
+    </tr>
+    <tr>
+      <th>Grado de cumplimiento de objetivos</th>
+      <td>
+        <ul>
+          <li>Se verificó que el proceso de auditoria cumple con los requisitos exigidos por:</li>
+          <li>La resolución 3245 de 2009</li>
+          <li>Decreto 1079 de 2015</li>
+          <li>Resolución 20203040011355 de 2020</li>
+          <li>Resolución 20223040009425 de 2022 del Ministerio de Transporte</li>
+          <li>ISO 9001:2015 - Sistema de Gestión de Calidad</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
 
   <div class="alert-info">
     <strong>Nota:</strong> Este documento se adjunta con el listado de vehículos e instructores cargado en el plan de auditoría.
@@ -480,11 +473,10 @@
       <strong>Recomendación del auditor:</strong> Al culminar el proceso de auditoría y de acuerdo con los resultados obtenidos, SE RECOMIENDA AL COMITÉ DE CERTIFICACIÓN
       {% for rec in acta.recomendaciones|split:"," %}
         <span class="badge">{{ rec }}</span>
-      {% endfor %}  en cumplimiento de infraestructura, documentación legal y sistema de gestión de calidad, de acuerdo con los requisitos establecidos en la resolución 3245 de 2009 – Decreto 1079 de 2015 – Resolución 20203040011355 de 2020 en sus títulos y capítulos aplicables y el Sistema de Gestión de Calidad bajo la norma ISO 9001:2015.
+      {% endfor %}
+      en cumplimiento de infraestructura, documentación legal y sistema de gestión de calidad, de acuerdo con los requisitos establecidos en la resolución 3245 de 2009 – Decreto 1079 de 2015 – Resolución 20203040011355 de 2020 en sus títulos y capítulos aplicables y el Sistema de Gestión de Calidad bajo la norma ISO 9001:2015.
     </div>
   {% endif %}
-
-
 
   <div class="firma-bloque">
     <div class="firma-linea"></div>

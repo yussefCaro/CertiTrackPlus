@@ -35,7 +35,7 @@ class EjecucionRequisito(models.Model):
         max_length=100,
         blank=True,
         null=True,
-        default="documental",  # tempor
+
 
         choices=[
             ("documental", "Evidencia Documental"),
