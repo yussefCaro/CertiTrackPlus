@@ -40,8 +40,8 @@ class Categoria(models.Model):
 
 class Cliente(models.Model):
     nit = models.CharField(max_length=20, unique=True)  # Nit único
-    nombre_propietario = models.CharField(max_length=100)
-    nombre_establecimiento = models.CharField(max_length=100)
+    nombre_propietario = models.CharField(max_length=125)
+    nombre_establecimiento = models.CharField(max_length=125)
     representante_legal = models.CharField(max_length=100)
     cedula_ciudadania = models.CharField(max_length=20)
     ciudad = models.CharField(max_length=100)
