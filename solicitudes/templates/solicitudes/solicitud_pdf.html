@@ -1,5 +1,3 @@
-{% load static humanize mathfilters %}
-{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -157,7 +155,8 @@
     <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
       <!-- Logo y NIT a la izquierda -->
       <div style="min-width: 200px; text-align: left;">
-        <img src="file://{{ logo_path }}" alt="Logo AQ Certification" style="height: 55px;">
+        <!-- *** CORRECCIÓN APLICADA AQUÍ ***: Referencia directa a la ruta absoluta -->
+        <img src="{{ logo_path }}" alt="Logo AQ Certification" style="height: 55px;">
         <div style="font-size: 0.95em; color: #181824; font-weight: bold; margin-top: 4px;">
           NIT. 900509054-9
         </div>

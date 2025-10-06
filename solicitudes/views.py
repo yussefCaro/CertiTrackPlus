@@ -6,6 +6,8 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.template.loader import render_to_string
+# Importación necesaria para encontrar la ruta absoluta del archivo estático
+from django.contrib.staticfiles.finders import find
 
 from .models import Cliente, Solicitud
 from .forms import ClienteForm, SolicitudForm
@@ -92,7 +94,8 @@ def generar_solicitud_pdf(request, cliente_id):
     else:
         certificacion_ente = "No aplica"
 
-    logo_path = os.path.join(settings.STATIC_ROOT, 'myapp', 'AQ_color.png')
+    # *** FIX: Usar find() para obtener la ruta absoluta del logo en el VPS ***
+    logo_path = find('myapp/AQ_color.png')
 
     html_string = render_to_string('solicitudes/solicitud_pdf.html', {
         'cliente': cliente,
@@ -159,10 +162,15 @@ def eliminar_solicitud(request, solicitud_id):
 @login_required
 def imprimir_solicitud(request, solicitud_id):
     solicitud = get_object_or_404(Solicitud, id=solicitud_id)
+
+    # *** FIX: Aplicar la misma lógica de find() para esta función también ***
+    logo_path = find('myapp/AQ_color.png')
+
     html_string = render_to_string("solicitudes/solicitud_pdf.html", {
         "solicitud": solicitud,
         "cliente": solicitud.cliente,
         "fecha": date.today().strftime("%Y-%m-%d"),
+        "logo_path": logo_path,  # Pasamos la ruta absoluta
     })
     pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri("/")).write_pdf()
     response = HttpResponse(pdf_file, content_type="application/pdf")
