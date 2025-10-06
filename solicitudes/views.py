@@ -94,8 +94,16 @@ def generar_solicitud_pdf(request, cliente_id):
     else:
         certificacion_ente = "No aplica"
 
-    # *** FIX: Usar find() para obtener la ruta absoluta del logo en el VPS ***
-    logo_path = find('myapp/AQ_color.png')
+    # 1. Obtener la ruta absoluta
+    logo_file_path = find('myapp/AQ_color.png')
+
+    # 2. Convertir la ruta del sistema de archivos a una URI con el esquema 'file:///'
+    # Esto es crucial para que WeasyPrint pueda resolver archivos locales.
+    if logo_file_path:
+        # Aseguramos que las barras invertidas de Windows se conviertan a barras normales para la URI
+        logo_path = 'file:///' + logo_file_path.replace('\\', '/')
+    else:
+        logo_path = ''  # Si no se encuentra, usamos una cadena vacía
 
     html_string = render_to_string('solicitudes/solicitud_pdf.html', {
         'cliente': cliente,
@@ -163,14 +171,20 @@ def eliminar_solicitud(request, solicitud_id):
 def imprimir_solicitud(request, solicitud_id):
     solicitud = get_object_or_404(Solicitud, id=solicitud_id)
 
-    # *** FIX: Aplicar la misma lógica de find() para esta función también ***
-    logo_path = find('myapp/AQ_color.png')
+    # 1. Obtener la ruta absoluta
+    logo_file_path = find('myapp/AQ_color.png')
+
+    # 2. Convertir la ruta del sistema de archivos a una URI con el esquema 'file:///'
+    if logo_file_path:
+        logo_path = 'file:///' + logo_file_path.replace('\\', '/')
+    else:
+        logo_path = ''
 
     html_string = render_to_string("solicitudes/solicitud_pdf.html", {
         "solicitud": solicitud,
         "cliente": solicitud.cliente,
         "fecha": date.today().strftime("%Y-%m-%d"),
-        "logo_path": logo_path,  # Pasamos la ruta absoluta
+        "logo_path": logo_path,  # Pasamos la ruta URI
     })
     pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri("/")).write_pdf()
     response = HttpResponse(pdf_file, content_type="application/pdf")
