@@ -65,21 +65,26 @@ def listado_cotizaciones(request):
 
     # Base queryset
     if es_programacion:
-        cotizaciones = Cotizacion.objects.filter(estado='Aprobada')
+        # Solo cotizaciones Aprobadas para el grupo Programación
+        cotizaciones = Cotizacion.objects.filter(estado='Aprobada').select_related('solicitud__cliente')
     else:
-        cotizaciones = Cotizacion.objects.all()
+        # Todas las cotizaciones para otros grupos
+        cotizaciones = Cotizacion.objects.all().select_related('solicitud__cliente')
 
     # ---- FILTROS ----
     estado = request.GET.get("estado")
     buscar = request.GET.get("buscar")
 
-    if estado and estado != "None":  # 👈 así evitamos el problema de mostrar "None"
+    if estado and estado != "None":
         cotizaciones = cotizaciones.filter(estado=estado)
 
     if buscar:
+
+        # 1. Usa la navegación correcta: solicitud -> cliente -> nombre_establecimiento
+        # 2. Usa 'numero_servicio' para la búsqueda por ID/Número de cotización
         cotizaciones = cotizaciones.filter(
-            Q(cliente__nombre_establecimiento__icontains=buscar) |
-            Q(id__icontains=buscar)
+            Q(solicitud__cliente__nombre_establecimiento__icontains=buscar) | # Busca por Nombre del Cliente
+            Q(numero_servicio__icontains=buscar)                              # Busca por Número de Cotización (Ej: 2022-2)
         )
 
     # ---- PAGINACIÓN ----
@@ -172,6 +177,10 @@ def cotizacion_pdf(request, cotizacion_id):
     })
 
     # Generar PDF con WeasyPrint
+    # Nota: Es recomendable usar la función find() de staticfiles para encontrar el logo
+    # y convertir la ruta a URI si usas la ruta absoluta para que WeasyPrint pueda acceder.
+    # Si 'base_url="."' funciona para tus estilos, déjalo así.
+
     pdf_file = HTML(string=html_string, base_url=".").write_pdf()
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="cotizacion_{cotizacion.numero_servicio}.pdf"'
@@ -211,4 +220,3 @@ def eliminar_cotizacion(request, cotizacion_id):
 
     messages.success(request, "La cotización fue eliminada y la solicitud volvió a estado 'Pendiente'.")
     return redirect("listado_cotizaciones")
-
