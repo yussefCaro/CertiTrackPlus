@@ -295,7 +295,7 @@
   <div class="titulo-bloque">Datos Generales</div>
   <table class="table table-bordered">
     <tr><th>Número de Servicio</th><td>{{ acta.plan.programacion.cotizacion.numero_servicio|default:"–" }}</td></tr>
-    <tr><th>Nombre del Propietario y/o Razón Social</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento|default:"–" }}</td></tr>
+    <tr><th>Nombre del Propietario y/o Razón Social</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_propietario|default:"–" }}</td></tr>
     <tr><th>Representante Legal</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.representante_legal|default:"–" }}</td></tr>
     <tr><th>Establecimiento de comercio</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento|default:"–" }}</td></tr>
     <tr><th>NIT</th><td>{{ acta.plan.programacion.cotizacion.solicitud.cliente.nit|default:"–" }}</td></tr>
@@ -364,7 +364,7 @@
         <td>
           <div style="font-weight:bold; color:#183153;">{{ ejec.requisito.nombre|default:"(Sin nombre de criterio)" }}</div>
           <div style="font-size:0.98em; color:#2e4156;">{{ ejec.requisito.descripcion|default:"–" }}</div>
-          <div style="font-size:0.95em; color:#22795b;">Checkpoint IAF MD4: {{ ejec.requisito.checkpoint_iaf_md4|default:"–" }}</div>
+
 
           <table style="width:100%; border:none; margin-bottom: 5px;">
             <tr>
@@ -483,11 +483,7 @@
     <strong>{{ acta.plan.auditor.get_full_name|default:"–" }}</strong><br>
     Auditor
   </div>
-  <div class="firma-bloque" style="margin-top:33px;">
-    <div class="firma-linea"></div>
-    <strong>{{ acta.plan.programacion.cotizacion.solicitud.cliente.representante_legal|default:"–" }}</strong><br>
-    Representante Legal
-  </div>
+
 </div>
 </body>
 </html>
