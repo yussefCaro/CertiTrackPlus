@@ -76,18 +76,26 @@
             }).format(value);
         }
 
-        function actualizarValores() {
-            let precioNeto = parseFloat(precioNetoInput.value) || 0;
-            let iva = precioNeto * 0.19;
-            let total = precioNeto + iva;
-            let totalRedondeado = roundToThousand(total);
+function actualizarValores() {
+  let precioNeto = parseFloat(precioNetoInput.value) || 0;
+  let iva = precioNeto * 0.19;
+  let total = precioNeto + iva;
 
-            precioIVAInput.value = iva.toFixed(2);
-            precioIVAVisible.value = formatCurrency(iva);
+  // redondeo SIEMPRE hacia arriba a centésimas
+  const ivaCentsUp = ceilTo2(iva);
+  const totalCentsUp = ceilTo2(total);
 
-            precioTotalInput.value = totalRedondeado.toFixed(2);
-            precioTotalVisible.value = formatCurrency(totalRedondeado);
-        }
+  // setea valores numéricos con 2 decimales
+  precioIVAInput.value = ivaCentsUp.toFixed(2);
+  precioIVAVisible.value = formatCurrency(ivaCentsUp);
+
+  precioTotalInput.value = totalCentsUp.toFixed(2);
+  precioTotalVisible.value = formatCurrency(totalCentsUp);
+}
+function ceilTo2(value) {
+  return Math.ceil(value * 100) / 100;
+}
+
 
         precioNetoInput.addEventListener("input", actualizarValores);
         actualizarValores();
