@@ -250,16 +250,18 @@ def imprimir_informe_hallazgos(request, acta_id):
     plan = acta.plan
     programacion = plan.programacion
 
-    from django.contrib.staticfiles import finders
-    # NOTA: Asegúrate de que 'myapp/AQ_color.png' sea la ruta correcta
-    logo_path = finders.find('myapp/AQ_color.png')
+    from django.conf import settings
+
+    logo_url = request.build_absolute_uri(
+        settings.STATIC_URL + 'myapp/AQ_color.png'
+    )
 
     contexto = {
         'acta': acta,
         'plan': plan,
         'programacion': programacion,
         'ejecuciones': ejecuciones,
-        'logo_path': logo_path,
+        'logo_path': logo_url,
         'user': request.user,
         # INYECTAMOS EL OBJETO REQUEST EN EL CONTEXTO
         'request': request,
@@ -286,16 +288,18 @@ def imprimir_informe_auditoria(request, acta_id):
     no_conformidades_pendientes = ejecuciones.filter(no_cumple=True, subsanado=False).exists()
     recomendacion_auditor = getattr(acta, 'recomendacion_auditor', None)
 
-    from django.contrib.staticfiles import finders
-    # NOTA: Asegúrate de que 'myapp/AQ_color.png' sea la ruta correcta
-    logo_path = finders.find('myapp/AQ_color.png')
+    from django.conf import settings
+
+    logo_url = request.build_absolute_uri(
+        settings.STATIC_URL + 'myapp/AQ_color.png'
+    )
 
     contexto = {
         'acta': acta,
         'plan': plan,
         'programacion': programacion,
         'ejecuciones': ejecuciones,
-        'logo_path': logo_path,
+        'logo_path': logo_url,
         'user': request.user,
         'no_conformidades_pendientes': no_conformidades_pendientes,
         'recomendacion_auditor': recomendacion_auditor,
