@@ -13,6 +13,7 @@ from weasyprint import HTML
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 
+
 @login_required
 def ejecucion_auditoria(request, acta_id):
     print("Vista ejecutada")  # Solo para depuración
@@ -105,9 +106,6 @@ def ejecucion_auditoria(request, acta_id):
     })
 
 
-
-
-
 @login_required
 def subsanacion_no_conformidades(request, acta_id):
     acta = get_object_or_404(ActaAuditoria, id=acta_id)
@@ -117,7 +115,7 @@ def subsanacion_no_conformidades(request, acta_id):
         EjecucionRequisito,
         form=EjecucionRequisitoForm,
         fields=[
-            #'cumple', 'no_cumple', 'no_aplica',
+            # 'cumple', 'no_cumple', 'no_aplica',
             'aspecto_mejora', 'concepto_mejora',
             'concepto_no_conformidad', 'evidencia',
             'concepto_evidencia', 'imagen1', 'imagen2',
@@ -192,7 +190,6 @@ def subsanacion_no_conformidades(request, acta_id):
     })
 
 
-
 @login_required
 def finalizar_subsanacion(request, acta_id):
     acta = get_object_or_404(ActaAuditoria, id=acta_id)
@@ -222,7 +219,7 @@ def reporte_auditoria(request, acta_id):
     ejecuciones = EjecucionRequisito.objects.filter(acta=acta).order_by('requisito__id')
     plan = acta.plan
     programacion = plan.programacion
-    propietario = plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento # Ajusta según tus modelos
+    propietario = plan.programacion.cotizacion.solicitud.cliente.nombre_establecimiento  # Ajusta según tus modelos
     return render(request, 'ejecucion_auditoria/reporte_auditoria.html', {
         'acta': acta,
         'plan': plan,
@@ -230,8 +227,6 @@ def reporte_auditoria(request, acta_id):
         'propietario': propietario,
         'ejecuciones': ejecuciones,
     })
-
-
 
 
 @login_required
@@ -246,6 +241,8 @@ def informe_hallazgos(request, acta_id):
         'programacion': programacion,
         'ejecuciones': ejecuciones,
     })
+
+
 @login_required
 def imprimir_informe_hallazgos(request, acta_id):
     acta = get_object_or_404(ActaAuditoria, id=acta_id)
@@ -254,18 +251,23 @@ def imprimir_informe_hallazgos(request, acta_id):
     programacion = plan.programacion
 
     from django.contrib.staticfiles import finders
-    logo_path = finders.find('myapp/AQ_color.png')  # Ajusta según tu ruta de logo
+    # NOTA: Asegúrate de que 'myapp/AQ_color.png' sea la ruta correcta
+    logo_path = finders.find('myapp/AQ_color.png')
+
+    contexto = {
+        'acta': acta,
+        'plan': plan,
+        'programacion': programacion,
+        'ejecuciones': ejecuciones,
+        'logo_path': logo_path,
+        'user': request.user,
+        # INYECTAMOS EL OBJETO REQUEST EN EL CONTEXTO
+        'request': request,
+    }
 
     html_string = render_to_string(
         'ejecucion_auditoria/informe_hallazgos_pdf.html',
-        {
-            'acta': acta,
-            'plan': plan,
-            'programacion': programacion,
-            'ejecuciones': ejecuciones,
-            'logo_path': logo_path,
-            'user': request.user,
-        }
+        contexto
     )
     pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf()
     response = HttpResponse(pdf_file, content_type='application/pdf')
@@ -285,20 +287,25 @@ def imprimir_informe_auditoria(request, acta_id):
     recomendacion_auditor = getattr(acta, 'recomendacion_auditor', None)
 
     from django.contrib.staticfiles import finders
+    # NOTA: Asegúrate de que 'myapp/AQ_color.png' sea la ruta correcta
     logo_path = finders.find('myapp/AQ_color.png')
 
+    contexto = {
+        'acta': acta,
+        'plan': plan,
+        'programacion': programacion,
+        'ejecuciones': ejecuciones,
+        'logo_path': logo_path,
+        'user': request.user,
+        'no_conformidades_pendientes': no_conformidades_pendientes,
+        'recomendacion_auditor': recomendacion_auditor,
+        # INYECTAMOS EL OBJETO REQUEST EN EL CONTEXTO
+        'request': request,
+    }
+
     html_string = render_to_string(
-        'ejecucion_auditoria/informe_auditoria_pdf.html',   # <--- Cambia solo el template aquí
-        {
-            'acta': acta,
-            'plan': plan,
-            'programacion': programacion,
-            'ejecuciones': ejecuciones,
-            'logo_path': logo_path,
-            'user': request.user,
-            'no_conformidades_pendientes': no_conformidades_pendientes,
-            'recomendacion_auditor': recomendacion_auditor,
-        }
+        'ejecucion_auditoria/informe_auditoria_pdf.html',  # <--- Cambia solo el template aquí
+        contexto
     )
     pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf()
     response = HttpResponse(pdf_file, content_type='application/pdf')

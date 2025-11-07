@@ -181,7 +181,7 @@
 
 <div class="header-institucional">
   <div class="header-left">
-    <img src="file://{{ logo_path }}" alt="Logo AQ Certification" class="header-logo">
+    <img src="{% absolute_uri logo_path %}" alt="Logo AQ Certification" class="header-logo">
     <span class="header-nit-label">NIT. 900509054-9</span>
   </div>
   <div class="header-title-wrap">
@@ -405,8 +405,8 @@
             </tr>
             <tr>
               <td style="border:1px solid #b0bec5;">
-                {% if ejec.imagen1 %}<img src="{{ request.build_absolute_uri(ejec.imagen1.url) }}" width="80" style="margin-right:6px;">{% endif %}
-                {% if ejec.imagen2 %}<img src="{{ request.build_absolute_uri(ejec.imagen2.url) }}" width="80">{% endif %}
+                {% if ejec.imagen1 %}<img src="{% absolute_uri ejec.imagen1.url %}" width="80" style="margin-right:6px;">{% endif %}
+                {% if ejec.imagen2 %}<img src="{% absolute_uri ejec.imagen2.url %}" width="80">{% endif %}
                 {% if not ejec.imagen1 and not ejec.imagen2 %}–{% endif %}
               </td>
               <td style="border:1px solid #b0bec5;">
