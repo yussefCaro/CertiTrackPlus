@@ -404,17 +404,15 @@
               <th style="width:35%; border:1px solid #b0bec5;">Imágenes</th>
               <th style="width:65%; border:1px solid #b0bec5;">Evidencia</th>
             </tr>
-            <td style="border:1px solid #b0bec5;">
-                {% if ejecucion.imagen1 %}
-                    <img src="{{ ejecucion.imagen1_url }}" style="width: 100px; height: auto;">
+            <tr>
+              <td style="border:1px solid #b0bec5;">
+                {% if ejec.imagen1 %}
+                  <img src="{{ ejec.imagen1_url }}" style="width: 100px; height: auto;">
                 {% endif %}
-                {% if ejecucion.imagen2 %}
-                    <img src="{{ ejecucion.imagen2_url }}" style="width: 100px; height: auto;">
+                {% if ejec.imagen2 %}
+                  <img src="{{ ejec.imagen2_url }}" style="width: 100px; height: auto;">
                 {% endif %}
-
-            </td>
-
-
+              </td>
               <td style="border:1px solid #b0bec5;">
                 {% if ejec.get_evidencia_display %}
                   {{ ejec.get_evidencia_display }}
