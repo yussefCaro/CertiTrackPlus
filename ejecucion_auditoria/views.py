@@ -278,8 +278,9 @@ def imprimir_informe_hallazgos(request, acta_id):
 
 
 @login_required
-@login_required
 def imprimir_informe_auditoria(request, acta_id):
+    print(">>> ENTRO A imprimir_informe_auditoria CON acta_id =", acta_id)
+
     acta = get_object_or_404(ActaAuditoria, id=acta_id)
     ejecuciones = EjecucionRequisito.objects.filter(acta=acta).order_by('requisito__id')
     plan = acta.plan
@@ -323,3 +324,4 @@ def imprimir_informe_auditoria(request, acta_id):
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'filename=InformeAuditoria_{acta_id}.pdf'
     return response
+
