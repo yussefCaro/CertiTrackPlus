@@ -298,8 +298,10 @@ def imprimir_informe_auditoria(request, acta_id):
     for e in ejecuciones:
         if e.imagen1:
             e.imagen1_url = dominio + e.imagen1.url
+            print("IMG1_URL PDF:", e.imagen1_url)
         if e.imagen2:
             e.imagen2_url = dominio + e.imagen2.url
+            print("IMG2_URL PDF:", e.imagen2_url)
 
     contexto = {
         'acta': acta,
