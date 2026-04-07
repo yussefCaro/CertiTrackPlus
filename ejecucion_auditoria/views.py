@@ -286,8 +286,6 @@ def imprimir_informe_hallazgos(request, acta_id):
 
 @login_required
 def imprimir_informe_auditoria(request, acta_id):
-    print(">>> ENTRO A imprimir_informe_auditoria CON acta_id =", acta_id)
-
     acta = get_object_or_404(ActaAuditoria, id=acta_id)
     ejecuciones = EjecucionRequisito.objects.filter(acta=acta).order_by('requisito__id')
     plan = acta.plan
@@ -296,27 +294,27 @@ def imprimir_informe_auditoria(request, acta_id):
     no_conformidades_pendientes = ejecuciones.filter(no_cumple=True, subsanado=False).exists()
     recomendacion_auditor = getattr(acta, 'recomendacion_auditor', None)
 
+    import os
     from django.conf import settings
 
-    logo_url = request.build_absolute_uri(
-        settings.STATIC_URL + 'myapp/AQ_color.png'
-    )
+    # --- CAMBIO CLAVE: Usar ruta física del disco ---
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'myapp', 'AQ_color.png')
+    if not os.path.exists(logo_path):
+        logo_path = os.path.join(settings.STATIC_ROOT, 'myapp', 'AQ_color.png')
 
     dominio = "http://72.60.114.139"
     for e in ejecuciones:
         if e.imagen1:
             e.imagen1_url = dominio + e.imagen1.url
-            print("IMG1_URL PDF:", e.imagen1_url)
         if e.imagen2:
             e.imagen2_url = dominio + e.imagen2.url
-            print("IMG2_URL PDF:", e.imagen2_url)
 
     contexto = {
         'acta': acta,
         'plan': plan,
         'programacion': programacion,
         'ejecuciones': ejecuciones,
-        'logo_path': logo_url,
+        'logo_path': logo_path,  # Enviamos la ruta del sistema
         'user': request.user,
         'no_conformidades_pendientes': no_conformidades_pendientes,
         'recomendacion_auditor': recomendacion_auditor,
@@ -327,7 +325,10 @@ def imprimir_informe_auditoria(request, acta_id):
         'ejecucion_auditoria/informe_auditoria_pdf.html',
         contexto
     )
+
+    # Generamos el PDF (sin base_url para el logo, ya que usaremos file://)
     pdf_file = HTML(string=html_string, base_url=dominio).write_pdf()
+
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'filename=InformeAuditoria_{acta_id}.pdf'
     return response
