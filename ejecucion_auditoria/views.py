@@ -12,7 +12,7 @@ from ejecucion_auditoria.models import RequisitoAuditoria, EjecucionRequisito
 from weasyprint import HTML
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-
+from django.conf import settings
 
 @login_required
 def ejecucion_auditoria(request, acta_id):
@@ -250,20 +250,24 @@ def imprimir_informe_hallazgos(request, acta_id):
     plan = acta.plan
     programacion = plan.programacion
 
+    import os
     from django.conf import settings
 
-    logo_url = request.build_absolute_uri(
-        settings.STATIC_URL + 'myapp/AQ_color.png'
-    )
+    # Buscamos la ruta física del logo en el disco del servidor
+    # Intentamos primero con la carpeta static de la app
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'myapp', 'AQ_color.png')
+
+    # Si no existe ahí, intentamos en la ruta de STATIC_ROOT (producción)
+    if not os.path.exists(logo_path):
+        logo_path = os.path.join(settings.STATIC_ROOT, 'myapp', 'AQ_color.png')
 
     contexto = {
         'acta': acta,
         'plan': plan,
         'programacion': programacion,
         'ejecuciones': ejecuciones,
-        'logo_path': logo_url,
+        'logo_path': logo_path,  # Enviamos la ruta absoluta del sistema
         'user': request.user,
-        # INYECTAMOS EL OBJETO REQUEST EN EL CONTEXTO
         'request': request,
     }
 
@@ -271,7 +275,10 @@ def imprimir_informe_hallazgos(request, acta_id):
         'ejecucion_auditoria/informe_hallazgos_pdf.html',
         contexto
     )
-    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf()
+
+    # Generamos el PDF. No usamos base_url para el logo porque usaremos file://
+    pdf_file = HTML(string=html_string).write_pdf()
+
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'filename=InformeHallazgos_{acta_id}.pdf'
     return response
